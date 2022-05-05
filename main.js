@@ -8,11 +8,11 @@ const map = new mapboxgl.Map({
 
 
 // section toggler
-function LayerGroupToggler() {
+function LayerGroupToggler(togglerClass, sectionClass) {
     this.init = function() {
-        this.layerGroups = document.querySelectorAll(".layer-group");
-        this.activeGroup = document.querySelector(".layer-group.active");
-        this.activeSection = document.querySelector(".section-layer.active");
+        this.layerGroups = document.querySelectorAll(`.${togglerClass}`);
+        this.activeGroup = document.querySelector(`.${togglerClass}.active`);
+        this.activeSection = document.querySelector(`.${sectionClass}.active`);
 
         this.fireClickListener();
     }
@@ -46,7 +46,7 @@ function LayerGroupToggler() {
 }
 
 
-let groupToggler = new LayerGroupToggler();
+let groupToggler = new LayerGroupToggler('layer-group', 'section-layer');
 groupToggler.init();
 
 
@@ -79,3 +79,20 @@ let DropDown = function() {
 
 let dropDown = new DropDown();
 dropDown.init();
+
+// subsections togglers
+let levelToggler = new LayerGroupToggler('header-item', 'levels-section');
+levelToggler.init();
+
+
+let resourceToggler = new LayerGroupToggler('header-item', 'resource-section');
+resourceToggler.init();
+
+
+// side bar toggle button 
+let tabToggler = document.getElementById("tab-toggler");
+let sideTab = document.querySelector(".side-tab");
+
+tabToggler.onclick = function(e) {
+    sideTab.classList.toggle("open");
+}

@@ -46,16 +46,20 @@
                <div class="layer-group" id="resources">Resources</div>
            </div>
 
+           <div class="tab-toggler" id="tab-toggler">
+                
+           </div>
+
            <div class="layer-section">
                <div class="section-layer active" id="ecoregion-section">
                    <div class="section-header">
-                       <div class="header-item" data-target="level-1">Level 1</div> |
-                       <div class="header-item" data-target="level-2">Level 2</div> |
-                       <div class="header-item" data-target="level-3">Level 3</div> 
+                       <div class="header-item active" id="level-1">Level 1</div> |
+                       <div class="header-item" id="level-2">Level 2</div> |
+                       <div class="header-item" id="level-3">Level 3</div> 
                    </div> 
 
                    <div class="eco-section-body">
-                        <div id="level-1">
+                        <div id="level-1-section" class="levels-section active">
                             <h3 class="section-title">
                                 South Western Ghats montane rain forests
                             </h3>
@@ -80,8 +84,12 @@
                         </div>
 
 
-                        <div id="level-1"></div>
-                        <div id="level-1"></div>
+                        <div id="level-2-section" class="levels-section">
+                            <div class="section-title">Level 2</div>
+                        </div>
+                        <div id="level-3-section" class="levels-section">
+                            <div class="section-title">Level 3</div>
+                        </div>
                    </div>
                </div>
 
@@ -140,7 +148,7 @@
                         <div class="species-item"></div>
                     </div>
 
-                    <div class="text-white">
+                    <div class="text-white my-2">
                         <div class="bold">Dhoopa</div>
                         <div>Canarium strictum</div>
                     </div>
@@ -149,13 +157,13 @@
 
                <div class="section-layer" id="resources-section">
                     <div class="section-header">
-                        <div class="header-item active" data-target="publication">Publication</div> 
-                        <div class="header-item" data-target="videos">Videos</div> 
-                        <div class="header-item" data-target="nurseries">Nurseries</div> 
+                        <div class="header-item active" id="publication">Publication</div> 
+                        <div class="header-item" id="videos">Videos</div> 
+                        <div class="header-item" id="nurseries">Nurseries</div> 
                     </div> 
 
                     <div class="section-layer-body">
-                        <div id="publication" class="publication-section">
+                        <div id="publication-section" class="resource-section active">
                             <div class="media-item">
                                 <div class="img-section"></div>
                                 <div class="media-body">
@@ -196,16 +204,73 @@
                             </div>
 
                         </div>
-                        <div id="videos" class="layer-section">
+
+                        <div id="videos-section" class="resource-section">
+                            <div class="video-section">
+                                <div class="video">
+
+                                </div>
+                                <div class="video-caption">
+                                    A dream of trees
+                                </div>
+                            </div>
+
+                            <div class="video-section">
+                                <div class="video">
+
+                                </div>
+                                <div class="video-caption">
+                                    A dream of trees
+                                </div>
+                            </div>
 
                         </div>
-                        <div id="nurseries" class="layer-section">
+                        <div id="nurseries-section" class="resource-section">
+                            <div class="nursery-section">
+                                <div class="title bold">Iyerpadi nursery</div>
+                                <div class="nursery-body">
+                                    <span class="bold">Address</span>: Iyerpadi S.O, Coimbatore,  </br>
+                                    Tamil Nadu, India (IN), Pin   </br>
+                                    Code:-642108 </br>
+                                    <span class="bold">Website:</span> </br>
+                                    <span class="bold">Contact no:</span> </br>
+                                </div>
+                            </div>
 
+                            <div class="nursery-section">
+                                <div class="title bold">Parambikulam nursery</div>
+                                <div class="nursery-body">
+                                    <span class="bold">Address</span>: Iyerpadi S.O, Coimbatore,  </br>
+                                    <div>Tamil Nadu, India (IN), Pin </div>
+                                    <div>Code:-642108 </div>
+                                    <span class="bold">Website:</span> </br>
+                                    <span class="bold">Contact no:</span> </br>
+                                </div>
+                            </div>
+
+                            <div class="nursery-section">
+                                <div class="title bold">Topslip nursery</div>
+                                <div class="nursery-body">
+                                    <span class="bold">Address</span>: Iyerpadi S.O, Coimbatore, 
+                                    <div>Tamil Nadu, India (IN), Pin </div>
+                                    <div>Code:-642108 </div>
+                                    <span class="bold">Website:</span> </br>
+                                    <span class="bold">Contact no:</span></br>
+                                </div>
+                            </div>
                         </div>
                     </div>
                </div>
            </div>
         </div>
+
+        <div class="layer-groups mobile-view">
+            <div class="layer-group active" id="ecoregion">Ecoregion</div>
+            <div class="layer-group" id="projects">Projects</div>
+            <div class="layer-group" id="key-species">Key Species</div>
+            <div class="layer-group" id="resources">Resources</div>
+        </div>
+
     </div>
     
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
