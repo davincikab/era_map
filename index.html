@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Display a map on a webpage</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap" rel="stylesheet" >
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="map-container">
+        <div id="map"></div>
+
+        <div class="data-toggler">
+            <button class="dropdown-toggler" id="dropdown-toggler">
+                Data Layers
+
+                <i class="fa fa-caret-up"></i>
+            </button>
+
+            <div class="dropdown" id="dropdown">
+                <div class="form-group">
+                    <input type="radio" name="data-layer" id="protected-areas" checked>
+                    <label for="protected-areas">Protected Areas</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="radio" name="data-layer" id="watershed">
+                    <label for="watershed">Watershed</label>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="side-tab">
+           <div class="layer-groups">
+               <div class="layer-group active" id="ecoregion">Ecoregion</div>
+               <div class="layer-group" id="projects">Projects</div>
+               <div class="layer-group" id="key-species">Key Species</div>
+               <div class="layer-group" id="resources">Resources</div>
+           </div>
+
+           <div class="layer-section">
+               <div class="section-layer active" id="ecoregion-section">
+                   <div class="section-header">
+                       <div class="header-item" data-target="level-1">Level 1</div> |
+                       <div class="header-item" data-target="level-2">Level 2</div> |
+                       <div class="header-item" data-target="level-3">Level 3</div> 
+                   </div> 
+
+                   <div class="eco-section-body">
+                        <div id="level-1">
+                            <h3 class="section-title">
+                                South Western Ghats montane rain forests
+                            </h3>
+
+                            <div class="text-white">
+                                Lorem ipsum dolor sit amet, consectetuer 
+                                adipiscing elit, sed diam nonummy nibh 
+                                euismod tincidunt ut laoreet dolore magna 
+                                aliquam erat volutpat. Ut wisi enim ad 
+                                minim veniam, quis nostrud exerci tation 
+                                ullamcorper suscipit lobortis nisl ut aliquip 
+                                ex ea commodo consequat. 
+
+                               <p></p>
+
+                                Duis autem vel eum iriure dolor in hendrerit 
+                                in vulputate velit esse molestie consequat, 
+                                vel illum dolore eu feugiat nulla facilisis at 
+                                vero eros et accumsan et iusto odio dignissim qui blandit praesent 
+                                luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+                            </div>
+                        </div>
+
+
+                        <div id="level-1"></div>
+                        <div id="level-1"></div>
+                   </div>
+               </div>
+
+               <div class="section-layer" id="projects-section">
+                    <h3 class="section-title">
+                        Restoration Projects in this ecoregion
+                    </h3>
+
+                    <div class="card-list">
+                        <div class="card">
+                            <img src="https://picsum.photos/200/300" alt="">
+                            <div class="fig-caption">
+                                <div class="bold">Reviving the rainforest</div>
+                                <div>Valparai, Tamil Nadu</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <img src="https://picsum.photos/id/232/200/300" alt="">
+                            <div class="fig-caption">
+                                <div class="bold">Restoring Rao Jodha Park</div>
+                                <div>Jodhpur, Rajasthan</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <img src="https://picsum.photos/id/231/200/300" alt="">
+                            <div class="fig-caption">
+                                <div class="bold">Kaas plateau</div>
+                                <div>Maharashtra</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <img src="https://picsum.photos/id/234/200/300" alt="">
+                            <div class="fig-caption">
+                                <div class="bold">Bringing back the forest</div>
+                                <div>Tamil Nadu</div>
+                            </div>
+                        </div>
+
+                    </div>
+               </div>
+
+               <div class="section-layer" id="key-species-section">
+                    <h3 class="section-title">Key Species</h3>
+
+                    <div class="item-list">
+                        <div class="species-item"></div>
+                        <div class="species-item"></div>
+                        <div class="species-item"></div>
+                        <div class="species-item"></div>
+                        <div class="species-item"></div>
+                        <div class="species-item"></div>
+                        <div class="species-item"></div>
+                        <div class="species-item"></div>
+                    </div>
+
+                    <div class="text-white">
+                        <div class="bold">Dhoopa</div>
+                        <div>Canarium strictum</div>
+                    </div>
+
+               </div>
+
+               <div class="section-layer" id="resources-section">
+                    <div class="section-header">
+                        <div class="header-item active" data-target="publication">Publication</div> 
+                        <div class="header-item" data-target="videos">Videos</div> 
+                        <div class="header-item" data-target="nurseries">Nurseries</div> 
+                    </div> 
+
+                    <div class="section-layer-body">
+                        <div id="publication" class="publication-section">
+                            <div class="media-item">
+                                <div class="img-section"></div>
+                                <div class="media-body">
+                                    <div class="media-title">Journal Article</div>
+                                    <div class="media-text">
+                                        Seed fates of four rainforest tree 
+                                        species in the fragmented forests of 
+                                        Anamalais in the southern Western 
+                                        Ghats, India
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="media-item">
+                                <div class="img-section"></div>
+                                <div class="media-body">
+                                    <div class="media-title">Reports</div>
+                                    <div class="media-text">
+                                        Seed fates of four rainforest tree 
+                                        species in the fragmented forests of 
+                                        Anamalais in the southern Western 
+                                        Ghats, India
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="media-item">
+                                <div class="img-section"></div>
+                                <div class="media-body">
+                                    <div class="media-title">Popular Article</div>
+                                    <div class="media-text">
+                                        Seed fates of four rainforest tree 
+                                        species in the fragmented forests of 
+                                        Anamalais in the southern Western 
+                                        Ghats, India
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="videos" class="layer-section">
+
+                        </div>
+                        <div id="nurseries" class="layer-section">
+
+                        </div>
+                    </div>
+               </div>
+           </div>
+        </div>
+    </div>
+    
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
