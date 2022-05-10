@@ -22,8 +22,11 @@ function LayerGroupToggler(togglerClass, sectionClass) {
             element.onclick = (e) => {
                 let { id } = e.target;
 
-                this.setActiveGroup(element);
-                this.toggleActiveSection(`${id}-section`);
+                if(element != this.activeGroup) {
+                    this.setActiveGroup(element);
+                    this.toggleActiveSection(`${id}-section`);
+                }
+                
             }
 
         });
