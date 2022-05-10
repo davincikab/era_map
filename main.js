@@ -7,11 +7,18 @@ const map = new mapboxgl.Map({
 });
 
 
+map.on("load", function(e) {
+    // add the watershed
+    // add the protected areas
+    // ecoregions
+    // 
+});
+
 // section toggler
 function LayerGroupToggler(togglerClass, sectionClass) {
     this.init = function() {
-        this.layerGroups = document.querySelectorAll(`.${togglerClass}`);
-        this.activeGroup = document.querySelector(`.${togglerClass}.active`);
+        this.layerGroups = document.querySelectorAll(`${togglerClass}`);
+        this.activeGroup = document.querySelector(`${togglerClass}.active`);
         this.activeSection = document.querySelector(`.${sectionClass}.active`);
 
         this.fireClickListener();
@@ -49,7 +56,7 @@ function LayerGroupToggler(togglerClass, sectionClass) {
 }
 
 
-let groupToggler = new LayerGroupToggler('layer-group', 'section-layer');
+let groupToggler = new LayerGroupToggler('.layer-groups .layer-group', 'section-layer');
 groupToggler.init();
 
 
@@ -73,6 +80,7 @@ let DropDown = function() {
 
     this.toggleDropdown = function() {
         this.dropDown.classList.toggle('d-none');
+        this.togglerBtn.classList.toggle('active');
     }
 
     this.toggleLayer = function(layerId) {
@@ -84,11 +92,11 @@ let dropDown = new DropDown();
 dropDown.init();
 
 // subsections togglers
-let levelToggler = new LayerGroupToggler('header-item', 'levels-section');
+let levelToggler = new LayerGroupToggler('.eco-section .header-item', 'levels-section');
 levelToggler.init();
 
 
-let resourceToggler = new LayerGroupToggler('header-item', 'resource-section');
+let resourceToggler = new LayerGroupToggler('.resources-section .header-item', 'resource-section');
 resourceToggler.init();
 
 
