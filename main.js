@@ -12,6 +12,14 @@ map.on("load", function(e) {
     // add the protected areas
     // ecoregions
     // 
+
+    // click event
+    map.on("click", function(e) {
+        console.log(
+            Object.values(e.lngLat)
+        );
+
+    });
 });
 
 // section toggler
@@ -20,6 +28,7 @@ function LayerGroupToggler(togglerClass, sectionClass) {
         this.layerGroups = document.querySelectorAll(`${togglerClass}`);
         this.activeGroup = document.querySelector(`${togglerClass}.active`);
         this.activeSection = document.querySelector(`.${sectionClass}.active`);
+        this.activeId = "ecoregion";
 
         this.fireClickListener();
     }
@@ -28,6 +37,8 @@ function LayerGroupToggler(togglerClass, sectionClass) {
         this.layerGroups.forEach(element => {
             element.onclick = (e) => {
                 let { id } = e.target;
+
+                this.activeId = id;
 
                 if(element != this.activeGroup) {
                     this.setActiveGroup(element);
@@ -58,6 +69,8 @@ function LayerGroupToggler(togglerClass, sectionClass) {
 
 let groupToggler = new LayerGroupToggler('.layer-groups .layer-group', 'section-layer');
 groupToggler.init();
+
+// toggle the 
 
 
 // map layer toggler

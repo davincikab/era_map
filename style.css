@@ -175,6 +175,10 @@ body {
     margin-top: 10px;
 }
 
+.card > * {
+    pointer-events: none;
+}
+
 .card img  {
     width: 100%;
     height: 150px;
@@ -196,14 +200,37 @@ body {
     border-radius: 50%;
     width: 60px;
     height: 60px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+.species-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.item-list .species-item.active {
+    border:3px solid var(--primary);
+}
+
+.item-list .species-item > * {
+    pointer-events: none;
+}
 /* reources section */
 .media-item {
     border:1px solid var(--white);
     padding:0.5rem;
     display: flex;
     margin: 10px;
+    cursor: pointer;
+}
+
+.media-item > * {
+    pointer-events: none;
 }
 
 .media-body {
@@ -219,6 +246,10 @@ body {
     margin-right:1rem;
 }
 
+.media-item .img-section img {
+    width: 100%;
+    height: 136px;
+}
 .media-body {
     color:var(--white);
 }
@@ -254,6 +285,10 @@ body {
     margin: 1rem 0.25rem 2rem;
     line-height: 18px;
     letter-spacing: 0.5px;
+}
+
+.nursery-section .nursery-body {
+    width: 220px;
 }
 
 .nursery-section .title {
@@ -302,6 +337,38 @@ div#protected-areas {
     margin-left: 3rem !important;
 }
 
+/* custom market */
+.mapboxgl-marker {
+    cursor: pointer;
+}
+
+/* Popup Content */
+.mapboxgl-popup-content {
+    padding: 1.5rem;
+    width: 220px;
+    color:var(--black);
+    font-size: 14px;
+}
+
+.popup-content img {
+    height: 150px;
+    width: 100%;
+    background-color: var(--primary);
+    object-fit: cover;
+}
+
+.popup-content  .title{
+    font-size: 1rem;
+}
+
+.popup-content .description {
+    margin:1rem 0;
+}
+
+.popup-content .btn-more {
+    margin:0;
+}
+
 /* utils classes */
 .bold {
     font-weight: bold !important;
@@ -322,6 +389,11 @@ div#protected-areas {
 .my-5 {
     margin-top:1.25rem !important;
     margin-bottom: 1.25rem !important;
+}
+
+.bg-primary {
+    background-color: var(--secondary) !important;
+    color:var(--white) !important;
 }
 
 /* medai query */
