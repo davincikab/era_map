@@ -278,6 +278,12 @@ body {
     background-color: var(--white);
 }
 
+.video > video {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
 .nursery-section {
     height: auto;
     color: var(--white);
@@ -285,6 +291,11 @@ body {
     margin: 1rem 0.25rem 2rem;
     line-height: 18px;
     letter-spacing: 0.5px;
+    cursor: pointer;
+}
+
+.nursery-section > * {
+    pointer-events: none;
 }
 
 .nursery-section .nursery-body {

@@ -1,6 +1,7 @@
 let publications = [
     {
         images:'https://picsum.photos/id/235/200/300',
+        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
         name:"Journal Article",
         address:"Valprai, Tamil Nadu",
         description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
@@ -8,6 +9,7 @@ let publications = [
     },
     {
         images:'https://picsum.photos/id/230/200/300', 
+        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
         name:"Report",
         address:"Jodhpur, Rajasthan",
         description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
@@ -16,6 +18,7 @@ let publications = [
 
     {
         images: 'https://picsum.photos/200/300',
+        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
         name:"Popular Article",
         address:"Maharashtra",
         description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
@@ -144,3 +147,26 @@ function createNurseryMarker(project) {
 
 let nurseryMarkers = renderNurseryToMap(nurseries);
 renderNuseryList(nurseries);
+
+
+
+// Videos Section
+function renderVideos(publications) {
+    let videosContainer = document.getElementById("videos-section");
+    let content = "";
+
+    publications.forEach(publication => {
+        content += `<div class="video-section">
+            <div class="video">
+                <video src="${publication.video}"></video>
+            </div>
+            <div class="video-caption">
+                ${publication.name}
+            </div>
+        </div>`;
+    });
+
+    videosContainer.innerHTML = content;
+}
+
+renderVideos(publications);

@@ -9,7 +9,45 @@ const map = new mapboxgl.Map({
 
 map.on("load", function(e) {
     // add the watershed
+    map.addSource("watershed", {
+        type:'geojson',
+        data:'data/watershed.geojson'
+    });
+
+    map.addLayer({
+        id:'watershed',
+        type:'fill',
+        source:'watershed',
+        paint:{
+            'fill-color':'brown',
+            'fill-opacity':0.6,
+            'fill-outline-color':'#ddd'
+        },
+        layout:{
+            'visibility':'none'
+        }
+    });
+
     // add the protected areas
+    map.addSource("protected_areas", {
+        type:'geojson',
+        data:'data/protected_areas.geojson'
+    });
+
+    map.addLayer({
+        id:'protected-areas',
+        type:'fill',
+        source:'protected_areas',
+        paint:{
+            'fill-color':'green',
+            'fill-opacity':0.6,
+            'fill-outline-color':'#ddd'
+        },
+        layout:{
+            'visibility':'visible'
+        }
+    });
+
     // ecoregions
     // 
 
@@ -20,7 +58,32 @@ map.on("load", function(e) {
         );
 
     });
+
+    toggleMapLayers();
 });
+
+// map layer toggler
+function toggleMapLayers() {
+    let layerButtons = document.querySelectorAll(".layer-toggler");
+    let layerIds = ['watershed', 'protected-areas'];
+
+    layerButtons.forEach(toggler => {
+        toggler.onclick = function(e) {
+            let { checked, id } = e.target;
+
+            console.log(id);
+            layerIds.forEach(layerId => {
+                let visibilityStatus = layerId === id ? 'visible' : 'none';
+
+                console.log(visibilityStatus);
+                map.setLayoutProperty(layerId, 'visibility', visibilityStatus);
+            });
+            
+        }
+
+    });
+}
+
 
 // section toggler
 function LayerGroupToggler(togglerClass, sectionClass) {
