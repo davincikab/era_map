@@ -115,11 +115,25 @@ function handleMapList() {
             if(e.target !== activeItem) {
                 activeItem.classList.toggle("active");
                 e.target.classList.toggle("active");
+
+                toggleMarkerId(id);
             }
 
             activeItem = e.target
             
            
+        }
+    });
+}
+
+function toggleMarkerId(id) {
+    speciesMarker.forEach((marker, index) => {
+        let popup = marker.getPopup();
+
+        if(index != id) {
+            popup.remove();
+        } else {
+            marker.togglePopup();
         }
     });
 }

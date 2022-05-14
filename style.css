@@ -173,6 +173,7 @@ body {
 .card {
     color:var(--white);
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .card > * {
@@ -396,6 +397,10 @@ div#protected-areas {
 
 .popup-content .btn-more {
     margin:0;
+}
+
+.popup-content .nursery-section {
+    color:var(--black)
 }
 
 /* utils classes */

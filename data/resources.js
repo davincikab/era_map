@@ -131,26 +131,39 @@ function renderNurseryToMap(nurseries) {
     return markers;
 }
 
-function createNurseryMarker(project) {
+function createNurseryMarker(nursery) {
     // popup content
-    // let popupContent = getPopupContent(project);
-    // let popup = new mapboxgl.Popup()
-    //     .setHTML(popupContent);
+    let content = popupContent(nursery);
+    let popup = new mapboxgl.Popup()
+        .setHTML(content);
 
     // marker
     let divMarker = customMarkerIcon('nursery');
     let marker = new mapboxgl.Marker({element:divMarker})
-        .setLngLat(project.coordinates)
-        // .setPopup(popup)
+        .setLngLat(nursery.coordinates)
+        .setPopup(popup)
         // .addTo(map);
 
     return marker;
 }
 
+function popupContent(nursery) {
+    return `<div class="popup-content">
+        <div class="popup-body">
+            <div class="nursery-section">
+                <div class="title bold">${nursery.name}</div>
+                <div class="nursery-body">
+                    <span class="bold">Address</span>: ${nursery.address} </br>
+                    <span class="bold">Website: ${nursery.website}</span> </br>
+                    <span class="bold">Contact no: ${nursery.contact_no}</span> </br>
+                </div>
+            </div>
+        </div>
+    </div>`
+}
+
 let nurseryMarkers = renderNurseryToMap(nurseries);
 renderNuseryList(nurseries);
-
-
 
 // Videos Section
 function renderVideos(publications) {

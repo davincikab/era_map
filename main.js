@@ -211,6 +211,7 @@ function toggleMarkers(markerTypes, activeId) {
             type.markers.forEach(marker => marker.remove())
         } else {
             type.markers.forEach(marker => marker.addTo(map))
+            type.markers[0].togglePopup();
         }
     });
 }

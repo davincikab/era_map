@@ -1,5 +1,6 @@
 let projects = [
     {
+        id:0,
         images:[
             'https://picsum.photos/id/232/200/300', 'https://picsum.photos/200/300', 
             'https://picsum.photos/200/300', 'https://picsum.photos/200/300'
@@ -11,6 +12,7 @@ let projects = [
     },
 
     {
+        id:1,
         images:[
             'https://picsum.photos/id/231/200/300', 'https://picsum.photos/200/300', 
             'https://picsum.photos/200/300', 'https://picsum.photos/200/300'
@@ -22,6 +24,7 @@ let projects = [
     },
 
     {
+        id:2,
         images:[
             'https://picsum.photos/id/234/200/300', 'https://picsum.photos/200/300', 
             'https://picsum.photos/200/300', 'https://picsum.photos/200/300'
@@ -33,6 +36,7 @@ let projects = [
     },
 
     {
+        id:3,
         images:[
             'https://picsum.photos/id/235/200/300', 'https://picsum.photos/200/300', 
             'https://picsum.photos/200/300', 'https://picsum.photos/200/300'
@@ -48,7 +52,7 @@ function loadProjectsList(projects) {
     let projectsContainer = document.getElementById("projects-list");
     let content = "";
     projects.forEach(project => {
-        content += `<div class="card project-card" id="${project.name}">
+        content += `<div class="card project-card" id="${project.name}" data-id="${project.id}">
             <img src="${project.images[0]}" alt="">
             <div class="fig-caption">
                 <div class="bold">${project.name}</div>
@@ -106,3 +110,30 @@ loadProjectsList(projects);
 let projectMarkers = renderProjectsToMap(projects);
 
 // interactivity
+function cardHover() {
+    let cards = document.querySelectorAll(".project-card");
+
+    console.log(cards);
+
+    cards.forEach(card => {
+        card.onmouseover = function(e) {
+            let { dataset: { id } } = e.target;
+            
+            
+            console.log(id);
+
+            projectMarkers.forEach((marker, index) => {
+                let popup = marker.getPopup();
+        
+                if(index != id) {
+                    popup.remove();
+                } else {
+                    marker.togglePopup();
+                }
+            });
+        }
+    });
+}
+
+
+cardHover();
