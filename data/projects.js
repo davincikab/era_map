@@ -73,10 +73,11 @@ function createMarker(project) {
         .setHTML(popupContent);
 
     // marker
-    let marker = new mapboxgl.Marker()
+    let divMarker = customMarkerIcon('task');
+    let marker = new mapboxgl.Marker({element:divMarker})
         .setLngLat(project.coordinates)
         .setPopup(popup)
-        .addTo(map);
+        // .addTo(map);
 
     return marker;
 }
@@ -101,7 +102,7 @@ function getPopupContent(project) {
     </div>`
 }
 
-let projectMarkers = loadProjectsList(projects);
-renderProjectsToMap(projects);
+loadProjectsList(projects);
+let projectMarkers = renderProjectsToMap(projects);
 
 // interactivity

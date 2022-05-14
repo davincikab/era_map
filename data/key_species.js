@@ -48,6 +48,7 @@ function loadSpeciesList(species) {
 
 function renderSpeciesToMap(projects) {
     let markers = projects.map(createSpeciesMarker);
+    return markers;
 }
 
 function createSpeciesMarker(project) {
@@ -57,10 +58,11 @@ function createSpeciesMarker(project) {
         .setHTML(popupContent);
 
     // marker
-    let marker = new mapboxgl.Marker()
+    let divMarker = customMarkerIcon('species');
+    let marker = new mapboxgl.Marker({element:divMarker})
         .setLngLat(project.coordinates)
         .setPopup(popup)
-        .addTo(map);
+        // .addTo(map);
 
     return marker;
 }

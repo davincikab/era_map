@@ -89,7 +89,7 @@
                                     <div class="section-title">Nearest Protected Areas </div class="item-title">
                                 </div>
 
-                                <div class="items my-2">
+                                <div class="items my-2" id="park-list">
                                     <div>Kanha National Park </div>
                                     <div>Bandhavgarh National Park </div>
                                     <div>Pench National Park </div>
@@ -305,5 +305,31 @@
     <script src="data/key_species.js"></script>
 
     <script src="data/resources.js"></script>
+    <script src="data/ecoregions.js"></script>
+
+    <script>
+        let markerTypes = [
+            {
+                id:'publication',
+                markers:publicationsMarkers
+            },
+            {
+                id:'nurseries',
+                markers:nurseryMarkers
+            },
+            {
+                id:'projects',
+                markers:projectMarkers
+            },
+            {
+                id:'ecoregion',
+                markers:pins
+            },
+            {
+                id:'key-species',
+                markers:speciesMarker
+            }
+        ];
+    </script>
 </body>
 </html>

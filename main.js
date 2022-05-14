@@ -1,3 +1,12 @@
+function customMarkerIcon(icon) {
+    let divMarker = document.createElement("div");
+    divMarker.classList.add("div-marker");
+
+    divMarker.innerHTML = `<img src='icons/${icon}.png'  alt="${icon}" />`;
+
+    return divMarker;
+}
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGF1ZGk5NyIsImEiOiJjanJtY3B1bjYwZ3F2NGFvOXZ1a29iMmp6In0.9ZdvuGInodgDk7cv-KlujA';
 const map = new mapboxgl.Map({
     container: 'map', // container ID
@@ -106,6 +115,10 @@ function LayerGroupToggler(togglerClass, sectionClass) {
                 if(element != this.activeGroup) {
                     this.setActiveGroup(element);
                     this.toggleActiveSection(`${id}-section`);
+
+                    // toggle different markers classes
+                    id = id == 'resources' ? 'publication' : id;
+                    toggleMarkers(markerTypes, id);
                 }
                 
             }
@@ -182,4 +195,22 @@ let sideTab = document.querySelector(".side-tab");
 
 tabToggler.onclick = function(e) {
     sideTab.classList.toggle("open");
+}
+
+// toggle different markers
+{/* <div class="layer-group active" id="ecoregion">Ecoregion</div>
+<div class="layer-group" id="projects">Projects</div>
+<div class="layer-group" id="key-species">Key Species</div>
+<div class="layer-group" id="resources">Resources</div> */}
+function toggleMarkers(markerTypes, activeId) {
+    console.log(activeId);
+
+    markerTypes.forEach(type => {
+        
+        if(type.id !== activeId) {
+            type.markers.forEach(marker => marker.remove())
+        } else {
+            type.markers.forEach(marker => marker.addTo(map))
+        }
+    });
 }

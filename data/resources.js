@@ -55,26 +55,27 @@ renderPublicationList(publications);
 
 
 function renderPublicationToMap(publications) {
-    let markers = publications.map(createNurseryMarker);
+    let markers = publications.map(createPublicationMarker);
     return markers;
 }
 
-function createPublicationMap(publication) {
+function createPublicationMarker(publication) {
     // popup content
     // let popupContent = getPopupContent(project);
     // let popup = new mapboxgl.Popup()
     //     .setHTML(popupContent);
 
     // marker
-    let marker = new mapboxgl.Marker()
+    let divMarker = customMarkerIcon('publication');
+    let marker = new mapboxgl.Marker({element:divMarker})
         .setLngLat(publication.coordinates)
         // .setPopup(popup)
-        .addTo(map);
+        // .addTo(map);
 
     return marker;
 }
 
-let publicationsMarkers = renderNurseryToMap(publications);
+let publicationsMarkers = renderPublicationToMap(publications);
 renderNuseryList(publications);
 
 
@@ -86,7 +87,7 @@ let nurseries = [
         address:"Iyerpadi S.O, Coimbatore, Tamil Nadu, India (IN), Pin Code:-64210",
         website:"",
         contact_no:"",
-        coordinates:[75.14442310371734, 17.83432311133646]
+        coordinates:[73.14442310371734, 16.83432311133646]
     },
     {
         images:'https://picsum.photos/id/232/200/300',
@@ -94,7 +95,7 @@ let nurseries = [
         address:"Iyerpadi S.O, Coimbatore, Tamil Nadu, India (IN), Pin Code:-64210",
         website:"",
         contact_no:"",
-        coordinates:[75.14442310371734, 17.83432311133646]
+        coordinates:[76.14442310371734, 16.53432311133646]
     },
     {
         images:'https://picsum.photos/id/232/200/300',
@@ -102,7 +103,7 @@ let nurseries = [
         address:"Iyerpadi S.O, Coimbatore, Tamil Nadu, India (IN), Pin Code:-64210",
         website:"",
         contact_no:"",
-        coordinates:[75.14442310371734, 17.83432311133646]
+        coordinates:[75.14442310371734, 16.33432311133646]
     },
 ];
 
@@ -125,8 +126,8 @@ function renderNuseryList(nurseries) {
     nurseyContainer.innerHTML = nurseryContent;
 }
 
-function renderNurseryToMap(projects) {
-    let markers = projects.map(createNurseryMarker);
+function renderNurseryToMap(nurseries) {
+    let markers = nurseries.map(createNurseryMarker);
     return markers;
 }
 
@@ -137,10 +138,11 @@ function createNurseryMarker(project) {
     //     .setHTML(popupContent);
 
     // marker
-    let marker = new mapboxgl.Marker()
+    let divMarker = customMarkerIcon('nursery');
+    let marker = new mapboxgl.Marker({element:divMarker})
         .setLngLat(project.coordinates)
         // .setPopup(popup)
-        .addTo(map);
+        // .addTo(map);
 
     return marker;
 }
