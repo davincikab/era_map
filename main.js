@@ -305,7 +305,7 @@ function updateEcoregionInfo(ecoregion) {
 // map layer toggler
 function toggleMapLayers() {
     let layerButtons = document.querySelectorAll(".layer-toggler");
-    let layerIds = ['watershed', 'protected-areas', 'soils', 'rainfall-zones', 'geology', 'geomorphology'];
+    let layerIds = ['watershed', 'protected-areas', 'soil', 'rainfall-zones', 'geology', 'geomorphology'];
 
     layerButtons.forEach(toggler => {
         toggler.onclick = function(e) {
@@ -323,11 +323,13 @@ function toggleMapLayers() {
 
             // hide all the layers
             layerIds.forEach(layerId => {
-                let checkbox = document.getElementById(`#${id}input`);
+                console.log(layerId);
+
+                let checkbox = document.getElementById(`${layerId}`);
                 checkbox.checked = !checked;
 
                 let visibilityStatus = !checked ? 'visible' : 'none'; 
-                map.setLayoutProperty(id, 'visibility', visibilityStatus);
+                map.setLayoutProperty(layerId, 'visibility', visibilityStatus);
             });
             
         }
