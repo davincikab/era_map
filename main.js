@@ -1,22 +1,71 @@
-function customMarkerIcon(icon) {
-    let divMarker = document.createElement("div");
-    divMarker.classList.add("div-marker");
+const layerStatus = {
+    "watershed":false,
+    "protected-areas":false,
+    "soils":false,
+    "rainfallzones":false,
+    "geology":false,
+    "geomorpholgy":false
+};
 
-    divMarker.innerHTML = `<img src='icons/${icon}.png'  alt="${icon}" />`;
-
-    return divMarker;
+const layerStore = {
+    activeEcoregion:'Central Deccan Plateau dry deciduous forests',
+    activeResource:'publications',
+    projects:{
+        instance: new ProjectItem([]),
+        items:projects
+    },
+    nurseries:{
+        instance: new NurseryItem([]),
+        items:nurseries
+    },
+    publications:{
+        instance: new PublicationItem([]),
+        items:publications
+    },
+    videos:{
+        instance: new VideoItem([]),
+        items:videos
+    },
+    'key-species':{
+        instance: new KeySpeciesItem([]),
+        items:keySpecies
+    },
+    pareas:{
+        instance: new ProtectedAreasItem([]),
+        items:protectedAreas
+    },
 }
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGF1ZGk5NyIsImEiOiJjanJtY3B1bjYwZ3F2NGFvOXZ1a29iMmp6In0.9ZdvuGInodgDk7cv-KlujA';
 const map = new mapboxgl.Map({
     container: 'map', // container ID
     style: 'mapbox://styles/mapbox/streets-v11', // style URL
-    center: { lng: 77.4736012705689, lat: 17.6986988113093 }, // starting position [lng, lat]
+    center: { lng: 73.29879658306868, lat: 18.575687042687875 }, // starting position [lng, lat]
     zoom: 5 // starting zoom
 });
 
 
 map.on("load", function(e) {
+    // add the ecoregions
+    map.addSource("ecoregions", {
+        type:'geojson',
+        data:'data/india_46_ecoregions.geojson'
+    });
+
+    map.addLayer({
+        id:'ecoregions',
+        type:'fill',
+        source:'ecoregions',
+        paint:{
+            'fill-color':['get', 'COLOR'],
+            'fill-opacity':0.01,
+            'fill-outline-color':'#000'
+        },
+        layout:{
+            'visibility':'visible'
+        }
+    });
+
     // add the watershed
     map.addSource("watershed", {
         type:'geojson',
@@ -28,9 +77,9 @@ map.on("load", function(e) {
         type:'fill',
         source:'watershed',
         paint:{
-            'fill-color':'brown',
-            'fill-opacity':0.6,
-            'fill-outline-color':'#ddd'
+            'fill-color':'lightblue',
+            'fill-opacity':0.1,
+            'fill-outline-color':'blue'
         },
         layout:{
             'visibility':'none'
@@ -53,39 +102,232 @@ map.on("load", function(e) {
             'fill-outline-color':'#ddd'
         },
         layout:{
-            'visibility':'visible'
+            'visibility':'none'
         }
     });
 
-    // ecoregions
-    // 
+    // soils layer
+    map.addSource("soil", {
+        type:'geojson',
+        data:'data/india_soils_ibp.geojson'
+    });
 
-    // click event
-    map.on("click", function(e) {
-        console.log(
-            Object.values(e.lngLat)
-        );
+    map.addLayer({
+        id:'soil',
+        type:'fill',
+        source:'soil',
+        paint:{
+            'fill-color':['get', 'color'],
+            'fill-opacity':0.6,
+            'fill-outline-color':'#ddd'
+        },
+        layout:{
+            'visibility':'none'
+        }
+    });
 
+    // Rainfall zones
+    map.addSource("rainfall-zones", {
+        type:'geojson',
+        data:'data/india_rainfallzones_ibp.geojson'
+    });
+
+    map.addLayer({
+        id:'rainfall-zones',
+        type:'fill',
+        source:'rainfall-zones',
+        paint:{
+            'fill-color':['get', 'color'],
+            'fill-opacity':0.6,
+            'fill-outline-color':'#ddd'
+        },
+        layout:{
+            'visibility':'none'
+        }
+    });
+
+    // Geology
+    map.addSource("geology", {
+        type:'geojson',
+        data:'data/india_geology_ibp.geojson'
+    });
+
+    map.addLayer({
+        id:'geology',
+        type:'fill',
+        source:'geology',
+        paint:{
+            'fill-color':['get', 'color'],
+            'fill-opacity':0.6,
+            'fill-outline-color':'#ddd'
+        },
+        layout:{
+            'visibility':'none'
+        }
+    });
+
+    // Geomorphology
+    map.addSource("geomorphology", {
+        type:'geojson',
+        data:'data/india_geomorphology_ibp.geojson'
+    });
+
+    map.addLayer({
+        id:'geomorphology',
+        type:'fill',
+        source:'geomorphology',
+        paint:{
+            'fill-color':['get', 'color'],
+            'fill-opacity':0.6,
+            'fill-outline-color':'#ddd'
+        },
+        layout:{
+            'visibility':'none'
+        }
+    });
+
+    // ecoregions click event
+    map.on("click", 'ecoregions', function(e) {
+        let activeEcoregion = e.features[0];
+        if(activeEcoregion.properties.ECO_NAME == layerStore.ECO_NAME) {
+            return;
+        }
+
+        // update ecoregion info
+        updateEcoregionInfo(activeEcoregion);
+        toggleActiveEcoregion(activeEcoregion.properties.ECO_NAME);
+        fitMapToFeatureBounds(activeEcoregion);
+
+        layerStore.activeEcoregion = activeEcoregion.properties.ECO_NAME;
+
+        // filter the point data: projects, key species, publication, videos
+        let filterKeys = [ 'projects', 'publications', 'videos', 'key-species', 'nurseries', 'pareas'];
+
+        filterKeys.forEach(key => {
+            let points, activePoints, pnts;
+
+            if([ 'key-species', 'nurseries', 'pareas'].indexOf(key) != -1) {
+                // filter by ecoregion name
+                pnts = layerStore[key].items.filter(item => item.ecoregion == layerStore.activeEcoregion);
+                console.log(`${key}: ${pnts}`);
+                
+            } else {
+                points = createGeojson(layerStore[key].items);
+                activePoints = turf.pointsWithinPolygon(points, activeEcoregion);
+                pnts = activePoints.features.map(feature => feature.properties);
+            }
+
+            layerStore[key].instance.setItems(pnts);
+
+            if(layerStore[key].instance.markers) {
+                removeMarkers(layerStore[key].instance.markers);
+
+                layerStore[key].instance.markers = [];
+            }
+
+            layerStore[key].instance.renderItemsToMap();
+            layerStore[key].instance.loadListItems();
+            layerStore[key].instance.fireEventListeners();
+
+            console.log(pnts);
+        });
+        
+        
+    });
+
+    map.on('mousemove', 'ecoregions', function(e) {
+        map.getCanvas().style.cursor = "pointer";
+        let region = e.features[0].properties;
+
+        // add the opacity of the hovered feature
+        map.setPaintProperty('ecoregions', 'fill-opacity', [
+            'case',
+            ['==', ['get', 'ECO_NAME'], `${layerStore.activeEcoregion}`],
+            0.4,
+            ['==', ['get', 'ECO_NAME'], `${region.ECO_NAME}`],
+            0.1,
+            0.01
+        ]);
+    });
+
+    map.on('mouseleave', 'ecoregions', function(e) {
+        map.getCanvas().style.cursor = "";
+        // toggleActiveEcoregion(layerStore.activeEcoregion);
     });
 
     toggleMapLayers();
+    toggleActiveEcoregion();
 });
+
+function toggleActiveEcoregion(regionName="Central Deccan Plateau dry deciduous forests") {
+    // display the active ecoregion
+    map.setPaintProperty('ecoregions', 'fill-opacity', [
+        'case',
+        ['==', ['get', 'ECO_NAME'], `${regionName}`],
+        0.4,
+        0.01
+    ]);
+}
+
+function fitMapToFeatureBounds(feature) {
+    let bbox = turf.bbox(feature);
+    console.log(bbox);
+
+    map.fitBounds(bbox, { padding:50 });
+}
+
+function updateEcoregionInfo(ecoregion) {
+    let ecoregionElement = document.getElementById("ecoregion-info");
+
+    ecoregionElement.innerHTML = `<h3 class="section-title">
+        ${ecoregion.properties.ECO_NAME}
+        </h3>
+
+        <div class="text-white">
+            Lorem ipsum dolor sit amet, consectetuer 
+            adipiscing elit, sed diam nonummy nibh 
+            euismod tincidunt ut laoreet dolore magna 
+            aliquam erat volutpat. Ut wisi enim ad 
+            minim veniam, quis nostrud exerci tation 
+            ullamcorper suscipit lobortis nisl ut aliquip 
+            ex ea commodo consequat. 
+
+        <p></p>
+
+            Duis autem vel eum iriure dolor in hendrerit 
+            in vulputate velit esse molestie consequat, 
+            vel illum dolore eu feugiat nulla facilisis at 
+            vero eros et accumsan et iusto odio dignissim qui blandit praesent 
+            luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+        </div>`
+}
 
 // map layer toggler
 function toggleMapLayers() {
     let layerButtons = document.querySelectorAll(".layer-toggler");
-    let layerIds = ['watershed', 'protected-areas'];
+    let layerIds = ['watershed', 'protected-areas', 'soils', 'rainfall-zones', 'geology', 'geomorphology'];
 
     layerButtons.forEach(toggler => {
         toggler.onclick = function(e) {
+            e.stopPropagation();
+
             let { checked, id } = e.target;
+            let visibilityStatus = checked ? 'visible' : 'none';
 
-            console.log(id);
-            layerIds.forEach(layerId => {
-                let visibilityStatus = layerId === id ? 'visible' : 'none';
-
+            if(id !== 'all-layers') {
                 console.log(visibilityStatus);
-                map.setLayoutProperty(layerId, 'visibility', visibilityStatus);
+                map.setLayoutProperty(id, 'visibility', visibilityStatus);
+
+                return;
+            }
+
+            // hide all the layers
+            layerIds.forEach(layerId => {
+                let checkbox = document.getElementById(`#${id}input`);
+                checkbox.checked = !checked;
+
+                let visibilityStatus = !checked ? 'visible' : 'none'; 
+                map.setLayoutProperty(id, 'visibility', visibilityStatus);
             });
             
         }
@@ -108,7 +350,7 @@ function LayerGroupToggler(togglerClass, sectionClass) {
     this.fireClickListener = function() {
         this.layerGroups.forEach(element => {
             element.onclick = (e) => {
-                let { id } = e.target;
+                let { id, dataset } = e.target;
 
                 this.activeId = id;
 
@@ -117,8 +359,17 @@ function LayerGroupToggler(togglerClass, sectionClass) {
                     this.toggleActiveSection(`${id}-section`);
 
                     // toggle different markers classes
-                    id = id == 'resources' ? 'publication' : id;
-                    toggleMarkers(markerTypes, id);
+                    console.log("Toggler");
+
+                    
+                    if(dataset.target == 'resources') {
+                        console.log(id);
+                        layerStore.activeResource = id;
+                    } 
+
+                    id = id == 'resources' ? layerStore.activeResource : id;
+
+                    toggleMarkers(layerStore, id);
                 }
                 
             }
@@ -202,16 +453,46 @@ tabToggler.onclick = function(e) {
 <div class="layer-group" id="projects">Projects</div>
 <div class="layer-group" id="key-species">Key Species</div>
 <div class="layer-group" id="resources">Resources</div> */}
-function toggleMarkers(markerTypes, activeId) {
+function toggleMarkers(layerStore, activeId) {
+    console.log("Toggling Markers");
     console.log(activeId);
 
-    markerTypes.forEach(type => {
-        
-        if(type.id !== activeId) {
-            type.markers.forEach(marker => marker.remove())
+    let { instance } = layerStore[activeId];
+    console.log(instance.markers);
+    // console.log(instance.markers);
+
+    let filterKeys = [ 'projects', 'publications', 'videos', 'key-species', 'nurseries', 'pareas'];
+
+    filterKeys.forEach(key => {
+        let markers = layerStore[key].instance.markers;
+
+        if(!markers || !markers[0]) {
+            return key;
+        }
+
+        if(key !== activeId) {
+            markers.forEach(marker => marker.remove())
         } else {
-            type.markers.forEach(marker => marker.addTo(map))
-            type.markers[0].togglePopup();
+            markers.forEach(marker => marker.addTo(map))
+            markers[0].togglePopup();
         }
     });
 }
+
+
+function createGeojson(points) {
+    let features = points.map(point => {
+        return turf.point([...point.coordinates], {...point})
+    });
+
+    return turf.featureCollection(features);
+}
+
+
+// manage child headers
+
+
+// layers
+// Rainfall zones
+// Geomorphology
+// 

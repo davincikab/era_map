@@ -21,14 +21,15 @@ body {
 
 #map {
     height: 100vh;
-    width: 100vw;
+    width: calc(100vw - 250px);
+    margin-left: 250px;
 }
 
 /* data layer toggler */
 .data-toggler {
     position: absolute;
-    right:6%;
-    top:5%;
+    right:2%;
+    top:2%;
     color:var(--white)
 }
 
@@ -279,6 +280,10 @@ body {
     background-color: var(--white);
 }
 
+.video-section > * {
+    pointer-events: none;
+}
+
 .video > video {
     width: 100%;
     height: 150px;
@@ -432,6 +437,12 @@ div#protected-areas {
 
 /* medai query */
 @media  screen and (max-width:480px) {
+    #map {
+        height: 100vh;
+        width: 100vw;
+        margin:0;
+    }
+
     .data-toggler {
         top:8%;
         left:5%;

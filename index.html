@@ -26,13 +26,38 @@
 
             <div class="dropdown" id="dropdown">
                 <div class="form-group">
-                    <input class="layer-toggler" type="radio" name="data-layer" id="protected-areas" checked>
+                    <input class="layer-toggler" type="checkbox" name="data-layer" id="all-layers" checked>
+                    <label for="all-layers">Hide All</label>
+                </div>
+
+                <div class="form-group">
+                    <input class="layer-toggler" type="checkbox" name="data-layer" id="protected-areas">
                     <label for="protected-areas">Protected Areas</label>
                 </div>
 
                 <div class="form-group">
-                    <input class="layer-toggler" type="radio" name="data-layer" id="watershed">
+                    <input class="layer-toggler" type="checkbox" name="data-layer" id="watershed">
                     <label for="watershed">Watershed</label>
+                </div>
+
+                <div class="form-group">
+                    <input class="layer-toggler" type="checkbox" name="data-layer" id="soil">
+                    <label for="soil">Soil</label>
+                </div>
+
+                <div class="form-group">
+                    <input class="layer-toggler" type="checkbox" name="data-layer" id="rainfall-zones">
+                    <label for="rainfall-zones">Rainfall Zones</label>
+                </div>
+
+                <div class="form-group">
+                    <input class="layer-toggler" type="checkbox" name="data-layer" id="geology">
+                    <label for="geology">Geology</label>
+                </div>
+
+                <div class="form-group">
+                    <input class="layer-toggler" type="checkbox" name="data-layer" id="geomorphology">
+                    <label for="geomorphology">Geomorphology</label>
                 </div>
                 
             </div>
@@ -60,26 +85,28 @@
 
                    <div class="eco-section-body">
                         <div id="level-1-section" class="levels-section active">
-                            <h3 class="section-title">
-                                South Western Ghats montane rain forests
-                            </h3>
+                            <div id="ecoregion-info">
+                                <h3 class="section-title">
+                                    South Western Ghats montane rain forests
+                                </h3>
 
-                            <div class="text-white">
-                                Lorem ipsum dolor sit amet, consectetuer 
-                                adipiscing elit, sed diam nonummy nibh 
-                                euismod tincidunt ut laoreet dolore magna 
-                                aliquam erat volutpat. Ut wisi enim ad 
-                                minim veniam, quis nostrud exerci tation 
-                                ullamcorper suscipit lobortis nisl ut aliquip 
-                                ex ea commodo consequat. 
+                                <div class="text-white">
+                                    Lorem ipsum dolor sit amet, consectetuer 
+                                    adipiscing elit, sed diam nonummy nibh 
+                                    euismod tincidunt ut laoreet dolore magna 
+                                    aliquam erat volutpat. Ut wisi enim ad 
+                                    minim veniam, quis nostrud exerci tation 
+                                    ullamcorper suscipit lobortis nisl ut aliquip 
+                                    ex ea commodo consequat. 
 
-                               <p></p>
+                                <p></p>
 
-                                Duis autem vel eum iriure dolor in hendrerit 
-                                in vulputate velit esse molestie consequat, 
-                                vel illum dolore eu feugiat nulla facilisis at 
-                                vero eros et accumsan et iusto odio dignissim qui blandit praesent 
-                                luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+                                    Duis autem vel eum iriure dolor in hendrerit 
+                                    in vulputate velit esse molestie consequat, 
+                                    vel illum dolore eu feugiat nulla facilisis at 
+                                    vero eros et accumsan et iusto odio dignissim qui blandit praesent 
+                                    luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+                                </div>
                             </div>
 
                             <div class="btn-more">KNOW MORE</div>
@@ -173,13 +200,13 @@
 
                <div class="section-layer" id="resources-section">
                     <div class="section-header resources-section">
-                        <div class="header-item active" id="publication">Publications</div> 
-                        <div class="header-item" id="videos">Videos</div> 
-                        <div class="header-item" id="nurseries">Nurseries</div> 
+                        <div class="header-item active" id="publications" data-target="resources">Publications</div> 
+                        <div class="header-item" id="videos" data-target="resources">Videos</div> 
+                        <div class="header-item" id="nurseries" data-target="resources">Nurseries</div> 
                     </div> 
 
                     <div class="section-layer-body">
-                        <div id="publication-section" class="resource-section active">
+                        <div id="publications-section" class="resource-section active">
                             <!-- <div class="media-item">
                                 <div class="img-section"></div>
                                 <div class="media-body">
@@ -299,7 +326,8 @@
     </div>
     
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
-    <script src="main.js"></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    <script src="data/factoryFunctions.js"></script>
 
     <script src="data/projects.js"></script>
     <script src="data/key_species.js"></script>
@@ -307,29 +335,36 @@
     <script src="data/resources.js"></script>
     <script src="data/ecoregions.js"></script>
 
+    <script src="main.js"></script>
+
     <script>
         let markerTypes = [
-            {
-                id:'publication',
-                markers:publicationsMarkers
-            },
-            {
-                id:'nurseries',
-                markers:nurseryMarkers
-            },
-            {
-                id:'projects',
-                markers:projectMarkers
-            },
-            {
-                id:'ecoregion',
-                markers:pins
-            },
-            {
-                id:'key-species',
-                markers:speciesMarker
-            }
+            // {
+            //     id:'publication',
+            //     markers:publicationsMarkers
+            // },
+            // {
+            //     id:'nurseries',
+            //     markers:nurseryMarkers
+            // },
+            // {
+            //     id:'projects',
+            //     markers:projectMarkers
+            // },
+            // {
+            //     id:'ecoregion',
+            //     markers:pins
+            // },
+            // {
+            //     id:'key-species',
+            //     markers:speciesMarker
+            // }
         ];
     </script>
+
+
+<!-- use ecoregions to filter the data -->
+
+<!-- zoom in on card click -->
 </body>
 </html>
