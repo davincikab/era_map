@@ -448,6 +448,7 @@ let sideTab = document.querySelector(".side-tab");
 
 tabToggler.onclick = function(e) {
     sideTab.classList.toggle("open");
+    tabToggler.classList.toggle("open");
 }
 
 // toggle different markers

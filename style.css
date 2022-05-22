@@ -508,9 +508,13 @@ div#protected-areas {
         overflow-y: auto;
         padding: 0.5rem 2rem;
         padding-bottom: 5rem; 
+
+        margin-top: 1rem;
     }
 
     .tab-toggler {
+        position:absolute;
+        top:0%;
         width: 50%;
         margin-left: 25%;
         /* border: 3px solid var(--primary); */
@@ -518,5 +522,24 @@ div#protected-areas {
         cursor: pointer;
         background-color: var(--primary);
         border-radius: 2px;
+        color:var(--white);
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    .tab-toggler i:first-child{
+        display: block;
+    }
+
+    .tab-toggler i:last-child {
+        display: none;
+    }
+
+    .tab-toggler.open i:first-child {
+        display: none;
+    }
+
+    .tab-toggler.open i:last-child {
+        display: block;
     }
 }
