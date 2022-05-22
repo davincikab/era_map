@@ -182,7 +182,7 @@ class VideoItem {
     }
     
     renderItemsToMap() {
-        this.markers = this.videos.map(item => createMarker(item, this.getPopupContent, 'publication'));
+        this.markers = this.videos.map(item => createMarker(item, this.getPopupContent, 'video'));
     }
 
     fireEventListeners() {

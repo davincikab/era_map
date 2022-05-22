@@ -457,13 +457,11 @@ tabToggler.onclick = function(e) {
 <div class="layer-group" id="key-species">Key Species</div>
 <div class="layer-group" id="resources">Resources</div> */}
 function toggleMarkers(layerStore, activeId) {
-    console.log("Toggling Markers");
-    console.log(activeId);
+    if(!layerStore[activeId]) {
+        return;
+    }
 
     let { instance } = layerStore[activeId];
-    console.log(instance.markers);
-    // console.log(instance.markers);
-
     let filterKeys = [ 'projects', 'publications', 'videos', 'key-species', 'nurseries', 'pareas'];
 
     filterKeys.forEach(key => {

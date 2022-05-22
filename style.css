@@ -91,6 +91,10 @@ body {
     overflow: hidden;
 }
 
+.tab-toggler {
+    display: none;
+}
+
 .layer-groups {
     border: 1.5px solid var(--white);
     border-radius: 18px;
@@ -475,7 +479,7 @@ div#protected-areas {
     .map-container > .layer-groups .layer-group {
         padding:0.5rem;
         line-height: 18px;
-        font-size: 1.1rem;
+        font-size: 1rem;
         display: flex;
         align-items: center;
         cursor: pointer;
