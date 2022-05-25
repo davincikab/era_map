@@ -21,8 +21,8 @@ body {
 
 #map {
     height: 100vh;
-    width: calc(100vw - 250px);
-    margin-left: 250px;
+    width: calc(100vw - 30vw);
+    margin-left: 30vw;
 }
 
 /* data layer toggler */
@@ -99,13 +99,14 @@ body {
     border: 1.5px solid var(--white);
     border-radius: 18px;
     line-height: 20px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--white);
-
     display: flex;
     justify-content: space-between;
-    margin: 1rem 1rem 0.5rem;
-    padding: 0.25rem;
+    margin: 43px 23px 0.5rem;
+    align-items: center;
+    padding: 0rem 20px;
+    height: 40px;
 }
 
 .layer-groups.mobile-view {
@@ -113,7 +114,7 @@ body {
 }
 
 .layer-group {
-    padding: 0.5rem 0.5rem;
+    /* padding: 0.5rem 0.5rem; */
     cursor: pointer;
     font-weight: 400;
     cursor: pointer;
@@ -473,7 +474,7 @@ div#protected-areas {
         width: 100%;
         justify-content: space-evenly;
         height: 50px;
-        /* padding:0.5rem; */
+        padding:0.25rem;
     }
 
     .map-container > .layer-groups .layer-group {
@@ -488,7 +489,7 @@ div#protected-areas {
     .side-tab {
         width: 100vw;
         min-width: 100vw;
-        top:90%;
+        top:85%;
         bottom: 0px;
         border-radius: 50px 50px 0 0;
         padding-top: 1.5rem;
@@ -529,6 +530,7 @@ div#protected-areas {
         color:var(--white);
         text-align: center;
         font-size: 1.5rem;
+        display: block;
     }
 
     .tab-toggler i:first-child{

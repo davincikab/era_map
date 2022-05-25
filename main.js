@@ -497,3 +497,8 @@ function createGeojson(points) {
 // Rainfall zones
 // Geomorphology
 // 
+
+
+// Crop out the Ecoregion
+// Tweak the map dimensions
+// 
