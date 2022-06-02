@@ -15,14 +15,28 @@ function createMarker(item, popupFunction, icon) {
         .setPopup(popup)
         // .addTo(map);
 
+    marker.on("click", function(e) {
+        console.log("Marker click");
+        e.stopPropagation();
+
+        console.log(e);
+    });
+
+    divMarker.onclick = function(e) {
+        e.stopPropagation();
+
+        marker.togglePopup();
+    }
+
     marker.id = item.id;
     return marker;
 }
 
 function customMarkerIcon(icon) {
     let divMarker = document.createElement("div");
-    divMarker.classList.add("div-marker");
 
+    // add attributes
+    divMarker.classList.add("div-marker");
     divMarker.innerHTML = `<img src='icons/${icon}.png'  alt="${icon}" />`;
 
     return divMarker;

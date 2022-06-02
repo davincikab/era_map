@@ -37,6 +37,7 @@ let keySpecies = [
 class KeySpeciesItem {
     constructor(keySpecies) {
         this.keySpecies = keySpecies;
+        this.items = [];
     }
 
     setItems(items) {
@@ -61,6 +62,7 @@ class KeySpeciesItem {
         speciesContainer.innerHTML = content;
     }
 }
+
 // function renderSpeciesToMap(projects) {
 //     let markers = projects.map(createSpeciesMarker);
 //     return markers;
@@ -155,6 +157,4 @@ class KeySpeciesItem {
 
 
 // handleMapList();
-
-
 // don't tag key species

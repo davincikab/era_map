@@ -1,6 +1,7 @@
 class ProjectItem {
     constructor(projects) {
         this.projects = projects;
+        this.items = [];
     }
 
     setItems(items) {

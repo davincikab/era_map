@@ -1,3 +1,8 @@
+const bbox = [-180, -90, 180, 90];
+const globalBoundary = turf.bboxPolygon(bbox);
+const bFc = turf.featureCollection([globalBoundary]);
+
+// layers
 const layerStatus = {
     "watershed":false,
     "protected-areas":false,
@@ -9,9 +14,10 @@ const layerStatus = {
 
 const layerStore = {
     activeEcoregion:'Central Deccan Plateau dry deciduous forests',
+    activeFeature:null,
     activeResource:'publications',
     projects:{
-        instance: new ProjectItem([]),
+        instance: projectInstance,
         items:projects
     },
     nurseries:{
@@ -19,11 +25,11 @@ const layerStore = {
         items:nurseries
     },
     publications:{
-        instance: new PublicationItem([]),
+        instance: publicationInstance,
         items:publications
     },
     videos:{
-        instance: new VideoItem([]),
+        instance: videoInstance,
         items:videos
     },
     'key-species':{
@@ -44,32 +50,24 @@ const map = new mapboxgl.Map({
     zoom: 5 // starting zoom
 });
 
+// geolocation
+const geolocationControl = new mapboxgl.GeolocateControl({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    trackUserLocation: false,
+    showAccuracyCircle:false,
+    showUserLocation:false,
+    showUserHeading: true
+});
+
+map.addControl(geolocationControl, 'top-left');
 
 map.on("load", function(e) {
-    // add the ecoregions
-    map.addSource("ecoregions", {
-        type:'geojson',
-        data:'data/india_46_ecoregions.geojson'
-    });
-
-    map.addLayer({
-        id:'ecoregions',
-        type:'fill',
-        source:'ecoregions',
-        paint:{
-            'fill-color':['get', 'COLOR'],
-            'fill-opacity':0.01,
-            'fill-outline-color':'#000'
-        },
-        layout:{
-            'visibility':'visible'
-        }
-    });
-
     // add the watershed
     map.addSource("watershed", {
         type:'geojson',
-        data:'data/watershed.geojson'
+        data:turf.featureCollection([])
     });
 
     map.addLayer({
@@ -87,15 +85,15 @@ map.on("load", function(e) {
     });
 
     // add the protected areas
-    map.addSource("protected_areas", {
+    map.addSource("protected_area", {
         type:'geojson',
-        data:'data/protected_areas.geojson'
+        data:turf.featureCollection([])
     });
 
     map.addLayer({
         id:'protected-areas',
         type:'fill',
-        source:'protected_areas',
+        source:'protected_area',
         paint:{
             'fill-color':'green',
             'fill-opacity':0.6,
@@ -107,15 +105,15 @@ map.on("load", function(e) {
     });
 
     // soils layer
-    map.addSource("soil", {
+    map.addSource("india_soils_ibp", {
         type:'geojson',
-        data:'data/india_soils_ibp.geojson'
+        data:turf.featureCollection([])
     });
 
     map.addLayer({
         id:'soil',
         type:'fill',
-        source:'soil',
+        source:'india_soils_ibp',
         paint:{
             'fill-color':['get', 'color'],
             'fill-opacity':0.6,
@@ -127,18 +125,19 @@ map.on("load", function(e) {
     });
 
     // Rainfall zones
-    map.addSource("rainfall-zones", {
+    map.addSource("india_rainfallzones_ibp", {
         type:'geojson',
-        data:'data/india_rainfallzones_ibp.geojson'
+        // data:'data/india_rainfallzones_ibp.geojson'
+        data:turf.featureCollection([])
     });
 
     map.addLayer({
         id:'rainfall-zones',
         type:'fill',
-        source:'rainfall-zones',
+        source:'india_rainfallzones_ibp',
         paint:{
             'fill-color':['get', 'color'],
-            'fill-opacity':0.6,
+            'fill-opacity':1,
             'fill-outline-color':'#ddd'
         },
         layout:{
@@ -147,15 +146,16 @@ map.on("load", function(e) {
     });
 
     // Geology
-    map.addSource("geology", {
+    map.addSource("india_geology_ibp", {
         type:'geojson',
-        data:'data/india_geology_ibp.geojson'
+        // data:'data/india_geology_ibp.geojson'
+        data:turf.featureCollection([])
     });
 
     map.addLayer({
         id:'geology',
         type:'fill',
-        source:'geology',
+        source:'india_geology_ibp',
         paint:{
             'fill-color':['get', 'color'],
             'fill-opacity':0.6,
@@ -167,15 +167,16 @@ map.on("load", function(e) {
     });
 
     // Geomorphology
-    map.addSource("geomorphology", {
+    map.addSource("india_geomorphology_ibp", {
         type:'geojson',
-        data:'data/india_geomorphology_ibp.geojson'
+        // data:'data/india_geomorphology_ibp.geojson'
+        data:turf.featureCollection([])
     });
 
     map.addLayer({
         id:'geomorphology',
         type:'fill',
-        source:'geomorphology',
+        source:'india_geomorphology_ibp',
         paint:{
             'fill-color':['get', 'color'],
             'fill-opacity':0.6,
@@ -186,6 +187,44 @@ map.on("load", function(e) {
         }
     });
 
+    // add the ecoregions
+    map.addSource("india_46_ecoregions", {
+        type:'geojson',
+        data:'data/india_46_ecoregions.geojson'
+        // data:turf.featureCollection([])
+    });
+
+    map.addLayer({
+        id:'ecoregions',
+        type:'fill',
+        source:'india_46_ecoregions',
+        paint:{
+            'fill-color':['get', 'COLOR'],
+            'fill-opacity':0.01,
+            'fill-outline-color':'#000'
+        },
+        layout:{
+            'visibility':'visible'
+        }
+    });
+
+
+    // mask layer
+    map.addSource('mask', {
+        type:'geojson',
+        data:turf.featureCollection([])
+    });
+
+    map.addLayer({
+        id:'layer-mask',
+        source:'mask',
+        type:'fill',
+        paint:{
+            'fill-color':'#222',
+            'fill-opacity':1
+        }
+    });
+
     // ecoregions click event
     map.on("click", 'ecoregions', function(e) {
         let activeEcoregion = e.features[0];
@@ -193,46 +232,7 @@ map.on("load", function(e) {
             return;
         }
 
-        // update ecoregion info
-        updateEcoregionInfo(activeEcoregion);
-        toggleActiveEcoregion(activeEcoregion.properties.ECO_NAME);
-        fitMapToFeatureBounds(activeEcoregion);
-
-        layerStore.activeEcoregion = activeEcoregion.properties.ECO_NAME;
-
-        // filter the point data: projects, key species, publication, videos
-        let filterKeys = [ 'projects', 'publications', 'videos', 'key-species', 'nurseries', 'pareas'];
-
-        filterKeys.forEach(key => {
-            let points, activePoints, pnts;
-
-            if([ 'key-species', 'nurseries', 'pareas'].indexOf(key) != -1) {
-                // filter by ecoregion name
-                pnts = layerStore[key].items.filter(item => item.ecoregion == layerStore.activeEcoregion);
-                console.log(`${key}: ${pnts}`);
-                
-            } else {
-                points = createGeojson(layerStore[key].items);
-                activePoints = turf.pointsWithinPolygon(points, activeEcoregion);
-                pnts = activePoints.features.map(feature => feature.properties);
-            }
-
-            layerStore[key].instance.setItems(pnts);
-
-            if(layerStore[key].instance.markers) {
-                removeMarkers(layerStore[key].instance.markers);
-
-                layerStore[key].instance.markers = [];
-            }
-
-            layerStore[key].instance.renderItemsToMap();
-            layerStore[key].instance.loadListItems();
-            layerStore[key].instance.fireEventListeners();
-
-            console.log(pnts);
-        });
-        
-        
+       handleEcoregionClick(activeEcoregion);
     });
 
     map.on('mousemove', 'ecoregions', function(e) {
@@ -257,7 +257,118 @@ map.on("load", function(e) {
 
     toggleMapLayers();
     toggleActiveEcoregion();
+
+
+    geolocationControl.trigger();
+    geolocationControl.on('geolocate', function(e) {
+        // find the ecoregion on the given coordinate;
+        let { latitude, longitude } = e.coords;
+
+        let timer = setInterval(function(e) {
+            timerFunction(e);
+        }, 200);
+
+        function timerFunction(e) {
+            if(dataLayerInstance.layers) {
+                console.log("Layer loaded");
+
+                let feature = dataLayerInstance.getEcoregionOn([longitude, latitude]);
+                window.clearInterval(timer);
+
+                if(feature) {
+                    layerStore.activeFeature = feature;
+                } else {
+                    let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
+                    layerStore.activeFeature = {...activeEcoregion};
+                    handleEcoregionClick(activeEcoregion);
+                }
+
+                
+            }
+        }
+
+        
+    });
+
+    geolocationControl.on('error', function(e) {
+        // set default ecoregion
+        layerStore.activeFeature = dataLayerInstance.getDefaultEcoregion();
+
+        // fire default filters function
+    });
 });
+
+function handleEcoregionClick(activeEcoregion) {
+    getFeatureMaskLayer(activeEcoregion);
+
+    // update ecoregion info
+    updateEcoregionInfo(activeEcoregion);
+    toggleActiveEcoregion(activeEcoregion.properties.ECO_NAME);
+    fitMapToFeatureBounds(activeEcoregion);
+
+    layerStore.activeEcoregion = activeEcoregion.properties.ECO_NAME;
+    layerStore.activeFeature = activeEcoregion;
+
+    // filter the point data: projects, key species, publication, videos
+    let filterKeys = [ 'projects', 'publications', 'videos', 'key-species', 'nurseries', 'pareas'];
+
+    filterKeys.forEach(key => {
+        let points, activePoints, pnts;
+
+        if([ 'key-species', 'nurseries', 'pareas'].indexOf(key) != -1) {
+            // filter by ecoregion name
+            pnts = layerStore[key].instance.items.filter(item => item.ecoregion == layerStore.activeEcoregion);
+            console.log(`${key}: ${pnts}`);
+            
+        } else {
+            points = createGeojson(layerStore[key].instance.items);
+
+            activePoints = turf.pointsWithinPolygon(points, activeEcoregion);
+            pnts = activePoints.features.map(feature => feature.properties);
+
+            // clip the layers
+        }
+
+        layerStore[key].instance.setItems(pnts);
+
+        if(layerStore[key].instance.markers) {
+            removeMarkers(layerStore[key].instance.markers);
+
+            layerStore[key].instance.markers = [];
+        }
+
+        layerStore[key].instance.renderItemsToMap();
+        layerStore[key].instance.loadListItems();
+        layerStore[key].instance.fireEventListeners();
+    });
+
+    // clip the layers
+    let sourceIds = [ 
+        'watershed', 'protected_area', 'india_soils_ibp', 
+        'india_rainfallzones_ibp', 'india_geology_ibp', 'india_geomorphology_ibp'
+    ];
+
+    setTimeout(function(e) {
+        // sourceIds.forEach(source => {
+            console.time("Clipping");
+            dataLayerInstance.clipLayer(
+                sourceIds[0], 
+                layerStore.activeFeature, 
+                layerStore.activeEcoregion
+            );
+
+            console.timeEnd("Clipping");
+        // });
+    }, 2000);
+
+    // writing non blocky recursive code
+    function runClipLayers(layers) {
+
+    }
+    
+
+}
+
 
 function toggleActiveEcoregion(regionName="Central Deccan Plateau dry deciduous forests") {
     // display the active ecoregion
@@ -316,8 +427,18 @@ function toggleMapLayers() {
 
             if(id !== 'all-layers') {
                 console.log(visibilityStatus);
-                map.setLayoutProperty(id, 'visibility', visibilityStatus);
 
+                // layer ids
+                layerIds.forEach(layerId => {
+                    if(layerId != id) {
+                        let checkbox = document.getElementById(`${layerId}`);
+                        checkbox.checked = false;
+
+                        map.setLayoutProperty(layerId, 'visibility', 'none');
+                    }
+                });
+
+                map.setLayoutProperty(id, 'visibility', visibilityStatus);
                 return;
             }
 
@@ -452,10 +573,6 @@ tabToggler.onclick = function(e) {
 }
 
 // toggle different markers
-{/* <div class="layer-group active" id="ecoregion">Ecoregion</div>
-<div class="layer-group" id="projects">Projects</div>
-<div class="layer-group" id="key-species">Key Species</div>
-<div class="layer-group" id="resources">Resources</div> */}
 function toggleMarkers(layerStore, activeId) {
     if(!layerStore[activeId]) {
         return;
@@ -489,6 +606,13 @@ function createGeojson(points) {
     return turf.featureCollection(features);
 }
 
+function getFeatureMaskLayer(feature) {
+    let mask = turf.difference(bFc.features[0], feature);
+    console.log(mask);
+
+    // update the mask data source
+    // map.getSource('mask').setData(mask);
+}
 
 // manage child headers
 
@@ -502,3 +626,264 @@ function createGeojson(points) {
 // Crop out the Ecoregion
 // Tweak the map dimensions
 // 
+
+
+// load all the data layers
+let layers = [
+    {
+        id:'ecoregions',
+        source:'/data/india_46_ecoregions.geojson'
+    },
+    {
+        id:'watershed',
+        source:'/data/watershed.geojson'
+    },
+    {
+        id:'protected_areas',
+        source:'/data/protected_areas.geojson'
+    },
+    {
+        id:'soil',
+        source:'/data/india_soils_ibp.geojson'
+    },
+    {
+        id:'rainfallzones',
+        source:'/data/india_rainfallzones_ibp.geojson'
+    },
+    {
+        id:'geology',
+        source:'/data/india_geology_ibp.geojson'
+    },
+    {
+        id:'geomorphology',
+        source:'/data/india_geomorphology_ibp.geojson'
+    }
+];
+
+// data layers
+const DataLayers = function(layers, map) {
+    this.layers = layers;
+    this.map = map;
+    this.ecoregionClips = {
+        'econame':{layerId:''}
+    };
+
+    this.setLayers = function(layers) {
+        this.layers = layers;
+    }
+
+    this.getLayers = function() {
+        return this.layers;
+    }
+
+    this.getLayerWithId = function(layerId) {
+        return this.layers.features.find(layer => layer.name == layerId)
+    }
+
+
+    this.updateMapDataLayer = function() {
+        this.layers.forEach(layer => {
+            let { name } = layer;
+
+            if(map.getSource(name)) {
+                console.log(name);
+            }
+        });
+    }
+
+    // this function is slow.
+    this.clipLayer = function(layerId, clipFeature, ecoName) {
+        if(this.ecoregionClips[ecoName]) {
+            let features = this.ecoregionClips[ecoName][layerId];
+            // this.updateSourceWithId(layerId, features);
+
+            return new Promise((resolve, reject) => resolve(features));
+        } else {
+            this.ecoregionClips[ecoName] = {};
+        }
+
+        this.ecoregionClips[ecoName][layerId] = [];
+
+        let clipMask = {
+            type:'Feature',
+            properties:{...clipFeature.properties},
+            geometry:{...clipFeature.geometry}
+        };
+
+        // clip feature
+        let targetLayer = this.layers.find(layer => layer.name == layerId);
+        let clipRequest = targetLayer.features.map(ft => {
+            // let difference 
+            return new Promise((resolve, reject) => {
+                resolve(turf.difference(clipMask, ft) );
+            });
+            
+        });
+
+        // return all the features
+        let promise = Promise.all(clipRequest)
+        .then(features => {
+            this.ecoregionClips[ecoName][layerId] = [...features];
+
+            // this.updateSourceWithId(layerId, features);
+            return features;
+        });
+
+        return promise;
+    }
+
+    this.getEcoregionOn = function(coords) {
+        let ecoregions = this.layers.find(layer => layer.name == 'india_46_ecoregions');
+
+        let point = turf.point([...coords]);
+        let ecoregionFeature = ecoregions.features.find(feature => {
+            let isWithin = turf.booleanWithin(point, feature);
+
+            if(isWithin) {
+                return true;
+            }
+
+            return false;
+        });
+        return ecoregionFeature;
+    }
+
+    this.getDefaultEcoregion = function() {
+        return this.layers.find(layer => layer.name == 'india_46_ecoregions').features.find(feature => {
+            if(feature.properties.ECO_NAME == 'Central Deccan Plateau dry deciduous forests') {
+                return feature;
+            }
+
+            return false;
+        });
+    }
+
+    this.updateSourceWithId = function(layerId, features) {
+        let geojson = turf.featureCollection(features);
+        map.getSource(layerId).setData(geojson);
+    }
+
+    this.updateLegendSection = function () {
+        this.layers.forEach(layer => {
+            let colorsGroups = this.getClassColors(layer);
+
+            console.log(layer.name);
+            if(layer.name.includes('ecoregions')) {
+                return layer;
+            }
+
+            let collapseSection = document.getElementById(`${layer.name}`);
+            console.log(collapseSection);
+
+            collapseSection.innerHTML = colorsGroups.map(group => {
+                return `<div class="legend-item">
+                    <div class="color-bar" style="background-color:${group.color};"></div>
+                    <div class="text-div"> ${group.name} </div>
+                </div>`
+            }).join("");
+
+        });
+
+    }
+
+    this.getClassColors = function(layer) {
+        let group;
+
+        switch(layer.name) {
+            case  'watershed':
+                return [{name:'Watershed', color:'blue'}];
+                
+            case 'protected_area':
+                return [{name:'Protected Area', color:'green'}];
+            
+            case'india_soils_ibp':
+                group = layer.features.map(feature => {
+                    return { 
+                        name:feature.properties.major_type, 
+                        color:feature.properties.color
+                    }
+                });
+
+                group = reduceGroup(group);
+                return group;
+
+            case 'india_rainfallzones_ibp':
+                group = layer.features.map(feature => {
+                    return { 
+                        name:feature.properties.rain_range, 
+                        color:feature.properties.color
+                    }
+                })
+                group = reduceGroup(group);
+                return group;  
+
+            case 'india_geology_ibp':
+                group = layer.features.map(feature => {
+                    return { 
+                        name:feature.properties.lithology, 
+                        color:feature.properties.color
+                    }
+                });
+
+                group = reduceGroup(group);
+                return group; 
+
+            case 'india_geomorphology_ibp':
+                group = layer.features.map(feature => {
+                    return { 
+                        name:feature.properties.descriptio, 
+                        color:feature.properties.color
+                    }
+                });
+
+                group = reduceGroup(group);
+                return group; 
+
+            default:
+                return [];
+        }
+
+        function reduceGroup(items) {
+            return items.reduce((a, b) => {
+                let item = a.find(ib => ib.name == b.name);
+
+                if(!item) {
+                    a.push(b);
+                }
+
+                return a;
+            }, []);
+        }
+    }
+
+}
+
+
+let dataLayerInstance = new DataLayers([], map);
+
+
+let requests = layers.map(layer => fetch(layer.source));
+
+Promise.all(requests)
+.then(values => values)
+.then(responses => Promise.all(responses.map(r => r.json())))
+.then(layers => {
+    console.log(layers);
+
+    // add the data to Layers objects
+    dataLayerInstance.setLayers(layers);
+    dataLayerInstance.updateMapDataLayer();
+
+}); 
+
+
+
+// toggler the dataLayer Toggler
+let toggleBtn = document.getElementById("layer-toggler-btn");
+let dataTab = document.getElementById("data-toggler");
+
+toggleBtn.onclick = function(e) {
+    e.stopPropagation();
+
+    dataTab.classList.toggle('d-none');
+}

@@ -54,6 +54,28 @@ let projects = [
 class ProjectItem {
     constructor(projects) {
         this.projects = projects;
+        this.items = [];
+    }
+
+    loadItems() {
+        d3.csv('/point_data/projects.csv')
+        .then(data => {
+            data = data.map(dt => {
+                let coord = dt.era_resource_coordinates.split(",");
+                dt.coordinates = coord.map(l => parseFloat(l));
+
+                return dt;
+            });
+
+            console.log(
+                [...new Set(data.map(l => l.post_category))]
+            )
+
+            this.items = [ ...data ];
+        })
+        .catch(console.error)
+
+        return this;
     }
 
     setItems(items) {
@@ -65,11 +87,11 @@ class ProjectItem {
         let content = "";
 
         this.projects.forEach(project => {
-            content += `<div class="card project-card" id="${project.name}" data-id="${project.id}">
-                <img src="${project.images[0]}" alt="">
+            content += `<div class="card project-card" id="${project.id}" data-id="${project.id}">
+                <img src="${project.featured_image}" alt="">
                 <div class="fig-caption">
-                    <div class="bold">${project.name}</div>
-                    <div>${project.address}</div>
+                    <div class="bold">${project.post_title}</div>
+                    <div>${project.era_address}</div>
                 </div>
             </div>`;
     
@@ -119,13 +141,13 @@ class ProjectItem {
         // <div class="carousel-container"></div>
     
         return `<div class="popup-content">
-            <img src="${project.images[0]}" alt="">
+            <img src="${project.featured_image}" alt="">
             <div class="popup-body">
-                <div class="bold title">${project.name}</div>
+                <div class="bold title">${project.post_title}</div>
                 <div class="">${project.address}</div>
     
                 <div class="description">
-                    ${project.description}
+                    ${project.post_content.substr(0, 100)} ...
                 </div>
     
                 <div class="btn-more bg-primary">KNOW MORE</div>
@@ -134,6 +156,24 @@ class ProjectItem {
     }
 }
 
+let projectInstance = new ProjectItem([]);
 
 // factory functions
 // creating marker
+d3.csv('/point_data/projects.csv')
+.then(data => {
+    data = data.filter(l => l.post_title).map((dt, index) => {
+        let coord = dt.era_project_coordinates.split(",");
+        dt.coordinates = coord.map(l => parseFloat(l)).reverse();
+        
+        dt.id = `${index}-projects`;
+
+        return dt;
+    }).filter(pub => pub.coordinates[0] && pub.coordinates[1]);
+
+
+    console.log(data);
+    projectInstance.items = data;
+
+})
+.catch(console.error);

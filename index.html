@@ -17,15 +17,26 @@
     <div class="map-container">
         <div id="map"></div>
 
-        <div class="data-toggler">
+        <div class="layer-toggler-btn" id="layer-toggler-btn">
+            <img src="/icons/data_layer.png" alt="">
+        </div>
+
+        <div class="data-toggler d-none" id="data-toggler">
             <button class="dropdown-toggler" id="dropdown-toggler">
-                Data Layers
-                <i class="fa fa-caret-up"></i>
-                <i class="fa fa-caret-down"></i>
+                <div>
+                    <img src="/icons/data_layer.png" alt="" height="25px" width="25px">
+                    Data Layers
+                </div>
+
+                <div class="caret-icons">
+                    <i class="fa fa-caret-up"></i>
+                    <i class="fa fa-caret-down"></i>
+                </div>
+                
             </button>
 
-            <div class="dropdown" id="dropdown">
-                <div class="form-group">
+            <div class="dropdown d-none" id="dropdown">
+                <div class="form-group d-none">
                     <input class="layer-toggler" type="checkbox" name="data-layer" id="all-layers" checked>
                     <label for="all-layers">Hide All</label>
                 </div>
@@ -34,31 +45,40 @@
                     <input class="layer-toggler" type="checkbox" name="data-layer" id="protected-areas">
                     <label for="protected-areas">Protected Areas</label>
                 </div>
+                
+                <div class="collapse-section" id="protected_area"></div>
 
                 <div class="form-group">
                     <input class="layer-toggler" type="checkbox" name="data-layer" id="watershed">
                     <label for="watershed">Watershed</label>
                 </div>
+                <div class="collapse-section" id="watershed"></div>
 
                 <div class="form-group">
                     <input class="layer-toggler" type="checkbox" name="data-layer" id="soil">
                     <label for="soil">Soil</label>
                 </div>
+                <div class="collapse-section" id="india_soils_ibp"></div>
 
                 <div class="form-group">
                     <input class="layer-toggler" type="checkbox" name="data-layer" id="rainfall-zones">
                     <label for="rainfall-zones">Rainfall Zones</label>
                 </div>
+                <div class="collapse-section" id='india_rainfallzones_ibp'>
+                    
+                    </div>
 
                 <div class="form-group">
                     <input class="layer-toggler" type="checkbox" name="data-layer" id="geology">
                     <label for="geology">Geology</label>
                 </div>
+                <div class="collapse-section" id="india_geology_ibp"></div>
 
                 <div class="form-group">
                     <input class="layer-toggler" type="checkbox" name="data-layer" id="geomorphology">
                     <label for="geomorphology">Geomorphology</label>
                 </div>
+                <div class="collapse-section" id="india_geomorphology_ibp"></div>
                 
                 <!-- configure the checkbox to work like radio buttons  -->
             </div>
@@ -115,11 +135,27 @@
                             <div class="btn-more">KNOW MORE</div>
                             <div id="protected-areas">
                                 <div class="header">
-                                    <img src="https://picsum.photos/id/237/200/300" alt="" height="40px" width="40pc">
+                                    <img src="/icons/pareas.png" alt="" height="40px" width="40pc">
                                     <div class="section-title">Nearest Protected Areas </div class="item-title">
                                 </div>
 
                                 <div class="items my-2" id="park-list">
+                                    <!-- 3 protected areas
+                                    Watersheds -->
+
+                                    <div>Kanha National Park </div>
+                                    <div>Bandhavgarh National Park </div>
+                                    <div>Pench National Park </div>
+                                </div>
+                            </div>
+                            <!-- UVB4s78FwtK8iv -->
+                            <div>
+                                <div class="header">
+                                    <img src="/icons/pareas.png" alt="" height="40px" width="40pc">
+                                    <div class="section-title">Nearest Watershed </div class="item-title">
+                                </div>
+
+                                <div class="items my-2" id="watershed-list">
                                     <!-- 3 protected areas
                                     Watersheds -->
 
@@ -330,6 +366,7 @@
         </div>
 
     </div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
 

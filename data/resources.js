@@ -35,6 +35,7 @@ let publications = [
 class PublicationItem {
     constructor(publications) {
         this.publications = publications;
+        this.items = [];
     }
 
     setItems(items) {
@@ -46,17 +47,18 @@ class PublicationItem {
         let publicationContent = "";
 
         this.publications.forEach(publication => {
+
             publicationContent += `<div class="media-item" data-id="${publication.id}">
                 <div class="img-section">
-                    <img src="${publication.images}" alt="${publication.name}" height="136px"/>
+                    <img src="${publication.featured_image}" alt="${publication.id}" height="136px" />
                 </div>
                 <div class="media-body">
                     <div class="media-title">
-                        <span class="">${publication.name}</span>
+                        <span class="">${publication.post_category}</span>
                     </div>
 
                     <div class="media-text">
-                        ${publication.description}
+                        ${publication.post_title}
                     </div>
                 </div>
             </div>`;
@@ -71,7 +73,6 @@ class PublicationItem {
 
     fireEventListeners() {
         this.cards = document.querySelectorAll(".media-item");
-        console.log(this.cards);
     
         this.cards.forEach(card => {
             // card.onmouseover = (e) => this.handleCardEvents(e);
@@ -106,21 +107,22 @@ class PublicationItem {
         // <div class="carousel-container"></div>
     
         return `<div class="popup-content">
-            <img src="${publication.images[0]}" alt="">
+            <img src="${publication.featured_image}" alt="">
             <div class="popup-body">
-                <div class="bold title">${publication.name}</div>
-                <div class="">${publication.address}</div>
+                <div class="bold title">${publication.Project}</div>
+                <div class="">${publication.era_resource_state}</div>
     
                 <div class="description">
-                    ${publication.description}
+                    ${publication.post_content.substr(0, 100)} ...
                 </div>
     
                 <div class="btn-more bg-primary">KNOW MORE</div>
             </div>
-        </div>`
+        </div>`;
     }
 }
 
+let publicationInstance = new PublicationItem([]);
 
 // Videos section
 let videos = [
@@ -157,6 +159,7 @@ let videos = [
 class VideoItem {
     constructor(videos) {
         this.videos = videos;
+        this.items = [];
     }
 
     setItems(items) {
@@ -170,10 +173,12 @@ class VideoItem {
         this.videos.forEach(video => {
             content += `<div class="video-section" data-id="${video.id}">
                 <div class="video">
-                    <video src="${video.video}"></video>
+                    <video controls="true">
+                        <source src="${video.era_video_link}" type="video/mp4" />
+                    </video>
                 </div>
                 <div class="video-caption">
-                    ${video.name}
+                    ${video.title}
                 </div>
             </div>`;
         });
@@ -187,7 +192,6 @@ class VideoItem {
 
     fireEventListeners() {
         this.cards = document.querySelectorAll(".video-section");
-        console.log(this.cards);
     
         this.cards.forEach(card => {
             // card.onmouseover = (e) => this.handleCardEvents(e);
@@ -218,17 +222,17 @@ class VideoItem {
         });
     }
 
-    getPopupContent(publication) {
+    getPopupContent(video) {
         // <div class="carousel-container"></div>
     
         return `<div class="popup-content">
-            <img src="${publication.images[0]}" alt="">
+            <img src="${video.featured_image}" alt="">
             <div class="popup-body">
-                <div class="bold title">${publication.name}</div>
-                <div class="">${publication.address}</div>
+                <div class="bold title">${video.title}</div>
+                <div class="">${video.era_resource_state}</div>
     
                 <div class="description">
-                    ${publication.description}
+                    ${video.post_content.substr(0, 100)} ...
                 </div>
     
                 <div class="btn-more bg-primary">KNOW MORE</div>
@@ -237,6 +241,7 @@ class VideoItem {
     }
 }
 
+let videoInstance = new VideoItem([]);
 
 // Nurseries Section
 let nurseries = [
@@ -273,6 +278,7 @@ let nurseries = [
 class NurseryItem {
     constructor(nurseries) {
         this.nurseries = nurseries;
+        this.items = [];
     }
 
     setItems(items) {
@@ -299,10 +305,34 @@ class NurseryItem {
             </div>`;
         });
 
-        console.log(this.nurseries);
+        // console.log(this.nurseries);
         nurseyContainer.innerHTML = nurseryContent;
     }
 }
+
+
+d3.csv('/point_data/resources.csv')
+.then(data => {
+    data = data.map((dt, index) => {
+        let coord = dt.era_resource_coordinates.split(",");
+        dt.coordinates = coord.map(l => parseFloat(l)).reverse();
+        
+        dt.id = `${index}-publication`;
+
+        return dt;
+    });
+
+    // console.log([... new Set(data.map(l => l.post_category))]);            
+    let publications = data.filter(entry => entry.post_category != 'Video').filter(pub => pub.coordinates[0]);
+    let videos = data.filter(entry => entry.post_category == 'Video');
+    // let nurseries = data.filter(entry => entry.)
+
+    // update the 
+    publicationInstance.items = publications;
+    videoInstance.items = videos;
+
+})
+.catch(console.error);
 
 
 // function renderNuseryList(nurseries) {

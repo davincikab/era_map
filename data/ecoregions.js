@@ -41,7 +41,7 @@ class ProtectedAreasItem {
     }
 
     setItems(items) {
-        this.items = items;
+        this.areas = items;
     }
 
     renderItemsToMap() {}
@@ -52,7 +52,7 @@ class ProtectedAreasItem {
         let container = document.getElementById("park-list");
         let content = "";
 
-        this.items.forEach(pin => {
+        this.areas.forEach(pin => {
             content += `<div>${pin.name}</div>`;
         });
 
