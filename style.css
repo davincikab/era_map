@@ -59,7 +59,7 @@ body {
 }
 
 .data-toggler button {
-    width: 250px;
+    width: 350px;
     background-color: var(--white);
     border: none;
 
@@ -113,7 +113,7 @@ body {
     background-color: var(--white);
     padding: 0.5rem 0;
     height: 250px;
-    width: 250px;
+    width: 350px;
     overflow-y: auto;
 }
 
@@ -126,9 +126,16 @@ body {
 }
 
 .dropdown .collapse-section {
-    max-height: 100px;
+    max-height: auto;
     overflow-y: auto;
     margin-left:1rem;
+    display: none;
+}
+
+.dropdown .form-group {
+    cursor: pointer;
+    background-color: #ddd;
+    margin:0.25rem 0;
 }
 
 .legend-item {

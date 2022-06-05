@@ -107,7 +107,8 @@ map.on("load", function(e) {
     // soils layer
     map.addSource("india_soils_ibp", {
         type:'geojson',
-        data:turf.featureCollection([])
+        data:turf.featureCollection([]),
+        // data:'data/india_soils_ibp.geojson'
     });
 
     map.addLayer({
@@ -136,7 +137,8 @@ map.on("load", function(e) {
         type:'fill',
         source:'india_rainfallzones_ibp',
         paint:{
-            'fill-color':['get', 'color'],
+            // 'fill-color':['get', 'color'],
+            'fill-color':"red",
             'fill-opacity':1,
             'fill-outline-color':'#ddd'
         },
@@ -318,7 +320,6 @@ function handleEcoregionClick(activeEcoregion) {
         if([ 'key-species', 'nurseries', 'pareas'].indexOf(key) != -1) {
             // filter by ecoregion name
             pnts = layerStore[key].instance.items.filter(item => item.ecoregion == layerStore.activeEcoregion);
-            console.log(`${key}: ${pnts}`);
             
         } else {
             points = createGeojson(layerStore[key].instance.items);
@@ -344,31 +345,47 @@ function handleEcoregionClick(activeEcoregion) {
 
     // clip the layers
     let sourceIds = [ 
-        'watershed', 'protected_area', 'india_soils_ibp', 
-        'india_rainfallzones_ibp', 'india_geology_ibp', 'india_geomorphology_ibp'
+        // 'watershed', 'protected_area', 'india_soils_ibp', 
+        'india_rainfallzones_ibp', 
+        // 'india_geology_ibp', 'india_geomorphology_ibp'
     ];
 
-    setTimeout(function(e) {
-        // sourceIds.forEach(source => {
-            console.time("Clipping");
-            dataLayerInstance.clipLayer(
-                sourceIds[0], 
-                layerStore.activeFeature, 
-                layerStore.activeEcoregion
-            );
+    function timerFunction() {
+        let i = 0;
 
-            console.timeEnd("Clipping");
-        // });
-    }, 2000);
+        // writing non blocky recursive code
+        function doneFunction() {
+            console.log("Done Function");
 
-    // writing non blocky recursive code
-    function runClipLayers(layers) {
+            next();
+        }
+
+        function next() {
+            i++;
+
+            if(i > (sourceIds.length - 1)) {
+                return;
+            }
+
+            console.log("Next:", i);
+            runClip(i, doneFunction);
+        }
+
+        runClip(i, doneFunction);
 
     }
-    
 
+    function runClip(i, doneFunction) {
+        dataLayerInstance.clipLayer(
+            sourceIds[i], 
+            layerStore.activeFeature, 
+            layerStore.activeEcoregion,
+            doneFunction
+        );
+    }
+
+    // timerFunction();
 }
-
 
 function toggleActiveEcoregion(regionName="Central Deccan Plateau dry deciduous forests") {
     // display the active ecoregion
@@ -692,14 +709,11 @@ const DataLayers = function(layers, map) {
     }
 
     // this function is slow.
-    this.clipLayer = function(layerId, clipFeature, ecoName) {
-        if(this.ecoregionClips[ecoName]) {
-            let features = this.ecoregionClips[ecoName][layerId];
-            // this.updateSourceWithId(layerId, features);
-
-            return new Promise((resolve, reject) => resolve(features));
+    this.clipLayer = function(layerId, clipFeature, ecoName, done) {
+        if(this.ecoregionClips[ecoName] && this.ecoregionClips[ecoName][layerId] ) {
+            return;
         } else {
-            this.ecoregionClips[ecoName] = {};
+            this.ecoregionClips[ecoName] = { ...this.ecoregionClips[ecoName]};
         }
 
         this.ecoregionClips[ecoName][layerId] = [];
@@ -712,24 +726,30 @@ const DataLayers = function(layers, map) {
 
         // clip feature
         let targetLayer = this.layers.find(layer => layer.name == layerId);
-        let clipRequest = targetLayer.features.map(ft => {
-            // let difference 
-            return new Promise((resolve, reject) => {
-                resolve(turf.difference(clipMask, ft) );
-            });
-            
-        });
+       
 
-        // return all the features
-        let promise = Promise.all(clipRequest)
-        .then(features => {
-            this.ecoregionClips[ecoName][layerId] = [...features];
+        var myWorker = new Worker('worker.js');
+        myWorker.onmessage = (oEvent) => {
+            console.log(layerId);
 
-            // this.updateSourceWithId(layerId, features);
-            return features;
-        });
+            let { data } = oEvent;
+            this.ecoregionClips[ecoName][layerId] = [...data.features];
+            this.updateSourceWithId(layerId, data);
 
-        return promise;
+            done();
+        };
+
+        myWorker.onerror = (error) => {
+            console.log(error);
+        };
+
+        // clip option
+        let options = {
+            targetLayer,
+            clipMask,
+        };
+
+        myWorker.postMessage(options);
     }
 
     this.getEcoregionOn = function(coords) {
@@ -758,8 +778,9 @@ const DataLayers = function(layers, map) {
         });
     }
 
-    this.updateSourceWithId = function(layerId, features) {
-        let geojson = turf.featureCollection(features);
+    this.updateSourceWithId = function(layerId, geojson) {
+        // let geojson = turf.featureCollection(features);
+        console.log(geojson);
         map.getSource(layerId).setData(geojson);
     }
 
@@ -767,13 +788,11 @@ const DataLayers = function(layers, map) {
         this.layers.forEach(layer => {
             let colorsGroups = this.getClassColors(layer);
 
-            console.log(layer.name);
             if(layer.name.includes('ecoregions')) {
                 return layer;
             }
 
             let collapseSection = document.getElementById(`${layer.name}`);
-            console.log(collapseSection);
 
             collapseSection.innerHTML = colorsGroups.map(group => {
                 return `<div class="legend-item">
@@ -790,7 +809,7 @@ const DataLayers = function(layers, map) {
         let group;
 
         switch(layer.name) {
-            case  'watershed':
+            case 'watershed':
                 return [{name:'Watershed', color:'blue'}];
                 
             case 'protected_area':
@@ -809,11 +828,18 @@ const DataLayers = function(layers, map) {
 
             case 'india_rainfallzones_ibp':
                 group = layer.features.map(feature => {
+                    let min = feature.properties.rain_range.split("-")[0];
+                    min = parseInt(min);
+
                     return { 
                         name:feature.properties.rain_range, 
-                        color:feature.properties.color
+                        color:feature.properties.color,
+                        min:min
                     }
-                })
+                });
+
+                group.sort((a, b) => a.min - b.min);
+
                 group = reduceGroup(group);
                 return group;  
 
@@ -874,6 +900,8 @@ Promise.all(requests)
     dataLayerInstance.setLayers(layers);
     dataLayerInstance.updateMapDataLayer();
 
+    dataLayerInstance.updateLegendSection();
+
 }); 
 
 
@@ -887,3 +915,40 @@ toggleBtn.onclick = function(e) {
 
     dataTab.classList.toggle('d-none');
 }
+
+// worker instance
+// var myWorker = new Worker('worker.js');
+// myWorker.onmessage = function(oEvent) {
+//   console.log(oEvent.data);
+// };
+
+// myWorker.onerror = function(error) {
+//     console.log(error);
+// };
+
+// let options = {
+//     feature:{},
+//     coordinates:[0, 0]
+// };
+
+// myWorker.postMessage(options);
+
+
+// toggle legend collapse section
+let collapseTogglers = document.querySelectorAll(".dropdown .form-group");
+
+collapseTogglers.forEach(toggler => {
+
+    toggler.onclick = function(e) {
+        // get the next item
+        this.classList.toggle("active");
+
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    }
+
+});
