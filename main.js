@@ -345,9 +345,9 @@ function handleEcoregionClick(activeEcoregion) {
 
     // clip the layers
     let sourceIds = [ 
-        // 'watershed', 'protected_area', 'india_soils_ibp', 
+        'watershed', 'protected_area', 'india_soils_ibp', 
         'india_rainfallzones_ibp', 
-        // 'india_geology_ibp', 'india_geomorphology_ibp'
+        'india_geology_ibp', 'india_geomorphology_ibp'
     ];
 
     function timerFunction() {
@@ -384,7 +384,7 @@ function handleEcoregionClick(activeEcoregion) {
         );
     }
 
-    // timerFunction();
+    timerFunction();
 }
 
 function toggleActiveEcoregion(regionName="Central Deccan Plateau dry deciduous forests") {
