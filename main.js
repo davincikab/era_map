@@ -260,14 +260,12 @@ map.on("load", function(e) {
     toggleMapLayers();
     toggleActiveEcoregion();
 
-
-    geolocationControl.trigger();
     geolocationControl.on('geolocate', function(e) {
         // find the ecoregion on the given coordinate;
         let { latitude, longitude } = e.coords;
 
         let timer = setInterval(function(e) {
-            timerFunction(e);
+            // timerFunction(e);
         }, 200);
 
         function timerFunction(e) {
@@ -384,7 +382,7 @@ function handleEcoregionClick(activeEcoregion) {
         );
     }
 
-    timerFunction();
+    // timerFunction();
 }
 
 function toggleActiveEcoregion(regionName="Central Deccan Plateau dry deciduous forests") {
@@ -902,6 +900,7 @@ Promise.all(requests)
 
     dataLayerInstance.updateLegendSection();
 
+    geolocationControl.trigger();
 }); 
 
 
