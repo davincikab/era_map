@@ -22,7 +22,7 @@ body {
 #map {
     height: 100vh;
     width: calc(100vw - 470px);
-    margin-left: 40vw;
+    margin-left: 470px;
 }
 
 /* data layer toggler */
