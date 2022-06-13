@@ -324,6 +324,8 @@ d3.csv('/point_data/resources.csv')
 
     // console.log([... new Set(data.map(l => l.post_category))]);            
     let publications = data.filter(entry => entry.post_category != 'Video').filter(pub => pub.coordinates[0]);
+    
+    // videos Webinars
     let videos = data.filter(entry => entry.post_category == 'Video');
     // let nurseries = data.filter(entry => entry.)
 

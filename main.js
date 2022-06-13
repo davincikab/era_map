@@ -137,8 +137,8 @@ map.on("load", function(e) {
         type:'fill',
         source:'india_rainfallzones_ibp',
         paint:{
-            // 'fill-color':['get', 'color'],
-            'fill-color':"red",
+            'fill-color':['get', 'color'],
+            // 'fill-color':"red",
             'fill-opacity':1,
             'fill-outline-color':'#ddd'
         },
@@ -348,39 +348,14 @@ function handleEcoregionClick(activeEcoregion) {
         'india_geology_ibp', 'india_geomorphology_ibp'
     ];
 
-    function timerFunction() {
-        let i = 0;
-
-        // writing non blocky recursive code
-        function doneFunction() {
-            console.log("Done Function");
-
-            next();
-        }
-
-        function next() {
-            i++;
-
-            if(i > (sourceIds.length - 1)) {
-                return;
-            }
-
-            console.log("Next:", i);
-            runClip(i, doneFunction);
-        }
-
-        runClip(i, doneFunction);
-
-    }
-
-    function runClip(i, doneFunction) {
+    console.log("Clipping the layers");
+    sourceIds.forEach(layerId => {
         dataLayerInstance.clipLayer(
-            sourceIds[i], 
+            layerId, 
             layerStore.activeFeature, 
-            layerStore.activeEcoregion,
-            doneFunction
+            layerStore.activeEcoregion
         );
-    }
+    });
 
     // timerFunction();
 }
@@ -707,47 +682,20 @@ const DataLayers = function(layers, map) {
     }
 
     // this function is slow.
-    this.clipLayer = function(layerId, clipFeature, ecoName, done) {
+    this.clipLayer = function(layerId, clipFeature, ecoName) {
         if(this.ecoregionClips[ecoName] && this.ecoregionClips[ecoName][layerId] ) {
             return;
         } else {
             this.ecoregionClips[ecoName] = { ...this.ecoregionClips[ecoName]};
         }
 
-        this.ecoregionClips[ecoName][layerId] = [];
 
-        let clipMask = {
-            type:'Feature',
-            properties:{...clipFeature.properties},
-            geometry:{...clipFeature.geometry}
-        };
-
-        // clip feature
         let targetLayer = this.layers.find(layer => layer.name == layerId);
-       
+        let features = targetLayer.features.filter(feature => feature.properties.ECO_NAME == ecoName);
 
-        var myWorker = new Worker('worker.js');
-        myWorker.onmessage = (oEvent) => {
-            console.log(layerId);
-
-            let { data } = oEvent;
-            this.ecoregionClips[ecoName][layerId] = [...data.features];
-            this.updateSourceWithId(layerId, data);
-
-            done();
-        };
-
-        myWorker.onerror = (error) => {
-            console.log(error);
-        };
-
-        // clip option
-        let options = {
-            targetLayer,
-            clipMask,
-        };
-
-        myWorker.postMessage(options);
+        console.log(features);
+        this.ecoregionClips[ecoName][layerId] = [...features];
+        this.updateSourceWithId(layerId, turf.featureCollection(features));
     }
 
     this.getEcoregionOn = function(coords) {
@@ -904,7 +852,6 @@ Promise.all(requests)
 }); 
 
 
-
 // toggler the dataLayer Toggler
 let toggleBtn = document.getElementById("layer-toggler-btn");
 let dataTab = document.getElementById("data-toggler");
@@ -951,3 +898,80 @@ collapseTogglers.forEach(toggler => {
     }
 
 });
+
+// let bounds = [
+//     '11.23189,55.37888,16.23189,57.37888'
+// ];
+
+// function computeBounds() {
+//     // [55.33333, 11.15833]
+//     // [68.43959, 24.13676]
+
+//     let [x0, y0] = [11.15833,55.3333];
+
+//     let bounds = [];
+
+//     for (let i = 0; i < 15; i+=0.25) {
+//         let minX = x0 + i;
+//         let maxX = minX + 0.25;
+//         // bounds.push([minX, maxX]);
+
+//         for (let j = 0; j < 13; j+=0.25) { 
+//             console.log(j * i);
+//             let minY = y0 + j;
+//             let maxY = minY + 0.25;
+
+//             minY = parseFloat(minY.toFixed(5));
+//             maxY = parseFloat(maxY.toFixed(5));
+
+//             bounds.push([[minY, minX], [maxY, maxX]]);
+//         }        
+//     }
+
+//     return bounds;
+// }
+
+// let bds = computeBounds();
+// let features = [];
+// console.log(bds);
+
+
+// function iterate() {
+//     let i = 0;
+//     let interval = setInterval(() => {
+//         updateFeatures();
+//     }, 5000);
+
+//     function updateFeatures() {
+
+//         if(i < bds.length) {
+//             let fts = mapjson.toGeoJSON().features;
+//            fts.map(feature => {
+//                 let isAdded = features.find(t => t.properties.name == feature.properties.name);
+
+//                 if(!isAdded) {
+//                     features.push(feature)
+//                 }
+//            });
+
+//             mymap.flyToBounds(bds[i]);
+//             i++;
+//         } else {
+//             console.log("Complete");
+//             clearInterval(interval)
+//         }
+       
+//     }
+// }
+
+// iterate();
+// drag the a given element
+// minX, minY, maxX, maxY
+// '17.01696044377652,65.80802941991347,22.672172846120265,67.44193112604266'
+// x=5
+// y=2
+
+// '11.23189,55.37888,24.1563,69.05994'
+
+// x=13
+// y=14

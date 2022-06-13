@@ -22,3 +22,46 @@ onmessage = function({ data }) {
     // clip the layer
     postMessage(fc)
 };
+
+// this.clipLayer = function(layerId, clipFeature, ecoName, done) {
+//     if(this.ecoregionClips[ecoName] && this.ecoregionClips[ecoName][layerId] ) {
+//         return;
+//     } else {
+//         this.ecoregionClips[ecoName] = { ...this.ecoregionClips[ecoName]};
+//     }
+
+//     this.ecoregionClips[ecoName][layerId] = [];
+
+//     let clipMask = {
+//         type:'Feature',
+//         properties:{...clipFeature.properties},
+//         geometry:{...clipFeature.geometry}
+//     };
+
+//     // clip feature
+//     let targetLayer = this.layers.find(layer => layer.name == layerId);
+   
+
+//     var myWorker = new Worker('worker.js');
+//     myWorker.onmessage = (oEvent) => {
+//         console.log(layerId);
+
+//         let { data } = oEvent;
+//         this.ecoregionClips[ecoName][layerId] = [...data.features];
+//         this.updateSourceWithId(layerId, data);
+
+//         done();
+//     };
+
+//     myWorker.onerror = (error) => {
+//         console.log(error);
+//     };
+
+//     // clip option
+//     let options = {
+//         targetLayer,
+//         clipMask,
+//     };
+
+//     myWorker.postMessage(options);
+// }

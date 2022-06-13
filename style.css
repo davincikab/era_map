@@ -417,6 +417,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 12px;
     
     /* font-size: 1rem;
     font-size: 0.8rem; */
@@ -457,7 +458,7 @@ div#protected-areas {
 }
 
 .levels-section .items {
-    margin-left: 3rem !important;
+    margin-left: 40px !important;
     color:var(--white);
 }
 
