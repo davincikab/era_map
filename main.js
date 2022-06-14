@@ -64,6 +64,27 @@ const geolocationControl = new mapboxgl.GeolocateControl({
 map.addControl(geolocationControl, 'top-left');
 
 map.on("load", function(e) {
+     // add the ecoregions
+     map.addSource("india_46_ecoregions", {
+        type:'geojson',
+        data:'data/india_46_ecoregions.geojson'
+        // data:turf.featureCollection([])
+    });
+
+    map.addLayer({
+        id:'ecoregions',
+        type:'fill',
+        source:'india_46_ecoregions',
+        paint:{
+            'fill-color':['get', 'COLOR'],
+            'fill-opacity':0.01,
+            'fill-outline-color':'#000'
+        },
+        layout:{
+            'visibility':'visible'
+        }
+    });
+
     // add the watershed
     map.addSource("watershed", {
         type:'geojson',
@@ -138,8 +159,7 @@ map.on("load", function(e) {
         source:'india_rainfallzones_ibp',
         paint:{
             'fill-color':['get', 'color'],
-            // 'fill-color':"red",
-            'fill-opacity':1,
+            'fill-opacity':0.6,
             'fill-outline-color':'#ddd'
         },
         layout:{
@@ -189,28 +209,6 @@ map.on("load", function(e) {
         }
     });
 
-    // add the ecoregions
-    map.addSource("india_46_ecoregions", {
-        type:'geojson',
-        data:'data/india_46_ecoregions.geojson'
-        // data:turf.featureCollection([])
-    });
-
-    map.addLayer({
-        id:'ecoregions',
-        type:'fill',
-        source:'india_46_ecoregions',
-        paint:{
-            'fill-color':['get', 'COLOR'],
-            'fill-opacity':0.01,
-            'fill-outline-color':'#000'
-        },
-        layout:{
-            'visibility':'visible'
-        }
-    });
-
-
     // mask layer
     map.addSource('mask', {
         type:'geojson',
@@ -245,7 +243,7 @@ map.on("load", function(e) {
         map.setPaintProperty('ecoregions', 'fill-opacity', [
             'case',
             ['==', ['get', 'ECO_NAME'], `${layerStore.activeEcoregion}`],
-            0.4,
+            0.3,
             ['==', ['get', 'ECO_NAME'], `${region.ECO_NAME}`],
             0.1,
             0.01
@@ -265,7 +263,7 @@ map.on("load", function(e) {
         let { latitude, longitude } = e.coords;
 
         let timer = setInterval(function(e) {
-            // timerFunction(e);
+            timerFunction(e);
         }, 200);
 
         function timerFunction(e) {
@@ -291,12 +289,20 @@ map.on("load", function(e) {
     });
 
     geolocationControl.on('error', function(e) {
-        // set default ecoregion
-        layerStore.activeFeature = dataLayerInstance.getDefaultEcoregion();
-
-        // fire default filters function
+        console.log("Denied");
+        handleDefaults();
     });
+
+    if(!layerStore.activeFeature) {
+        handleDefaults();
+    }
 });
+
+function handleDefaults() {
+    let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
+    layerStore.activeFeature = dataLayerInstance.getDefaultEcoregion();
+    handleEcoregionClick(activeEcoregion);
+}
 
 function handleEcoregionClick(activeEcoregion) {
     getFeatureMaskLayer(activeEcoregion);
@@ -365,7 +371,7 @@ function toggleActiveEcoregion(regionName="Central Deccan Plateau dry deciduous 
     map.setPaintProperty('ecoregions', 'fill-opacity', [
         'case',
         ['==', ['get', 'ECO_NAME'], `${regionName}`],
-        0.4,
+        0.3,
         0.01
     ]);
 }
@@ -423,12 +429,14 @@ function toggleMapLayers() {
                     if(layerId != id) {
                         let checkbox = document.getElementById(`${layerId}`);
                         checkbox.checked = false;
-
+                        toggleCollapseSection(layerId, false);
                         map.setLayoutProperty(layerId, 'visibility', 'none');
                     }
                 });
 
                 map.setLayoutProperty(id, 'visibility', visibilityStatus);
+                toggleCollapseSection(id, checked);
+
                 return;
             }
 
@@ -862,6 +870,52 @@ toggleBtn.onclick = function(e) {
     dataTab.classList.toggle('d-none');
 }
 
+// Drag the legend container
+function dragElement(elmnt) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (document.getElementById("dropdown-toggler")) {
+      /* if present, the header is where you move the DIV from:*/
+      document.getElementById("dropdown-toggler").onmousedown = dragMouseDown;
+    } else {
+      /* otherwise, move the DIV from anywhere inside the DIV:*/
+      elmnt.onmousedown = dragMouseDown;
+    }
+  
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // get the mouse cursor position at startup:
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      // call a function whenever the cursor moves:
+      document.onmousemove = elementDrag;
+    }
+  
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // calculate the new cursor position:
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      // set the element's new position:
+      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+  
+    function closeDragElement() {
+      /* stop moving when mouse button is released:*/
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+}
+
+dragElement(
+    document.getElementById("data-toggler")
+);
+
 // worker instance
 // var myWorker = new Worker('worker.js');
 // myWorker.onmessage = function(oEvent) {
@@ -882,22 +936,14 @@ toggleBtn.onclick = function(e) {
 
 // toggle legend collapse section
 let collapseTogglers = document.querySelectorAll(".dropdown .form-group");
-
-collapseTogglers.forEach(toggler => {
-
-    toggler.onclick = function(e) {
-        // get the next item
-        this.classList.toggle("active");
-
-        var content = this.nextElementSibling;
-        if (content.style.display === "block") {
-            content.style.display = "none";
-        } else {
-            content.style.display = "block";
-        }
+function toggleCollapseSection(id, status) {
+    let section = document.querySelector(`.collapse-section.${id}`);
+    if (!status) {
+        section.style.display = "none";
+    } else {
+        section.style.display = "block";
     }
-
-});
+}
 
 // let bounds = [
 //     '11.23189,55.37888,16.23189,57.37888'

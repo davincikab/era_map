@@ -42,43 +42,55 @@
                 </div>
 
                 <div class="form-group">
-                    <input class="layer-toggler" type="checkbox" name="data-layer" id="protected-areas">
-                    <label for="protected-areas">Protected Areas</label>
+                    <label for="protected-areas">
+                        <input class="layer-toggler" type="checkbox" name="data-layer" id="protected-areas">
+                        Protected Areas
+                    </label>
                 </div>
                 
-                <div class="collapse-section" id="protected_area"></div>
+                <div class="collapse-section protected-areas" id="protected_area"></div>
 
                 <div class="form-group">
-                    <input class="layer-toggler" type="checkbox" name="data-layer" id="watershed">
-                    <label for="watershed">Watershed</label>
+                    <label for="watershed">
+                        <input class="layer-toggler" type="checkbox" name="data-layer" id="watershed">
+                        Watershed
+                    </label>
                 </div>
-                <div class="collapse-section" id="watershed"></div>
+                <div class="collapse-section watershed" id="watershed"></div>
 
                 <div class="form-group">
-                    <input class="layer-toggler" type="checkbox" name="data-layer" id="soil">
-                    <label for="soil">Soil</label>
+                    <label for="soil">
+                        <input class="layer-toggler" type="checkbox" name="data-layer" id="soil">
+                        Soil
+                    </label>
                 </div>
-                <div class="collapse-section" id="india_soils_ibp"></div>
+                <div class="collapse-section soil" id="india_soils_ibp"></div>
 
                 <div class="form-group">
-                    <input class="layer-toggler" type="checkbox" name="data-layer" id="rainfall-zones">
-                    <label for="rainfall-zones">Rainfall Zones</label>
+                    <label for="rainfall-zones">
+                        <input class="layer-toggler" type="checkbox" name="data-layer" id="rainfall-zones">
+                        Rainfall Zones
+                    </label>
                 </div>
-                <div class="collapse-section" id='india_rainfallzones_ibp'>
+                <div class="collapse-section rainfall-zones" id='india_rainfallzones_ibp'>
                     
                     </div>
 
                 <div class="form-group">
-                    <input class="layer-toggler" type="checkbox" name="data-layer" id="geology">
-                    <label for="geology">Geology</label>
+                    <label for="geology">
+                        <input class="layer-toggler" type="checkbox" name="data-layer" id="geology">
+                        Geology
+                    </label>
                 </div>
-                <div class="collapse-section" id="india_geology_ibp"></div>
+                <div class="collapse-section geology" id="india_geology_ibp"></div>
 
                 <div class="form-group">
-                    <input class="layer-toggler" type="checkbox" name="data-layer" id="geomorphology">
-                    <label for="geomorphology">Geomorphology</label>
+                    <label for="geomorphology">
+                        <input class="layer-toggler" type="checkbox" name="data-layer" id="geomorphology">
+                        Geomorphology
+                    </label>
                 </div>
-                <div class="collapse-section" id="india_geomorphology_ibp"></div>
+                <div class="collapse-section geomorphology" id="india_geomorphology_ibp"></div>
                 
                 <!-- configure the checkbox to work like radio buttons  -->
             </div>
@@ -381,35 +393,5 @@
     <script src="data/ecoregions.js"></script>
 
     <script src="main.js"></script>
-
-    <script>
-        let markerTypes = [
-            // {
-            //     id:'publication',
-            //     markers:publicationsMarkers
-            // },
-            // {
-            //     id:'nurseries',
-            //     markers:nurseryMarkers
-            // },
-            // {
-            //     id:'projects',
-            //     markers:projectMarkers
-            // },
-            // {
-            //     id:'ecoregion',
-            //     markers:pins
-            // },
-            // {
-            //     id:'key-species',
-            //     markers:speciesMarker
-            // }
-        ];
-    </script>
-
-
-<!-- use ecoregions to filter the data -->
-
-<!-- zoom in on card click -->
 </body>
 </html>
