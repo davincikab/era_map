@@ -1,6 +1,7 @@
 const bbox = [-180, -90, 180, 90];
 const globalBoundary = turf.bboxPolygon(bbox);
 const bFc = turf.featureCollection([globalBoundary]);
+const spinnerContainer = document.getElementById("spinner-container");
 
 // layers
 const layerStatus = {
@@ -901,6 +902,8 @@ Promise.all(requests)
     dataLayerInstance.updateLegendSection();
 
     geolocationControl.trigger();
+
+    spinnerContainer.classList.add('d-none');
 }); 
 
 
