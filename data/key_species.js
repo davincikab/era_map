@@ -41,20 +41,74 @@ class KeySpeciesItem {
     }
 
     setItems(items) {
-        this.publications = items;
+        this.keySpecies = items;
     }
 
     renderItemsToMap() {}
-    fireEventListeners() {}
+    fireEventListeners() {
+        let speciesItem = document.querySelectorAll('.species-item');
+        let activeItem = document.querySelector('.species-item.active');
+
+        speciesItem.forEach(card => {
+            card.onclick = (e) => {
+                // let { target:{ id } } = e;
+                let id = e.target.id;
+
+                // console.log(target);
+                console.log(id);
+
+                e.target.classList.add('active');
+                activeItem.classList.remove('active');
+
+                activeItem = e.target;
+
+                let activeSpecies = this.items.find(it => it.id == id);
+                this.updateSpeciesNameSection(activeSpecies);
+            }
+
+        });
+    }
+
+    updateSpeciesNameSection(item) {
+        let speciesNameSection = document.getElementById('active-species');
+        speciesNameSection.innerHTML = "";
+
+        if(item) {
+            speciesNameSection.innerHTML = `
+                <div class="bold">${item.era_species_common_name}</div>
+                <div>
+                    <i>${item.title}</i>
+                </div>
+            `;
+        } 
+        
+    }
+
     loadListItems() {
         let speciesContainer = document.getElementById("species-list");
         let content = "";
+
+        if(!this.keySpecies[0]) {
+            speciesContainer.innerHTML = `<div class="text-section">
+                We are currently working on curating a species list for this ecoregion. 
+                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+            </div>`
+            return;
+        }
     
-        this.keySpecies.forEach(spec => {
-            let className = spec.id == 0 ? 'species-item active' : 'species-item';
-    
-            content += `<div class="${className}" id="${spec.id}" >
-                <img src="${spec.image}" alt="${spec.name}" />
+        this.keySpecies.forEach((species, index) => {
+            let className;
+
+            if(index == 0) {
+                this.updateSpeciesNameSection(species);
+
+                className = 'species-item active';
+            } else {
+                className =  'species-item';
+            }
+
+            content += `<div class="${className}" id="${species.id}">
+                <img src="${species.featured_image}" alt="${species.post_title}" />
             </div>`;
     
         });
@@ -62,6 +116,21 @@ class KeySpeciesItem {
         speciesContainer.innerHTML = content;
     }
 }
+
+let speciesInstance = new KeySpeciesItem([]);
+
+d3.csv("/point_data/species_csv.csv")
+.then(data => {
+    data = data.map((item, i) => {
+        item.id = i;
+        item.ecoregion = item.era_species_ecoregion;
+
+        return item;
+    });
+
+    speciesInstance.items = data;
+})
+.catch(console.error);
 
 // function renderSpeciesToMap(projects) {
 //     let markers = projects.map(createSpeciesMarker);

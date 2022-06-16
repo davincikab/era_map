@@ -1,41 +1,8 @@
-let publications = [
-    {
-        id:0,
-        images:'https://picsum.photos/id/235/200/300',
-        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
-        name:"Video Article",
-        address:"Valprai, Tamil Nadu",
-        description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
-        coordinates:[75.84442310371734, 17.83432311133646]
-    },
-    {
-        id:1,
-        images:'https://picsum.photos/id/230/200/300', 
-        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
-        name:"Video Two",
-        address:"Jodhpur, Rajasthan",
-        description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
-        coordinates:[73.31543378456319, 26.277730889745722]
-    },
-
-    {
-        id:2,
-        images: 'https://picsum.photos/200/300',
-        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
-        name:"Video One",
-        address:"Maharashtra",
-        description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
-        coordinates:[74.2824155, 17.719368]
-    }
-];
-
 // let publicationsMarkers = renderPublicationToMap(publications);
-// renderNuseryList(publications);
-
-class PublicationItem {
+class PublicationItem extends ItemModule {
     constructor(publications) {
+        super(publications, 'publication');
         this.publications = publications;
-        this.items = [];
     }
 
     setItems(items) {
@@ -45,6 +12,14 @@ class PublicationItem {
     loadListItems() {
         let publicationContainer = document.getElementById("publications-section");
         let publicationContent = "";
+
+        if(!this.publications[0]) {
+            publicationContainer.innerHTML = `<div class="text-section">
+                We are currently working on curating a publications for this ecoregion. 
+                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+            </div>`
+            return;
+        }
 
         this.publications.forEach(publication => {
 
@@ -68,6 +43,8 @@ class PublicationItem {
     }
     
     renderItemsToMap() {
+        console.log("rendering Publications");
+
         this.markers = this.publications.map(item => createMarker(item, this.getPopupContent, 'publication'));
     }
 
@@ -77,29 +54,6 @@ class PublicationItem {
         this.cards.forEach(card => {
             // card.onmouseover = (e) => this.handleCardEvents(e);
             card.onclick = (e) => this.handleCardEvents(e);
-        });
-    }
-
-    handleCardEvents(e) {
-        let { dataset: { id } } = e.target;
-
-        this.markers.forEach((marker, index) => {
-            let popup = marker.getPopup();
-    
-            if(marker.id != id) {
-                popup.remove();
-            } else {
-                popup.isOpen() ? "": marker.togglePopup();
-
-                // zoom to the feature
-                let { lat, lng} = marker.getLngLat();
-                lat = lat - 0.1
-                map.flyTo({
-                    center:{lat, lng},
-                    zoom:10
-                });
-
-            }
         });
     }
 
@@ -125,39 +79,10 @@ class PublicationItem {
 let publicationInstance = new PublicationItem([]);
 
 // Videos section
-let videos = [
-    {
-        id:0,
-        images:'https://picsum.photos/id/235/200/300',
-        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
-        name:"Journal Article",
-        address:"Valprai, Tamil Nadu",
-        description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
-        coordinates:[75.14442310371734, 17.83432311133646]
-    },
-    {
-        id:1,
-        images:'https://picsum.photos/id/230/200/300', 
-        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
-        name:"Report",
-        address:"Jodhpur, Rajasthan",
-        description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
-        coordinates:[74.01543378456319, 24.277730889745722]
-    },
-
-    {
-        id:2,
-        images: 'https://picsum.photos/200/300',
-        video:'https://ak.picdn.net/shutterstock/videos/1080319025/preview/stock-footage-abstract-tech-earth-globalization-in-d-motion-graphic-concept-transmit-ai-networking-on-fiber.webm',
-        name:"Popular Article",
-        address:"Maharashtra",
-        description:"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. ",
-        coordinates:[75.824155, 17.719368]
-    }
-];
-
-class VideoItem {
+class VideoItem extends ItemModule {
     constructor(videos) {
+        super([], 'video');
+
         this.videos = videos;
         this.items = [];
     }
@@ -169,6 +94,14 @@ class VideoItem {
     loadListItems() {
         let videosContainer = document.getElementById("videos-section");
         let content = "";
+
+        if(!this.videos[0]) {
+            videosContainer.innerHTML = `<div class="text-section">
+                We are currently working on curating a videos list for this ecoregion. 
+                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+            </div>`
+            return;
+        }
 
         this.videos.forEach(video => {
             content += `<div class="video-section" data-id="${video.id}">
@@ -194,37 +127,12 @@ class VideoItem {
         this.cards = document.querySelectorAll(".video-section");
     
         this.cards.forEach(card => {
-            // card.onmouseover = (e) => this.handleCardEvents(e);
+            card.onmouseover = (e) => this.handleCardEvents(e);
             card.onclick = (e) => this.handleCardEvents(e);
         });
     }
 
-    handleCardEvents(e) {
-        let { dataset: { id } } = e.target;
-
-        this.markers.forEach((marker, index) => {
-            let popup = marker.getPopup();
-    
-            if(marker.id != id) {
-                popup.remove();
-            } else {
-                popup.isOpen() ? "": marker.togglePopup();
-
-                // zoom to the feature
-                let { lat, lng} = marker.getLngLat();
-                lat = lat - 0.1
-                map.flyTo({
-                    center:{lat, lng},
-                    zoom:10
-                });
-
-            }
-        });
-    }
-
     getPopupContent(video) {
-        // <div class="carousel-container"></div>
-    
         return `<div class="popup-content">
             <img src="${video.featured_image}" alt="">
             <div class="popup-body">
@@ -243,74 +151,6 @@ class VideoItem {
 
 let videoInstance = new VideoItem([]);
 
-// Nurseries Section
-let nurseries = [
-    {
-        images:'https://picsum.photos/id/232/200/300',
-        name:"Iyerpadi nursery",
-        address:"Iyerpadi S.O, Coimbatore, Tamil Nadu, India (IN), Pin Code:-64210",
-        website:"",
-        contact_no:"",
-        ecoregion:"Deccan thorn scrub forests",
-        coordinates:[73.14442310371734, 16.83432311133646]
-    },
-    {
-        images:'https://picsum.photos/id/232/200/300',
-        name:"Parambikulam nursery",
-        address:"Iyerpadi S.O, Coimbatore, Tamil Nadu, India (IN), Pin Code:-64210",
-        website:"",
-        contact_no:"",
-        ecoregion:"Central Deccan Plateau dry deciduous forests",
-        coordinates:[76.14442310371734, 16.53432311133646]
-    },
-    {
-        images:'https://picsum.photos/id/232/200/300',
-        name:"Topslip nursery",
-        address:"Iyerpadi S.O, Coimbatore, Tamil Nadu, India (IN), Pin Code:-64210",
-        website:"",
-        contact_no:"",
-        ecoregion:"Deccan thorn scrub forests",
-        coordinates:[75.14442310371734, 16.33432311133646]
-    },
-];
-
-// nursery
-class NurseryItem {
-    constructor(nurseries) {
-        this.nurseries = nurseries;
-        this.items = [];
-    }
-
-    setItems(items) {
-        this.nurseries = items;
-    }
-
-    renderItemsToMap() {}
-    fireEventListeners() {}
-
-    loadListItems() {
-        console.log("Rendering Nursery");
-
-        let nurseyContainer = document.getElementById("nurseries-section");
-        let nurseryContent = "";
-
-        this.nurseries.forEach(nursery => {
-            nurseryContent += `<div class="nursery-section">
-                <div class="title bold">${nursery.name}</div>
-                <div class="nursery-body">
-                    <span class="bold">Address</span>: ${nursery.address} </br>
-                    <span class="bold">Website: ${nursery.website}</span> </br>
-                    <span class="bold">Contact no: ${nursery.contact_no}</span> </br>
-                </div>
-            </div>`;
-        });
-
-        // console.log(this.nurseries);
-        nurseyContainer.innerHTML = nurseryContent;
-    }
-}
-
-
 d3.csv('/point_data/resources.csv')
 .then(data => {
     data = data.map((dt, index) => {
@@ -323,10 +163,10 @@ d3.csv('/point_data/resources.csv')
     });
 
     // console.log([... new Set(data.map(l => l.post_category))]);            
-    let publications = data.filter(entry => entry.post_category != 'Video').filter(pub => pub.coordinates[0]);
+    let publications = data.filter(entry => ['Video', 'Webinars'].indexOf(entry.post_category) == -1).filter(pub => pub.coordinates[0]);
     
     // videos Webinars
-    let videos = data.filter(entry => entry.post_category == 'Video');
+    let videos = data.filter(entry => ['Video', 'Webinars'].indexOf(entry.post_category) !== -1);
     // let nurseries = data.filter(entry => entry.)
 
     // update the 
@@ -337,45 +177,88 @@ d3.csv('/point_data/resources.csv')
 .catch(console.error);
 
 
-// function renderNuseryList(nurseries) {
+// Nursery: filter as per ecoregion names
+// Don't list the nurseries without coordinates
+
+class NurseryItem extends ItemModule {
+    constructor(nurseries, icon) {
+        super([], icon);
+
+        this.nurseries = nurseries;
+    }
+
+    setItems(items) {
+        this.nurseries = items;
+    }
+
+   renderItemsToMap() {
+        this.markers = this.nurseries.map(item => createMarker(item, this.getPopupContent, 'nurseries'));
+    }
+
+    fireEventListeners() {
+        this.cards = document.querySelectorAll(".nursery-section");
+        console.log(this.cards);
     
-// }
+        this.cards.forEach(card => {
+            // card.onmouseover = (e) => this.handleCardEvents(e);
+            card.onclick = (e) => this.handleCardEvents(e);
+        });
+    }
 
-// function renderNurseryToMap(nurseries) {
-//     let markers = nurseries.map(createNurseryMarker);
-//     return markers;
-// }
+    loadListItems() {
+        console.log("Rendering Nursery");
 
-// function createNurseryMarker(nursery) {
-//     // popup content
-//     let content = popupContent(nursery);
-//     let popup = new mapboxgl.Popup()
-//         .setHTML(content);
+        let nurseyContainer = document.getElementById("nurseries-section");
+        let nurseryContent = "";
 
-//     // marker
-//     let divMarker = customMarkerIcon('nursery');
-//     let marker = new mapboxgl.Marker({element:divMarker})
-//         .setLngLat(nursery.coordinates)
-//         .setPopup(popup)
-//         // .addTo(map);
+        if(!this.nurseries[0]) {
+            nurseyContainer.innerHTML = `<div class="text-section">
+                We are currently working on curating a nursery list for this ecoregion. 
+                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+            </div>`
+            return;
+        }
 
-//     return marker;
-// }
+        this.nurseries.forEach(nursery => {
+            nurseryContent += `<div class="nursery-section" id="${nursery.id}" data-id="${nursery.id}">
+                <div class="title bold">${nursery['Name of the nursery']}</div>
+                <div class="nursery-body">
+                    <span class="bold">Address</span>: ${nursery.Address} </br>
+                    <span class="bold">Website: ${nursery['Website Address']}</span> </br>
+                    <span class="bold">Contact no: ${nursery['Contact number']}</span> </br>
+                </div>
+            </div>`;
+        });
 
-// function popupContent(nursery) {
-//     return `<div class="popup-content">
-//         <div class="popup-body">
-//             <div class="nursery-section">
-//                 <div class="title bold">${nursery.name}</div>
-//                 <div class="nursery-body">
-//                     <span class="bold">Address</span>: ${nursery.address} </br>
-//                     <span class="bold">Website: ${nursery.website}</span> </br>
-//                     <span class="bold">Contact no: ${nursery.contact_no}</span> </br>
-//                 </div>
-//             </div>
-//         </div>
-//     </div>`
-// }
+        // console.log(this.nurseries);
+        nurseyContainer.innerHTML = nurseryContent;
+    }
 
-// let nurseryMarkers = renderNurseryToMap(nurseries);
-// renderNuseryList(nurseries);
+    getPopupContent(nursery) {    
+        return `<div class="popup-content">
+            <img src="${nursery['Name of the nursery']}" alt="">
+            <div class="popup-body">
+                <span class="bold">Address</span>: ${nursery.Address} </br>
+                <span class="bold">Website: ${nursery['Website Address']}</span> </br>
+                <span class="bold">Contact no: ${nursery['Contact number']}</span> </br>
+            </div>
+        </div>`
+    }
+}
+
+let nurseryInstance = new NurseryItem([], 'nurseries');
+
+d3.csv("/point_data/nurseries.csv")
+.then(data => {
+    data = data.filter(dt => dt.Coordinates).map((item, i) => {
+        item.id = i;
+        item.ecoregion = item.era_species_ecoregion;
+        item.coordinates = item.Coordinates.trim().split(",").map(coord => parseFloat(coord)).reverse();
+        return item;
+    });
+
+    console.log(data);
+
+    nurseryInstance.items = data;
+})
+.catch(console.error);

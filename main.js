@@ -21,7 +21,7 @@ const layerStore = {
         items:projects
     },
     nurseries:{
-        instance: new NurseryItem([]),
+        instance: nurseryInstance,
         items:nurseries
     },
     publications:{
@@ -33,7 +33,7 @@ const layerStore = {
         items:videos
     },
     'key-species':{
-        instance: new KeySpeciesItem([]),
+        instance: speciesInstance,
         items:keySpecies
     },
     pareas:{
@@ -47,8 +47,15 @@ const map = new mapboxgl.Map({
     container: 'map', // container ID
     style: 'mapbox://styles/mapbox/streets-v11', // style URL
     center: { lng: 73.29879658306868, lat: 18.575687042687875 }, // starting position [lng, lat]
-    zoom: 5 // starting zoom
+    zoom: 5, // starting zoom,
+    doubleClickZoom:false,
 });
+
+var dropPin = new mapboxgl.Marker();
+
+// add navigation control
+const navigationControl = new mapboxgl.NavigationControl();
+map.addControl(navigationControl, 'bottom-right');
 
 // geolocation
 const geolocationControl = new mapboxgl.GeolocateControl({
@@ -106,7 +113,7 @@ map.on("load", function(e) {
     });
 
     // add the protected areas
-    map.addSource("protected_area", {
+    map.addSource("protected_areas", {
         type:'geojson',
         data:turf.featureCollection([])
     });
@@ -114,7 +121,7 @@ map.on("load", function(e) {
     map.addLayer({
         id:'protected-areas',
         type:'fill',
-        source:'protected_area',
+        source:'protected_areas',
         paint:{
             'fill-color':'green',
             'fill-opacity':0.6,
@@ -228,11 +235,26 @@ map.on("load", function(e) {
     // ecoregions click event
     map.on("click", 'ecoregions', function(e) {
         let activeEcoregion = e.features[0];
+
         if(activeEcoregion.properties.ECO_NAME == layerStore.ECO_NAME) {
             return;
-        }
+        } 
 
-       handleEcoregionClick(activeEcoregion);
+        handleEcoregionClick(activeEcoregion);     
+        // display the click
+
+        dropPin.remove();
+    });
+
+    map.on("dblclick", function(e) {
+        updateWatershedList(
+            Object.values(e.lngLat),
+            layerStore.activeFeature
+        );
+
+        // update the drop marker
+        dropPin.setLngLat(e.lngLat).addTo(map);
+
     });
 
     map.on('mousemove', 'ecoregions', function(e) {
@@ -316,15 +338,55 @@ function handleEcoregionClick(activeEcoregion) {
     layerStore.activeFeature = activeEcoregion;
 
     // filter the point data: projects, key species, publication, videos
+    handleLayerMarkers(layerStore, activeEcoregion);
+    let activeGroup = document.querySelector(".side-tab .layer-group.active");
+    console.log(activeGroup);
+    if(activeGroup.id == 'resources') {
+        activeGroup = document.getElementById(layerStore.activeResource);
+    }
+
+    activeGroup.click();
+
+    // clip the layers
+    let sourceIds = [ 
+        'watershed', 'protected_areas', 'india_soils_ibp', 
+        'india_rainfallzones_ibp', 
+        'india_geology_ibp', 'india_geomorphology_ibp'
+    ];
+
+    console.log("Clipping the layers");
+    sourceIds.forEach(layerId => {
+        dataLayerInstance.clipLayer(
+            layerId, 
+            layerStore.activeFeature, 
+            layerStore.activeEcoregion
+        );
+    });
+
+    // timerFunction();
+}
+
+function handleLayerMarkers(layerStore, activeEcoregion) {
     let filterKeys = [ 'projects', 'publications', 'videos', 'key-species', 'nurseries', 'pareas'];
 
     filterKeys.forEach(key => {
         let points, activePoints, pnts;
+        if(key == 'nurseries') {
+            pnts = layerStore[key].instance.items.filter(item => {
+                let ecoName = layerStore.activeEcoregion.toLowerCase();
+                let ecoregions = item.Ecoregion.trim().split(",").map(lt => lt.toLowerCase());
 
-        if([ 'key-species', 'nurseries', 'pareas'].indexOf(key) != -1) {
+                if(ecoregions.indexOf(ecoName) !== -1) {
+                    return true;
+                }
+
+                return false;
+            });
+        } else if([ 'key-species', 'nurseries', 'pareas'].indexOf(key) != -1) {
             // filter by ecoregion name
-            pnts = layerStore[key].instance.items.filter(item => item.ecoregion == layerStore.activeEcoregion);
+            pnts = layerStore[key].instance.items.filter(item => item.ecoregion.toLowerCase() == layerStore.activeEcoregion.toLowerCase());
             
+
         } else {
             points = createGeojson(layerStore[key].instance.items);
 
@@ -346,24 +408,6 @@ function handleEcoregionClick(activeEcoregion) {
         layerStore[key].instance.loadListItems();
         layerStore[key].instance.fireEventListeners();
     });
-
-    // clip the layers
-    let sourceIds = [ 
-        'watershed', 'protected_area', 'india_soils_ibp', 
-        'india_rainfallzones_ibp', 
-        'india_geology_ibp', 'india_geomorphology_ibp'
-    ];
-
-    console.log("Clipping the layers");
-    sourceIds.forEach(layerId => {
-        dataLayerInstance.clipLayer(
-            layerId, 
-            layerStore.activeFeature, 
-            layerStore.activeEcoregion
-        );
-    });
-
-    // timerFunction();
 }
 
 function toggleActiveEcoregion(regionName="Central Deccan Plateau dry deciduous forests") {
@@ -491,6 +535,8 @@ function LayerGroupToggler(togglerClass, sectionClass) {
                     id = id == 'resources' ? layerStore.activeResource : id;
 
                     toggleMarkers(layerStore, id);
+                } else {
+                    toggleMarkers(layerStore, id);
                 }
                 
             }
@@ -576,6 +622,8 @@ function toggleMarkers(layerStore, activeId) {
         return;
     }
 
+    console.log(activeId);
+
     let { instance } = layerStore[activeId];
     let filterKeys = [ 'projects', 'publications', 'videos', 'key-species', 'nurseries', 'pareas'];
 
@@ -589,6 +637,8 @@ function toggleMarkers(layerStore, activeId) {
         if(key !== activeId) {
             markers.forEach(marker => marker.remove())
         } else {
+            console.log("Nurseries");
+
             markers.forEach(marker => marker.addTo(map))
             markers[0].togglePopup();
         }
@@ -691,19 +741,15 @@ const DataLayers = function(layers, map) {
 
     // this function is slow.
     this.clipLayer = function(layerId, clipFeature, ecoName) {
-        if(this.ecoregionClips[ecoName] && this.ecoregionClips[ecoName][layerId] ) {
-            return;
-        } else {
-            this.ecoregionClips[ecoName] = { ...this.ecoregionClips[ecoName]};
-        }
-
-
         let targetLayer = this.layers.find(layer => layer.name == layerId);
         let features = targetLayer.features.filter(feature => feature.properties.ECO_NAME == ecoName);
 
-        console.log(features);
-        this.ecoregionClips[ecoName][layerId] = [...features];
         this.updateSourceWithId(layerId, turf.featureCollection(features));
+
+        // update protected areas
+        if(layerId == 'watershed') {
+            updateProtectedAreaList(clipFeature);
+        }
     }
 
     this.getEcoregionOn = function(coords) {
@@ -733,8 +779,6 @@ const DataLayers = function(layers, map) {
     }
 
     this.updateSourceWithId = function(layerId, geojson) {
-        // let geojson = turf.featureCollection(features);
-        console.log(geojson);
         map.getSource(layerId).setData(geojson);
     }
 
@@ -945,79 +989,47 @@ function toggleCollapseSection(id, status) {
     }
 }
 
-// let bounds = [
-//     '11.23189,55.37888,16.23189,57.37888'
-// ];
+function updateWatershedList(coordinates, activeFeature) {
+    let items = JSON.parse(
+        JSON.stringify(dataLayerInstance.layers.find(l => l.name == 'watershed'))
+    );
 
-// function computeBounds() {
-//     // [55.33333, 11.15833]
-//     // [68.43959, 24.13676]
+    items.features = items.features.filter(ft => ft.properties.ECO_NAME == activeFeature.properties.ECO_NAME);
+    let point = turf.point([...coordinates]);
 
-//     let [x0, y0] = [11.15833,55.3333];
+    let basins = items.features.find(ft => turf.booleanPointInPolygon(point, ft));
 
-//     let bounds = [];
+    // update container
+    let watershedContainer = document.getElementById("watershed-list");
+    let content = [basins].map(item => {
+        return `<div>${item.properties.Sub_Basin}</div>`;
+    }).join("");
 
-//     for (let i = 0; i < 15; i+=0.25) {
-//         let minX = x0 + i;
-//         let maxX = minX + 0.25;
-//         // bounds.push([minX, maxX]);
+    watershedContainer.innerHTML = content;
+}
 
-//         for (let j = 0; j < 13; j+=0.25) { 
-//             console.log(j * i);
-//             let minY = y0 + j;
-//             let maxY = minY + 0.25;
+function updateProtectedAreaList(activeFeature) {
+    // display the five closest protected areas
+    let pareas = JSON.parse(
+        JSON.stringify(dataLayerInstance.layers.find(l => l.name == 'protected_areas'))
+    );
 
-//             minY = parseFloat(minY.toFixed(5));
-//             maxY = parseFloat(maxY.toFixed(5));
+    pareas.features = pareas.features.filter(ft => ft.properties.ECO_NAME == activeFeature.properties.ECO_NAME);
+    console.log(pareas);
 
-//             bounds.push([[minY, minX], [maxY, maxX]]);
-//         }        
-//     }
+    // var options = { units: 'kilometers', properties: {foo: 'bar'}};
+    // var circle = turf.circle(coordinates, 10, options);
 
-//     return bounds;
-// }
+    // let closestAreas = pareas.features.filter(p => turf.booleanOverlap(circle, p));
+    // console.log(closestAreas);
 
-// let bds = computeBounds();
-// let features = [];
-// console.log(bds);
+    // find the pareas close to the clicked point
+    let areas = pareas.features.slice(0, 5);
+    let pAreaContainer = document.getElementById("park-list");
 
+    let content = areas.map(item => {
+        return `<div>${item.properties.NAME}</div>`;
+    }).join("");
 
-// function iterate() {
-//     let i = 0;
-//     let interval = setInterval(() => {
-//         updateFeatures();
-//     }, 5000);
-
-//     function updateFeatures() {
-
-//         if(i < bds.length) {
-//             let fts = mapjson.toGeoJSON().features;
-//            fts.map(feature => {
-//                 let isAdded = features.find(t => t.properties.name == feature.properties.name);
-
-//                 if(!isAdded) {
-//                     features.push(feature)
-//                 }
-//            });
-
-//             mymap.flyToBounds(bds[i]);
-//             i++;
-//         } else {
-//             console.log("Complete");
-//             clearInterval(interval)
-//         }
-       
-//     }
-// }
-
-// iterate();
-// drag the a given element
-// minX, minY, maxX, maxY
-// '17.01696044377652,65.80802941991347,22.672172846120265,67.44193112604266'
-// x=5
-// y=2
-
-// '11.23189,55.37888,24.1563,69.05994'
-
-// x=13
-// y=14
+    pAreaContainer.innerHTML = content;
+}
