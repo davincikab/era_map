@@ -248,6 +248,8 @@ map.on("load", function(e) {
     });
 
     map.on("dblclick", function(e) {
+        console.log("Double Click");
+
         updateWatershedList(
             Object.values(e.lngLat),
             layerStore.activeFeature
@@ -256,6 +258,23 @@ map.on("load", function(e) {
         // update the drop marker
         dropPin.setLngLat(e.lngLat).addTo(map);
 
+    });
+
+    // touch event to simulate dbclick
+    let lastClick = 0;
+    map.on('touchstart', (e) => {
+        e.preventDefault(); // to disable browser default zoom on double tap
+        
+        let date = new Date();
+        let time = date.getTime();
+        const time_between_taps = 200; // 200ms
+        if (time - lastClick < time_between_taps) {
+            // do stuff
+            console.log("done");
+            console.log('A touchstart event occurred.');
+        }
+
+        lastClick = time;
     });
 
     map.on('mousemove', 'ecoregions', function(e) {

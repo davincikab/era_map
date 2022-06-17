@@ -5,7 +5,7 @@ function removeMarkers(markers) {
 function createMarker(item, popupFunction, icon) {
     // popup content
     let popupContent = popupFunction(item);
-    let popup = new mapboxgl.Popup()
+    let popup = new mapboxgl.Popup({focusAfterOpen:false})
         .setHTML(popupContent);
 
     // marker

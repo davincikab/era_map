@@ -60,7 +60,7 @@ body {
 .layer-toggler-btn {
     position: absolute;
     right:2%;
-    top:12%;
+    top:2%;
     background-color:var(--white);
     box-shadow: 0px 0px 0.25rem var(--black);
 
@@ -506,7 +506,7 @@ div#protected-areas {
     color:var(--white);
 }
 
-/* custom market */
+/* custom marker */
 .mapboxgl-popup-close-button {
     font-size: 1.5rem;
 }
@@ -593,6 +593,10 @@ div#protected-areas {
         height: 100vh;
         width: 100vw;
         margin:0;
+    }
+
+    .layer-toggler-btn {
+        top: 12%;
     }
 
     .data-toggler {
@@ -695,6 +699,11 @@ div#protected-areas {
     .tab-toggler.open i:last-child {
         display: block;
     }
+
+    .mapboxgl-ctrl-bottom-right {
+        right: 0;
+        bottom: 100px !important;
+    }
 }
 
 .side-tab .text-section {
@@ -706,22 +715,22 @@ div#protected-areas {
 /*  Scroll bar*/
 /* width */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 7px;
   }
   
   /* Track */
   ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: var(--secondary); 
     border-radius: 2px;
   }
    
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: #5B8783; 
     border-radius:10px;
   }
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background: #5B8783; 
   }
