@@ -249,13 +249,14 @@ map.on("load", function(e) {
     map.on("dblclick", function(e) {
         console.log("Double Click");
 
+        // update the drop marker
+        dropPin.setLngLat(e.lngLat).addTo(map);
+
+        // update this
         updateWatershedList(
             Object.values(e.lngLat),
             layerStore.activeFeature
         );
-
-        // update the drop marker
-        dropPin.setLngLat(e.lngLat).addTo(map);
 
     });
 
@@ -272,25 +273,6 @@ map.on("load", function(e) {
         });
 
     });
-
-    // touch event to simulate dbclick
-    let lastClick = 0;
-    // map.on('touchstart', (e) => {
-    //     e.preventDefault(); // to disable browser default zoom on double tap
-
-    //     let date = new Date();
-    //     let time = date.getTime();
-    //     const time_between_taps = 200; // 200ms
-    //     if (time - lastClick < time_between_taps) {
-    //         // do stuff
-    //         console.log("done");
-    //         console.log('A touchstart event occurred.');
-    //     } else {
-    //         console.log('Single Touch.');
-    //     }
-
-    //     lastClick = time;
-    // });
 
     map.on('mousemove', 'ecoregions', function(e) {
         map.getCanvas().style.cursor = "pointer";
@@ -465,28 +447,19 @@ function fitMapToFeatureBounds(feature) {
 
 function updateEcoregionInfo(ecoregion) {
     let ecoregionElement = document.getElementById("ecoregion-info");
+    let ecoInfo = ecoregion.properties;
 
     ecoregionElement.innerHTML = `<h3 class="section-title">
-        ${ecoregion.properties.ECO_NAME}
+        ${ecoInfo['Name of the ecoregion']}
         </h3>
 
+        <p class="text-white">${ecoInfo['To come under the title']}</p>
         <div class="text-white">
-            Lorem ipsum dolor sit amet, consectetuer 
-            adipiscing elit, sed diam nonummy nibh 
-            euismod tincidunt ut laoreet dolore magna 
-            aliquam erat volutpat. Ut wisi enim ad 
-            minim veniam, quis nostrud exerci tation 
-            ullamcorper suscipit lobortis nisl ut aliquip 
-            ex ea commodo consequat. 
+            ${ecoInfo['Write up']}
+        </div>
 
-        <p></p>
-
-            Duis autem vel eum iriure dolor in hendrerit 
-            in vulputate velit esse molestie consequat, 
-            vel illum dolore eu feugiat nulla facilisis at 
-            vero eros et accumsan et iusto odio dignissim qui blandit praesent 
-            luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
-        </div>`
+        <a href="${ecoInfo['Know more link']}" class="btn-more">KNOW MORE</a>
+        `
 }
 
 // map layer toggler
@@ -929,15 +902,39 @@ Promise.all(requests)
 .then(responses => Promise.all(responses.map(r => r.json())))
 .then(layers => {
     geolocationControl.trigger();
-
     console.log(layers);
+
     // add the data to Layers objects
     dataLayerInstance.setLayers(layers);
     dataLayerInstance.updateMapDataLayer();
-
     dataLayerInstance.updateLegendSection();
 
-    spinnerContainer.classList.add('d-none');
+
+    let ecoregions = layers.find(layer  => layer.name == 'india_46_ecoregions');
+    return d3.csv('/point_data/ecoregions.csv').then(info => {
+        return {data:ecoregions, info };
+    });
+
+}).then(({data, info}) => {
+    // combine both datasets
+    data.features = data.features.map(feature => {
+        let infoObj = info.find(eco => {
+            if(eco['Name of the ecoregion'].toLowerCase() == feature.properties.ECO_NAME.toLowerCase()) {
+                return true;
+            }
+            return false;
+        }) || {};
+
+        feature.properties = {...feature.properties, ...infoObj}
+        return feature;
+    });
+
+    console.log(data);
+
+    setTimeout(() => {
+        map.getSource('india_46_ecoregions').setData(data);
+        spinnerContainer.classList.add('d-none');
+    }, 2000);
 }); 
 
 
@@ -1073,4 +1070,14 @@ function updateProtectedAreaList(activeFeature) {
 
 
 
-// Add a spinner on the side.
+// First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+let vh = window.innerHeight * 0.01;
+// Then we set the value in the --vh custom property to the root of the document
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+// We listen to the resize event
+window.addEventListener('resize', () => {
+  // We execute the same script as before
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+});

@@ -49,6 +49,7 @@ class ProjectItem extends ItemModule {
                 <img src="${project.featured_image}" alt="">
                 <div class="fig-caption">
                     <div class="bold">${project.post_title}</div>
+                    <div>${project.location}</div>
                 </div>
             </div>`;
     
@@ -76,6 +77,7 @@ class ProjectItem extends ItemModule {
             <img src="${project.featured_image}" alt="">
             <div class="popup-body">
                 <div class="bold title">${project.post_title}</div>
+                <div class="">${project.location}</div>
     
                 <div class="description">
                     ${project.post_content.substr(0, 100)} ...
