@@ -275,22 +275,22 @@ map.on("load", function(e) {
 
     // touch event to simulate dbclick
     let lastClick = 0;
-    map.on('touchstart', (e) => {
-        e.preventDefault(); // to disable browser default zoom on double tap
+    // map.on('touchstart', (e) => {
+    //     e.preventDefault(); // to disable browser default zoom on double tap
 
-        let date = new Date();
-        let time = date.getTime();
-        const time_between_taps = 200; // 200ms
-        if (time - lastClick < time_between_taps) {
-            // do stuff
-            console.log("done");
-            console.log('A touchstart event occurred.');
-        } else {
-            console.log('Single Touch.');
-        }
+    //     let date = new Date();
+    //     let time = date.getTime();
+    //     const time_between_taps = 200; // 200ms
+    //     if (time - lastClick < time_between_taps) {
+    //         // do stuff
+    //         console.log("done");
+    //         console.log('A touchstart event occurred.');
+    //     } else {
+    //         console.log('Single Touch.');
+    //     }
 
-        lastClick = time;
-    });
+    //     lastClick = time;
+    // });
 
     map.on('mousemove', 'ecoregions', function(e) {
         map.getCanvas().style.cursor = "pointer";
@@ -928,15 +928,14 @@ Promise.all(requests)
 .then(values => values)
 .then(responses => Promise.all(responses.map(r => r.json())))
 .then(layers => {
-    console.log(layers);
+    geolocationControl.trigger();
 
+    console.log(layers);
     // add the data to Layers objects
     dataLayerInstance.setLayers(layers);
     dataLayerInstance.updateMapDataLayer();
 
     dataLayerInstance.updateLegendSection();
-
-    geolocationControl.trigger();
 
     spinnerContainer.classList.add('d-none');
 }); 
@@ -1071,3 +1070,7 @@ function updateProtectedAreaList(activeFeature) {
 
     pAreaContainer.innerHTML = content;
 }
+
+
+
+// Add a spinner on the side.
