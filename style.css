@@ -509,6 +509,7 @@ div#protected-areas {
 /* custom marker */
 .mapboxgl-popup-close-button {
     font-size: 1.5rem;
+    color:var(--black) !important;
 }
 
 .mapboxgl-marker {
