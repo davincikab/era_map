@@ -14,7 +14,7 @@ body {
     height: 100%
 }
 
-.spinner-container {
+.spinner-container, .spinner-container-small {
     position: absolute;
     z-index: 10;
     top:0;
@@ -29,7 +29,16 @@ body {
     color:white;
 }
 
-.spinner-container .spinner {
+.spinner-container-small {
+    opacity: 1;
+    background-color: var(--secondary);
+}
+
+.nearest-section {
+    position: relative;
+}
+
+.spinner-container .spinner, .spinner-container-small .spinner {
     height: 100px;
     width: 100px;
     border-radius: 50%;
@@ -453,6 +462,7 @@ body {
 
 .resource-section, .levels-section {
     display: none;
+    position: relative;
 }
 
 .btn-more {

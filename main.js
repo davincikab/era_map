@@ -2,6 +2,7 @@ const bbox = [-180, -90, 180, 90];
 const globalBoundary = turf.bboxPolygon(bbox);
 const bFc = turf.featureCollection([globalBoundary]);
 const spinnerContainer = document.getElementById("spinner-container");
+const spinnerContainerSmall = document.getElementById("spinner-container-small");
 
 // layers
 const layerStatus = {
@@ -247,6 +248,7 @@ map.on("load", function(e) {
     });
 
     map.on("dblclick", function(e) {
+        spinnerContainerSmall.classList.remove('d-none');
         console.log("Double Click");
 
         // update the drop marker
@@ -335,6 +337,11 @@ map.on("load", function(e) {
     if(!layerStore.activeFeature) {
         handleDefaults();
     }
+
+
+    // update the 
+    let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
+    map.getSource('india_46_ecoregions').setData(data);
 });
 
 function handleDefaults() {
@@ -932,7 +939,10 @@ Promise.all(requests)
     console.log(data);
 
     setTimeout(() => {
-        map.getSource('india_46_ecoregions').setData(data);
+        // if(map.getSource('india_46_ecoregions')) {
+        //     map.getSource('india_46_ecoregions').setData(data);
+        // }
+
         spinnerContainer.classList.add('d-none');
     }, 2000);
 }); 
@@ -1040,6 +1050,8 @@ function updateWatershedList(coordinates, activeFeature) {
     }).join("");
 
     watershedContainer.innerHTML = content;
+
+    spinnerContainerSmall.classList.add('d-none');
 }
 
 function updateProtectedAreaList(activeFeature) {
