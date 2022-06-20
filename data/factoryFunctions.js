@@ -5,7 +5,7 @@ function removeMarkers(markers) {
 function createMarker(item, popupFunction, icon) {
     // popup content
     let popupContent = popupFunction(item);
-    let popup = new mapboxgl.Popup({focusAfterOpen:false})
+    let popup = new mapboxgl.Popup({ focusAfterOpen:false })
         .setHTML(popupContent);
 
     // marker
@@ -15,17 +15,21 @@ function createMarker(item, popupFunction, icon) {
         .setPopup(popup)
         // .addTo(map);
 
-    marker.on("click", function(e) {
-        console.log("Marker click");
-        e.stopPropagation();
+    // marker.on("click", function(e) {
+    //     console.log("Marker click");
+    //     e.stopPropagation();
 
-        console.log(e);
-    });
+    //     console.log(e);
+    // });
 
     divMarker.onclick = function(e) {
         e.stopPropagation();
+        map.fire('close-popups');
 
-        marker.togglePopup();
+        setTimeout(() => {
+            marker.togglePopup();
+        }, 300);
+        
     }
 
     marker.id = item.id;

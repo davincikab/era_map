@@ -236,7 +236,6 @@ map.on("load", function(e) {
     // ecoregions click event
     map.on("click", 'ecoregions', function(e) {
         let activeEcoregion = e.features[0];
-
         if(activeEcoregion.properties.ECO_NAME == layerStore.ECO_NAME) {
             return;
         } 
@@ -260,11 +259,25 @@ map.on("load", function(e) {
 
     });
 
+    map.on('close-popups', function() {
+        console.log("Closing all popups");
+
+        Object.keys(layerStore).slice(3,).forEach(key => {
+            if(layerStore[key].instance.markers) {
+                let popups = layerStore[key].instance.markers.map(marker => marker.getPopup());
+                popups.forEach(popup => popup.remove());
+            }
+            
+
+        });
+
+    });
+
     // touch event to simulate dbclick
     let lastClick = 0;
     map.on('touchstart', (e) => {
         e.preventDefault(); // to disable browser default zoom on double tap
-        
+
         let date = new Date();
         let time = date.getTime();
         const time_between_taps = 200; // 200ms
@@ -272,6 +285,8 @@ map.on("load", function(e) {
             // do stuff
             console.log("done");
             console.log('A touchstart event occurred.');
+        } else {
+            console.log('Single Touch.');
         }
 
         lastClick = time;
@@ -361,7 +376,8 @@ function handleEcoregionClick(activeEcoregion) {
     handleLayerMarkers(layerStore, activeEcoregion);
     let activeGroup = document.querySelector(".side-tab .layer-group.active");
     console.log(activeGroup);
-    if(activeGroup.id == 'resources') {
+
+    if(activeGroup && activeGroup.id == 'resources') {
         activeGroup = document.getElementById(layerStore.activeResource);
     }
 

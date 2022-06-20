@@ -18,6 +18,7 @@ class ItemModule {
 
         this.markers.forEach((marker, index) => {
             let popup = marker.getPopup();
+            popup.remove();
     
             if(marker.id != id) {
                 popup.remove();

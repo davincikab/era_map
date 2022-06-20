@@ -224,8 +224,8 @@ class NurseryItem extends ItemModule {
                 <div class="title bold">${nursery['Name of the nursery']}</div>
                 <div class="nursery-body">
                     <span class="bold">Address</span>: ${nursery.Address} </br>
-                    <span class="bold">Website: ${nursery['Website Address']}</span> </br>
-                    <span class="bold">Contact no: ${nursery['Contact number']}</span> </br>
+                    <span class="bold">Website:</span> ${nursery['Website Address']} </br>
+                    <span class="bold">Contact no: </span> ${nursery['Contact number']} </br>
                 </div>
             </div>`;
         });
@@ -239,7 +239,7 @@ class NurseryItem extends ItemModule {
             <img src="${nursery['Name of the nursery']}" alt="">
             <div class="popup-body">
                 <span class="bold">Address</span>: ${nursery.Address} </br>
-                <span class="bold">Website: ${nursery['Website Address']}</span> </br>
+                <span class="bold">Website: </span> ${nursery['Website Address']} </br>
                 <span class="bold">Contact no: ${nursery['Contact number']}</span> </br>
             </div>
         </div>`
