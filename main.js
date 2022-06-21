@@ -335,7 +335,7 @@ map.on("load", function(e) {
     });
 
     if(!layerStore.activeFeature) {
-        // handleDefaults();
+        handleDefaults();
     }
 
 
@@ -930,7 +930,7 @@ Promise.all(requests)
         //     map.getSource('india_46_ecoregions').setData(data);
         // }
 
-        handleDefaults();
+        // handleDefaults();
         spinnerContainer.classList.add('d-none');
     }, 2000);
 }); 
@@ -1083,4 +1083,67 @@ window.addEventListener('resize', () => {
 });
 
 
+// iterate
+// function computeBounds() {
+//     // [55.33333, 11.15833]
+//     // [68.43959, 24.13676]
 
+//     let [x0, y0] = [11.15833,55.3333];
+
+//     let bounds = [];
+
+//     for (let i = 0; i < 15; i+=0.25) {
+//         let minX = x0 + i;
+//         let maxX = minX + 0.25;
+//         // bounds.push([minX, maxX]);
+
+//         for (let j = 0; j < 13; j+=0.25) { 
+//             console.log(j * i);
+//             let minY = y0 + j;
+//             let maxY = minY + 0.25;
+
+//             minY = parseFloat(minY.toFixed(5));
+//             maxY = parseFloat(maxY.toFixed(5));
+
+//             bounds.push([[minY, minX], [maxY, maxX]]);
+//         }        
+//     }
+
+//     return bounds;
+// }
+
+// let bds = computeBounds();
+// let features = [];
+// console.log(bds);
+
+
+// function iterate() {
+//     let i = 0;
+//     let interval = setInterval(() => {
+//         updateFeatures();
+//     }, 5000);
+
+//     function updateFeatures() {
+//         console.log(bds[i]);
+
+//         if(i < bds.length) {
+//             let fts = mapjson.toGeoJSON().features;
+//            fts.map(feature => {
+//                 let isAdded = features.find(t => t.properties.name == feature.properties.name);
+
+//                 if(!isAdded) {
+//                     features.push(feature)
+//                 }
+//            });
+
+//             mymap.flyToBounds(bds[i]);
+//             i++;
+//         } else {
+//             console.log("Complete");
+//             clearInterval(interval)
+//         }
+       
+//     }
+// }
+
+// iterate();
