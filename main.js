@@ -70,7 +70,7 @@ const geolocationControl = new mapboxgl.GeolocateControl({
     showUserHeading: true
 });
 
-map.addControl(geolocationControl, 'top-left');
+// map.addControl(geolocationControl, 'top-left');
 
 map.on("load", function(e) {
      // add the ecoregions
@@ -331,11 +331,11 @@ map.on("load", function(e) {
 
     geolocationControl.on('error', function(e) {
         console.log("Denied");
-        handleDefaults();
+        // handleDefaults();
     });
 
     if(!layerStore.activeFeature) {
-        handleDefaults();
+        // handleDefaults();
     }
 
 
@@ -678,20 +678,6 @@ function getFeatureMaskLayer(feature) {
     // map.getSource('mask').setData(mask);
 }
 
-// manage child headers
-
-
-// layers
-// Rainfall zones
-// Geomorphology
-// 
-
-
-// Crop out the Ecoregion
-// Tweak the map dimensions
-// 
-
-
 // load all the data layers
 let layers = [
     {
@@ -785,6 +771,7 @@ const DataLayers = function(layers, map) {
     }
 
     this.getDefaultEcoregion = function() {
+
         return this.layers.find(layer => layer.name == 'india_46_ecoregions').features.find(feature => {
             if(feature.properties.ECO_NAME == 'Central Deccan Plateau dry deciduous forests') {
                 return feature;
@@ -943,6 +930,7 @@ Promise.all(requests)
         //     map.getSource('india_46_ecoregions').setData(data);
         // }
 
+        handleDefaults();
         spinnerContainer.classList.add('d-none');
     }, 2000);
 }); 
@@ -1093,3 +1081,6 @@ window.addEventListener('resize', () => {
   let vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 });
+
+
+
