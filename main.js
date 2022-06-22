@@ -245,6 +245,8 @@ map.on("load", function(e) {
         // display the click
 
         dropPin.remove();
+        document.getElementById("park-list").innerHTML = "";
+        document.getElementById("watershed-list").innerHTML = "";
     });
 
     map.on("dblclick", function(e) {
@@ -259,6 +261,8 @@ map.on("load", function(e) {
             Object.values(e.lngLat),
             layerStore.activeFeature
         );
+
+        updateProtectedAreaList(layerStore.activeFeature, Object.values(e.lngLat));
 
     });
 
@@ -465,7 +469,7 @@ function updateEcoregionInfo(ecoregion) {
             ${ecoInfo['Write up']}
         </div>
 
-        <a href="${ecoInfo['Know more link']}" class="btn-more">KNOW MORE</a>
+        <a href="${ecoInfo['Know more link']}" class="btn-more" target="_blank">KNOW MORE</a>
         `
 }
 
@@ -749,9 +753,9 @@ const DataLayers = function(layers, map) {
         this.updateSourceWithId(layerId, turf.featureCollection(features));
 
         // update protected areas
-        if(layerId == 'watershed') {
-            updateProtectedAreaList(clipFeature);
-        }
+        // if(layerId == 'watershed') {
+        //     updateProtectedAreaList(clipFeature);
+        // }
     }
 
     this.getEcoregionOn = function(coords) {
@@ -1042,7 +1046,7 @@ function updateWatershedList(coordinates, activeFeature) {
     spinnerContainerSmall.classList.add('d-none');
 }
 
-function updateProtectedAreaList(activeFeature) {
+function updateProtectedAreaList(activeFeature, coord=[77.8119, 18.7472]) {
     // display the five closest protected areas
     let pareas = JSON.parse(
         JSON.stringify(dataLayerInstance.layers.find(l => l.name == 'protected_areas'))
@@ -1051,18 +1055,23 @@ function updateProtectedAreaList(activeFeature) {
     pareas.features = pareas.features.filter(ft => ft.properties.ECO_NAME == activeFeature.properties.ECO_NAME);
     console.log(pareas);
 
-    // var options = { units: 'kilometers', properties: {foo: 'bar'}};
-    // var circle = turf.circle(coordinates, 10, options);
+    let points = pareas.features.map(feature => turf.centroid(feature, {properties:feature.properties}));
+    let from = turf.point(coord);
+    points = points.map(pnt => {
+        let distance = turf.distance(pnt, from);
 
-    // let closestAreas = pareas.features.filter(p => turf.booleanOverlap(circle, p));
-    // console.log(closestAreas);
+        return {name:`${pnt.properties.NAME} ${pnt.properties.DESIG_ENG}`, distance}
+    });
+
+    points.sort((a, b) => b.distance - a.distance);
+    console.log(points);
 
     // find the pareas close to the clicked point
-    let areas = pareas.features.slice(0, 5);
+    let areas = points.slice(0, 5);
     let pAreaContainer = document.getElementById("park-list");
 
     let content = areas.map(item => {
-        return `<div>${item.properties.NAME}</div>`;
+        return `<div>${item.name}</div>`;
     }).join("");
 
     pAreaContainer.innerHTML = content;

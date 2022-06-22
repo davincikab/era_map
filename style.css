@@ -448,7 +448,7 @@ body {
 }
 
 .nursery-section .nursery-body {
-    width: 220px;
+    width: 100%;
 }
 
 .nursery-section .title {
@@ -475,6 +475,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 12px;
+    text-decoration: none;
     
     /* font-size: 1rem;
     font-size: 0.8rem; */
@@ -523,6 +524,7 @@ div#protected-areas {
 .mapboxgl-popup-close-button {
     font-size: 1.5rem;
     color:var(--black) !important;
+    padding: 0px 0.5rem;
 }
 
 .mapboxgl-marker {
@@ -733,6 +735,8 @@ div#protected-areas {
 .side-tab .text-section {
     color:white;
     margin:0.5rem 0;
+
+    min-width: 380px;
 }
 
 

@@ -59,7 +59,8 @@ class PublicationItem extends ItemModule {
 
     getPopupContent(publication) {
         // <div class="carousel-container"></div>
-    
+        let link = publication.post_name ? `https://era-india.org/resources/${publication.post_name}` : (publication.era_resource_external_link || publication.era_publication_file);
+
         return `<div class="popup-content">
             <img src="${publication.featured_image}" alt="">
             <div class="popup-body">
@@ -70,7 +71,7 @@ class PublicationItem extends ItemModule {
                     ${publication.post_content.substr(0, 100)} ...
                 </div>
     
-                <div class="btn-more bg-primary">KNOW MORE</div>
+                <a href="${link}" class="btn-more bg-primary" target="_blank">KNOW MORE</a>
             </div>
         </div>`;
     }
@@ -143,7 +144,7 @@ class VideoItem extends ItemModule {
                     ${video.post_content.substr(0, 100)} ...
                 </div>
     
-                <div class="btn-more bg-primary">KNOW MORE</div>
+                <a href="${video.era_video_link}" class="btn-more bg-primary" target="_blank">KNOW MORE</a>
             </div>
         </div>`
     }
