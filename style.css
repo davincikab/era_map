@@ -406,7 +406,6 @@ body {
 }
 
 .media-title span {
-   
     background-color: var(--white);
     color:var(--secondary);
     padding:0.375rem;
@@ -424,7 +423,7 @@ body {
 }
 
 .video-section > * {
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 
 .video > video {
@@ -576,6 +575,21 @@ div#protected-areas {
     color:var(--black)
 }
 
+.popup-content.nursery div.img {
+    margin:0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content.nursery img {
+    background-color: white;
+    width: 100px;
+    height: 100px;
+    box-shadow: 0px 0px 0.25rem #222;
+    border-radius: 50%;
+}
+
 /* utils classes */
 .bold {
     font-weight: bold !important;
@@ -627,9 +641,9 @@ div#protected-areas {
 
     .data-toggler {
         top:8%;
-        left:5%;
+        left: auto;
         width: 50vw;
-        right:auto;
+        right:40%;
     }
 
     .data-toggler button {

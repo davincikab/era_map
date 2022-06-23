@@ -61,6 +61,7 @@ map.addControl(navigationControl, 'bottom-right');
 
 // geolocation
 const geolocationControl = new mapboxgl.GeolocateControl({
+    fitBoundsOptions:{ maxZoom:10 },
     positionOptions: {
         enableHighAccuracy: true
     },
@@ -70,14 +71,14 @@ const geolocationControl = new mapboxgl.GeolocateControl({
     showUserHeading: true
 });
 
-// map.addControl(geolocationControl, 'top-left');
+map.addControl(geolocationControl, 'top-left');
 
 map.on("load", function(e) {
      // add the ecoregions
      map.addSource("india_46_ecoregions", {
         type:'geojson',
-        data:'data/india_46_ecoregions.geojson'
-        // data:turf.featureCollection([])
+        // data:'data/india_46_ecoregions.geojson'
+        data:turf.featureCollection([])
     });
 
     map.addLayer({
@@ -320,6 +321,12 @@ map.on("load", function(e) {
 
                 if(feature) {
                     layerStore.activeFeature = feature;
+                    pdateWatershedList(
+                        [longitude, latitude],
+                        layerStore.activeFeature
+                    );
+            
+                    updateProtectedAreaList(layerStore.activeFeature, [longitude, latitude]);
                 } else {
                     let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
                     layerStore.activeFeature = {...activeEcoregion};
@@ -400,30 +407,34 @@ function handleLayerMarkers(layerStore, activeEcoregion) {
 
     filterKeys.forEach(key => {
         let points, activePoints, pnts;
-        if(key == 'nurseries') {
+        // if(key == 'nurseries') {
             pnts = layerStore[key].instance.items.filter(item => {
                 let ecoName = layerStore.activeEcoregion.toLowerCase();
-                let ecoregions = item.Ecoregion.trim().split(",").map(lt => lt.toLowerCase());
+                let ecoregions = item.ecoregion.trim().split(",").map(lt => lt.toLowerCase().trim());
 
                 if(ecoregions.indexOf(ecoName) !== -1) {
+                    console.log(ecoregions);
+                    console.log(key, ':', ecoName);
+
                     return true;
                 }
 
                 return false;
             });
-        } else if([ 'key-species', 'nurseries', 'pareas'].indexOf(key) != -1) {
-            // filter by ecoregion name
-            pnts = layerStore[key].instance.items.filter(item => item.ecoregion.toLowerCase() == layerStore.activeEcoregion.toLowerCase());
+        // } else if([ 'key-species', 'nurseries', 'pareas'].indexOf(key) != -1) {
+        //     // filter by ecoregion name
+        //     pnts = layerStore[key].instance.items.filter(item => item.ecoregion.toLowerCase() == layerStore.activeEcoregion.toLowerCase());
             
 
-        } else {
-            points = createGeojson(layerStore[key].instance.items);
+        // } else {
+            // points = createGeojson(layerStore[key].instance.items);
 
-            activePoints = turf.pointsWithinPolygon(points, activeEcoregion);
-            pnts = activePoints.features.map(feature => feature.properties);
+            // activePoints = turf.pointsWithinPolygon(points, activeEcoregion);
+            // pnts = activePoints.features.map(feature => feature.properties);
 
+            // pnts = layerStore[key].instance.items.filter(item => item.ecoregion.toLowerCase() == layerStore.activeEcoregion.toLowerCase());
             // clip the layers
-        }
+        // }
 
         layerStore[key].instance.setItems(pnts);
 

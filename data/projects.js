@@ -38,7 +38,7 @@ class ProjectItem extends ItemModule {
 
         if(!this.projects[0]) {
             projectsContainer.innerHTML = `<div class="text-section">
-                We are currently working on curating a projects list for this ecoregion. 
+                We're currently working on curating a projects list for this ecoregion. 
                 Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
             </div>`
             return;
@@ -95,10 +95,31 @@ let projectInstance = new ProjectItem([]);
 // creating marker
 d3.csv('/point_data/projects.csv')
 .then(data => {
-    data = data.filter(l => l.post_title).map((dt, index) => {
+    data = data.filter(l => l.post_title).reduce((a,b) =>{
+        let coords = b.era_project_coordinates.split(';');
+
+        if(coords.length > 1) {
+            let items = coords.map(coord => {
+                let itemsA = { ...b };
+                itemsA.era_project_coordinates = coord;
+
+                return itemsA;
+            });
+
+            a = [...a, ...items];
+
+        } else {
+            a.push(b);
+        }
+
+        return a;
+    }, []);
+    console.log(data);
+
+    data = data.map((dt, index) => {
         let coord = dt.era_project_coordinates.split(",");
         dt.coordinates = coord.map(l => parseFloat(l)).reverse();
-        
+        dt.ecoregion = dt.era_project_ecoregion
         dt.id = `${index}-projects`;
 
         return dt;

@@ -90,9 +90,11 @@ class KeySpeciesItem {
 
         if(!this.keySpecies[0]) {
             speciesContainer.innerHTML = `<div class="text-section">
-                We are currently working on curating a species list for this ecoregion. 
+                We're currently working on curating a species list for this ecoregion. 
                 Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
-            </div>`
+            </div>`;
+
+            document.getElementById('active-species').innerHTML = "";
             return;
         }
     
@@ -119,7 +121,7 @@ class KeySpeciesItem {
 
 let speciesInstance = new KeySpeciesItem([]);
 
-d3.csv("/point_data/species_csv.csv")
+d3.csv("/point_data/species.csv")
 .then(data => {
     data = data.map((item, i) => {
         item.id = i;

@@ -15,8 +15,9 @@ class PublicationItem extends ItemModule {
 
         if(!this.publications[0]) {
             publicationContainer.innerHTML = `<div class="text-section">
-                We are currently working on curating a publications for this ecoregion. 
+                We're currently working on curating a publications for this ecoregion. 
                 Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more bg-primary" target="_blank">ADD RESOURCE</a>
             </div>`
             return;
         }
@@ -64,7 +65,7 @@ class PublicationItem extends ItemModule {
         return `<div class="popup-content">
             <img src="${publication.featured_image}" alt="">
             <div class="popup-body">
-                <div class="bold title">${publication.Project}</div>
+                <div class="bold title">${publication.post_category}</div>
                 <div class="">${publication.era_resource_state}</div>
     
                 <div class="description">
@@ -98,18 +99,25 @@ class VideoItem extends ItemModule {
 
         if(!this.videos[0]) {
             videosContainer.innerHTML = `<div class="text-section">
-                We are currently working on curating a videos list for this ecoregion. 
+                We're currently working on curating a videos list for this ecoregion. 
                 Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more bg-primary" target="_blank">ADD RESOURCE</a>
             </div>`
             return;
         }
-
+        
         this.videos.forEach(video => {
+            let videoId = video.era_video_link.split("/").slice(-1,)[0].split("?v=").slice(-1,)[0];
+            videoId = videoId.replace(/&t=.+/g, "");
+            console.log(videoId);
+            //  <iframe width="300" height="150" src="http://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+            // <video controls="true">
+            //     <source src="http://www.youtube.com/watch?v=${videoId}" type="video/mp4" />
+            // </video>
+
             content += `<div class="video-section" data-id="${video.id}">
                 <div class="video">
-                    <video controls="true">
-                        <source src="${video.era_video_link}" type="video/mp4" />
-                    </video>
+                    <iframe width="300" height="150" src="http://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
                 </div>
                 <div class="video-caption">
                     ${video.title}
@@ -157,6 +165,7 @@ d3.csv('/point_data/resources.csv')
     data = data.map((dt, index) => {
         let coord = dt.era_resource_coordinates.split(",");
         dt.coordinates = coord.map(l => parseFloat(l)).reverse();
+        dt.ecoregion = dt.era_resource_ecoregion;
         
         dt.id = `${index}-publication`;
 
@@ -214,8 +223,9 @@ class NurseryItem extends ItemModule {
 
         if(!this.nurseries[0]) {
             nurseyContainer.innerHTML = `<div class="text-section">
-                We are currently working on curating a nursery list for this ecoregion. 
+                We're currently working on curating a nursery list for this ecoregion. 
                 Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more bg-primary" target="_blank">ADD RESOURCE</a>
             </div>`
             return;
         }
@@ -225,7 +235,7 @@ class NurseryItem extends ItemModule {
                 <div class="title bold">${nursery['Name of the nursery']}</div>
                 <div class="nursery-body">
                     <span class="bold">Address</span>: ${nursery.Address} </br>
-                    <span class="bold">Website:</span> ${nursery['Website Address']} </br>
+                    <span class="bold">Website:</span> <a href="${nursery['Website Address']}">${nursery['Website Address']}</a> </br>
                     <span class="bold">Contact no: </span> ${nursery['Contact number']} </br>
                 </div>
             </div>`;
@@ -236,12 +246,14 @@ class NurseryItem extends ItemModule {
     }
 
     getPopupContent(nursery) {    
-        return `<div class="popup-content">
-            <img src="${nursery['Name of the nursery']}" alt="">
+        return `<div class="popup-content nursery">
+            <div class="img">
+                <img src="/icons/nurseries.png" alt="">
+            </div>
             <div class="popup-body">
                 <span class="bold">Address</span>: ${nursery.Address} </br>
-                <span class="bold">Website: </span> ${nursery['Website Address']} </br>
-                <span class="bold">Contact no: ${nursery['Contact number']}</span> </br>
+                <span class="bold">Website: </span><a href="${nursery['Website Address']}">${nursery['Website Address']}</a></br>
+                <span class="bold">Contact no:</span>  ${nursery['Contact number']} </br>
             </div>
         </div>`
     }
@@ -253,7 +265,7 @@ d3.csv("/point_data/nurseries.csv")
 .then(data => {
     data = data.filter(dt => dt.Coordinates).map((item, i) => {
         item.id = i;
-        item.ecoregion = item.era_species_ecoregion;
+        item.ecoregion = item.Ecoregion;
         item.coordinates = item.Coordinates.trim().split(",").map(coord => parseFloat(coord)).reverse();
         return item;
     });
