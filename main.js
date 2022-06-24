@@ -321,7 +321,7 @@ map.on("load", function(e) {
         }, 200);
 
         function timerFunction(e) {
-            if(dataLayerInstance.layers) {
+            if(dataLayerInstance.layers[0]) {
                 console.log("Layer loaded");
                 // let coords =   [75.75879000084299, 18.83615708106636];
                 
@@ -372,7 +372,7 @@ function handleDefaults() {
     }, 1000);
 
     function getData() {
-        if(dataLayerInstance.layers) {
+        if(dataLayerInstance.layers[0]) {
             let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
             layerStore.activeFeature = dataLayerInstance.getDefaultEcoregion();
             handleEcoregionClick(activeEcoregion);
