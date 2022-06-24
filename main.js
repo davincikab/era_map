@@ -980,7 +980,8 @@ Promise.all(requests)
         // handleDefaults();
         spinnerContainer.classList.add('d-none');
     }, 2000);
-}); 
+})
+.catch(console.error); 
 
 
 // toggler the dataLayer Toggler
