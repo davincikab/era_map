@@ -61,7 +61,7 @@ map.addControl(navigationControl, 'bottom-right');
 
 // geolocation
 const geolocationControl = new mapboxgl.GeolocateControl({
-    fitBoundsOptions:{ maxZoom:7 },
+    fitBoundsOptions:{ maxZoom:5 },
     positionOptions: {
         enableHighAccuracy: true
     },
@@ -74,6 +74,8 @@ const geolocationControl = new mapboxgl.GeolocateControl({
 map.addControl(geolocationControl, 'top-left');
 
 map.on("load", function(e) {
+    console.log("Map is Loaded");
+
     geolocationControl.trigger();
 
     // add the ecoregions
@@ -307,6 +309,8 @@ map.on("load", function(e) {
     toggleActiveEcoregion();
 
     geolocationControl.on('geolocate', function(e) {
+        map.setCenter({ lng: 73.29879658306868, lat: 18.575687042687875 });
+
         // find the ecoregion on the given coordinate;
         let { latitude, longitude } = e.coords;
         let coords = [longitude, latitude];
@@ -318,10 +322,15 @@ map.on("load", function(e) {
         console.log({ latitude, longitude });
         let timer = setInterval(function(e) {
             timerFunction(e);
-        }, 200);
+        }, 1000);
 
         function timerFunction(e) {
+            console.log("Running timer function");
+
             if(dataLayerInstance.layers[0]) {
+                let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
+                map.getSource('india_46_ecoregions').setData(data);
+                
                 console.log("Layer loaded");
                 // let coords =   [75.75879000084299, 18.83615708106636];
                 
@@ -345,7 +354,7 @@ map.on("load", function(e) {
                     handleEcoregionClick(layerStore.activeFeature);
                 }
 
-                
+                                
             }
         }
 
@@ -362,8 +371,8 @@ map.on("load", function(e) {
     // }
 
     // update the 
-    let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
-    map.getSource('india_46_ecoregions').setData(data);
+    // let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
+    // map.getSource('india_46_ecoregions').setData(data);
 });
 
 function handleDefaults() {
@@ -934,9 +943,11 @@ Promise.all(requests)
     console.log(layers);
 
     // add the data to Layers objects
-    dataLayerInstance.setLayers(layers);
-    dataLayerInstance.updateMapDataLayer();
-    dataLayerInstance.updateLegendSection();
+    setTimeout(() => {
+        dataLayerInstance.setLayers(layers);
+        dataLayerInstance.updateMapDataLayer();
+        dataLayerInstance.updateLegendSection();
+    }, 5000);
 
 
     let ecoregions = layers.find(layer  => layer.name == 'india_46_ecoregions');
