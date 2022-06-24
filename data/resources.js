@@ -65,11 +65,11 @@ class PublicationItem extends ItemModule {
         return `<div class="popup-content">
             <img src="${publication.featured_image}" alt="">
             <div class="popup-body">
-                <div class="bold title">${publication.post_category}</div>
+                <div class="bold title">${publication.post_title}</div>
                 <div class="">${publication.era_resource_state}</div>
     
                 <div class="description">
-                    ${publication.post_content.substr(0, 100)} ...
+                    
                 </div>
     
                 <a href="${link}" class="btn-more bg-primary" target="_blank">KNOW MORE</a>

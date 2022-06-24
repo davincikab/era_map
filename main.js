@@ -356,9 +356,19 @@ map.on("load", function(e) {
 });
 
 function handleDefaults() {
-    let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
-    layerStore.activeFeature = dataLayerInstance.getDefaultEcoregion();
-    handleEcoregionClick(activeEcoregion);
+    let timer = setInterval(() => {
+        getData();
+    }, 1000);
+
+    function getData() {
+        if(dataLayerInstance.layers) {
+            let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
+            layerStore.activeFeature = dataLayerInstance.getDefaultEcoregion();
+            handleEcoregionClick(activeEcoregion);
+
+            clearInterval(timer);
+        }
+    }
 }
 
 function handleEcoregionClick(activeEcoregion) {

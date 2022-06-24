@@ -83,7 +83,7 @@ class ProjectItem extends ItemModule {
                     ${project.post_content.substr(0, 100)} ...
                 </div>
     
-                <a href="${project.era_website}" class="btn-more bg-primary" target="_blank">KNOW MORE</a>
+                <a href="${project.post_name}" class="btn-more bg-primary" target="_blank">KNOW MORE</a>
             </div>
         </div>`
     }
