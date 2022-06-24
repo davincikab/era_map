@@ -330,7 +330,7 @@ map.on("load", function(e) {
             if(dataLayerInstance.layers[0]) {
                 let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
                 map.getSource('india_46_ecoregions').setData(data);
-                
+
                 console.log("Layer loaded");
                 // let coords =   [75.75879000084299, 18.83615708106636];
                 
@@ -943,11 +943,9 @@ Promise.all(requests)
     console.log(layers);
 
     // add the data to Layers objects
-    setTimeout(() => {
-        dataLayerInstance.setLayers(layers);
-        dataLayerInstance.updateMapDataLayer();
-        dataLayerInstance.updateLegendSection();
-    }, 5000);
+    dataLayerInstance.setLayers(layers);
+    dataLayerInstance.updateMapDataLayer();
+    dataLayerInstance.updateLegendSection();
 
 
     let ecoregions = layers.find(layer  => layer.name == 'india_46_ecoregions');
