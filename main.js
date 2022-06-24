@@ -61,7 +61,7 @@ map.addControl(navigationControl, 'bottom-right');
 
 // geolocation
 const geolocationControl = new mapboxgl.GeolocateControl({
-    fitBoundsOptions:{ maxZoom:10 },
+    fitBoundsOptions:{ maxZoom:7 },
     positionOptions: {
         enableHighAccuracy: true
     },
@@ -74,7 +74,9 @@ const geolocationControl = new mapboxgl.GeolocateControl({
 map.addControl(geolocationControl, 'top-left');
 
 map.on("load", function(e) {
-     // add the ecoregions
+    geolocationControl.trigger();
+
+    // add the ecoregions
      map.addSource("india_46_ecoregions", {
         type:'geojson',
         // data:'data/india_46_ecoregions.geojson'
@@ -307,7 +309,13 @@ map.on("load", function(e) {
     geolocationControl.on('geolocate', function(e) {
         // find the ecoregion on the given coordinate;
         let { latitude, longitude } = e.coords;
+        let coords = [longitude, latitude];
 
+        dropPin.setLngLat(coords).addTo(map);
+
+        console.log("User Location");
+
+        console.log({ latitude, longitude });
         let timer = setInterval(function(e) {
             timerFunction(e);
         }, 200);
@@ -315,22 +323,26 @@ map.on("load", function(e) {
         function timerFunction(e) {
             if(dataLayerInstance.layers) {
                 console.log("Layer loaded");
+                // let coords =   [75.75879000084299, 18.83615708106636];
+                
+                let feature = dataLayerInstance.getEcoregionOn(coords);
+                console.log(feature);
 
-                let feature = dataLayerInstance.getEcoregionOn([longitude, latitude]);
                 window.clearInterval(timer);
 
                 if(feature) {
                     layerStore.activeFeature = feature;
-                    pdateWatershedList(
-                        [longitude, latitude],
+                    handleEcoregionClick(layerStore.activeFeature);
+                    updateWatershedList(
+                        coords,
                         layerStore.activeFeature
                     );
             
-                    updateProtectedAreaList(layerStore.activeFeature, [longitude, latitude]);
+                    updateProtectedAreaList(layerStore.activeFeature, coords);
                 } else {
                     let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
                     layerStore.activeFeature = {...activeEcoregion};
-                    handleEcoregionClick(activeEcoregion);
+                    handleEcoregionClick(layerStore.activeFeature);
                 }
 
                 
@@ -342,13 +354,12 @@ map.on("load", function(e) {
 
     geolocationControl.on('error', function(e) {
         console.log("Denied");
-        // handleDefaults();
+        handleDefaults();
     });
 
-    if(!layerStore.activeFeature) {
-        handleDefaults();
-    }
-
+    // if(!layerStore.activeFeature) {
+    //     handleDefaults();
+    // }
 
     // update the 
     let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
@@ -920,7 +931,6 @@ Promise.all(requests)
 .then(values => values)
 .then(responses => Promise.all(responses.map(r => r.json())))
 .then(layers => {
-    geolocationControl.trigger();
     console.log(layers);
 
     // add the data to Layers objects
@@ -1051,14 +1061,19 @@ function updateWatershedList(coordinates, activeFeature) {
         JSON.stringify(dataLayerInstance.layers.find(l => l.name == 'watershed'))
     );
 
+    console.log(items);
+
     items.features = items.features.filter(ft => ft.properties.ECO_NAME == activeFeature.properties.ECO_NAME);
     let point = turf.point([...coordinates]);
 
-    let basins = items.features.find(ft => turf.booleanPointInPolygon(point, ft));
+    let basinsOnPoint = items.features.find(ft => turf.booleanPointInPolygon(point, ft));
+    let basins = basinsOnPoint ? [basinsOnPoint] : [];
+
+    console.log(basins);
 
     // update container
     let watershedContainer = document.getElementById("watershed-list");
-    let content = [basins].map(item => {
+    let content = basins.map(item => {
         return `<div>${item.properties.Sub_Basin}</div>`;
     }).join("");
 
