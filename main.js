@@ -727,31 +727,31 @@ function getFeatureMaskLayer(feature) {
 let layers = [
     {
         id:'ecoregions',
-        source:'/data/india_46_ecoregions.geojson'
+        source:'/data/india_46_ecoregions.pbf'
     },
     {
         id:'watershed',
-        source:'/data/watershed.geojson'
+        source:'/data/watershed.pbf'
     },
     {
         id:'protected_areas',
-        source:'/data/protected_areas.geojson'
+        source:'/data/protected_areas.pbf'
     },
     {
         id:'soil',
-        source:'/data/india_soils_ibp.geojson'
+        source:'/data/india_soils_ibp.pbf'
     },
     {
         id:'rainfallzones',
-        source:'/data/india_rainfallzones_ibp.geojson'
+        source:'/data/india_rainfallzones_ibp.pbf'
     },
     {
         id:'geology',
-        source:'/data/india_geology_ibp.geojson'
+        source:'/data/india_geology_ibp.pbf'
     },
     {
         id:'geomorphology',
-        source:'/data/india_geomorphology_ibp.geojson'
+        source:'/data/india_geomorphology_ibp.pbf'
     }
 ];
 
@@ -938,9 +938,12 @@ let requests = layers.map(layer => fetch(layer.source));
 
 Promise.all(requests)
 .then(values => values)
-.then(responses => Promise.all(responses.map(r => r.json())))
+.then(responses => Promise.all(responses.map(r => r.arrayBuffer())))
 .then(layers => {
     console.log(layers);
+    layers = layers.map(layer => {
+        return geobuf.decode(new Pbf(layer));
+    })
 
     // add the data to Layers objects
     dataLayerInstance.setLayers(layers);
