@@ -392,7 +392,7 @@ function handleDefaults() {
 }
 
 function handleEcoregionClick(activeEcoregion) {
-    getFeatureMaskLayer(activeEcoregion);
+    // getFeatureMaskLayer(activeEcoregion);
 
     // update ecoregion info
     updateEcoregionInfo(activeEcoregion);
@@ -443,8 +443,8 @@ function handleLayerMarkers(layerStore, activeEcoregion) {
                 let ecoregions = item.ecoregion.trim().split(",").map(lt => lt.toLowerCase().trim());
 
                 if(ecoregions.indexOf(ecoName) !== -1) {
-                    console.log(ecoregions);
-                    console.log(key, ':', ecoName);
+                    // console.log(ecoregions);
+                    // console.log(key, ':', ecoName);
 
                     return true;
                 }
@@ -481,6 +481,7 @@ function handleLayerMarkers(layerStore, activeEcoregion) {
 }
 
 function toggleActiveEcoregion(regionName="Central Deccan Plateau dry deciduous forests") {
+    console.log("Region", regionName);
     // display the active ecoregion
     map.setPaintProperty('ecoregions', 'fill-opacity', [
         'case',
@@ -500,6 +501,8 @@ function fitMapToFeatureBounds(feature) {
 function updateEcoregionInfo(ecoregion) {
     let ecoregionElement = document.getElementById("ecoregion-info");
     let ecoInfo = ecoregion.properties;
+
+    console.log("Eco", ecoregion);
 
     ecoregionElement.innerHTML = `<h3 class="section-title">
         ${ecoInfo['Name of the ecoregion']}
