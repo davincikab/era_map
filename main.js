@@ -940,12 +940,16 @@ Promise.all(requests)
 .then(responses => {
       // all responses are resolved successfully
     for(let response of responses) {
-        alert(`${response.url}: ${response.status}`); // shows 200 for every url
+        // alert(`${response.url}: ${response.status}`); // shows 200 for every url
     }
 
     return responses;
 })
-.then(responses => Promise.all(responses.map(r => r.arrayBuffer())))
+.then(responses => {
+    console.log("Responses to JSON");
+
+    return Promise.all(responses.map(r => r.arrayBuffer()))
+})
 .then(layers => {
     console.log(layers);
     layers = layers.map(layer => {
