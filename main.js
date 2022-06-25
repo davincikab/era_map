@@ -937,7 +937,14 @@ let dataLayerInstance = new DataLayers([], map);
 let requests = layers.map(layer => fetch(layer.source));
 
 Promise.all(requests)
-.then(values => values)
+.then(responses => {
+      // all responses are resolved successfully
+    for(let response of responses) {
+        alert(`${response.url}: ${response.status}`); // shows 200 for every url
+    }
+
+    return responses;
+})
 .then(responses => Promise.all(responses.map(r => r.arrayBuffer())))
 .then(layers => {
     console.log(layers);
