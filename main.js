@@ -246,7 +246,12 @@ map.on("load", function(e) {
             return;
         } 
 
-        handleEcoregionClick(activeEcoregion);     
+        handleEcoregionClick({
+            type:"Feature",
+            properties:activeEcoregion.properties,
+            geometry:activeEcoregion.geometry
+        });     
+        
         // display the click
 
         dropPin.remove();
