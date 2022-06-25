@@ -248,10 +248,10 @@ map.on("load", function(e) {
 
         handleEcoregionClick({
             type:"Feature",
-            properties:activeEcoregion.properties,
-            geometry:activeEcoregion.geometry
+            properties:{...activeEcoregion.properties},
+            geometry:{...activeEcoregion.geometry}
         });     
-        
+
         // display the click
 
         dropPin.remove();
@@ -323,11 +323,11 @@ map.on("load", function(e) {
         dropPin.setLngLat(coords).addTo(map);
 
         console.log("User Location");
-
         console.log({ latitude, longitude });
-        let timer = setInterval(function(e) {
+
+        let timer = setTimeout(function(e) {
             timerFunction(e);
-        }, 1000);
+        }, 2000);
 
         function timerFunction(e) {
             console.log("Running timer function");
@@ -360,6 +360,8 @@ map.on("load", function(e) {
                 }
 
                                 
+            } else {
+                timerFunction();
             }
         }
 
@@ -398,6 +400,7 @@ function handleDefaults() {
 
 function handleEcoregionClick(activeEcoregion) {
     // getFeatureMaskLayer(activeEcoregion);
+    console.log(JSON.parse(JSON.stringify(activeEcoregion)));
 
     // update ecoregion info
     updateEcoregionInfo(activeEcoregion);
@@ -996,6 +999,11 @@ Promise.all(requests)
         //     map.getSource('india_46_ecoregions').setData(data);
         // }
 
+        if(map.loaded()) {
+            let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
+            map.getSource('india_46_ecoregions').setData(data);
+        }
+
         // handleDefaults();
         spinnerContainer.classList.add('d-none');
     }, 2000);
@@ -1174,10 +1182,10 @@ window.addEventListener('resize', () => {
 //         let maxX = minX + 0.25;
 //         // bounds.push([minX, maxX]);
 
-//         for (let j = 0; j < 13; j+=0.25) { 
+//         for (let j = 0; j < 13; j+=0.035) { 
 //             console.log(j * i);
 //             let minY = y0 + j;
-//             let maxY = minY + 0.25;
+//             let maxY = minY + 0.035;
 
 //             minY = parseFloat(minY.toFixed(5));
 //             maxY = parseFloat(maxY.toFixed(5));
@@ -1198,7 +1206,7 @@ window.addEventListener('resize', () => {
 //     let i = 0;
 //     let interval = setInterval(() => {
 //         updateFeatures();
-//     }, 5000);
+//     }, 2000);
 
 //     function updateFeatures() {
 //         console.log(bds[i]);
