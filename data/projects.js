@@ -119,7 +119,7 @@ d3.csv('/point_data/projects.csv')
     data = data.map((dt, index) => {
         let coord = dt.era_project_coordinates.split(",");
         dt.coordinates = coord.map(l => parseFloat(l)).reverse();
-        dt.ecoregion = dt.era_project_ecoregion
+        dt.ecoregion = dt.era_project_ecoregion_new
         dt.id = `${index}-projects`;
 
         return dt;

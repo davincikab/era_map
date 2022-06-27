@@ -125,7 +125,7 @@ d3.csv("/point_data/species.csv")
 .then(data => {
     data = data.map((item, i) => {
         item.id = i;
-        item.ecoregion = item.era_species_ecoregion;
+        item.ecoregion = item.era_species_ecoregion_new;
 
         return item;
     });

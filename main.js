@@ -79,16 +79,16 @@ map.on("load", function(e) {
     geolocationControl.trigger();
 
     // add the ecoregions
-     map.addSource("india_46_ecoregions", {
+     map.addSource("india_51_ecoregions", {
         type:'geojson',
-        // data:'data/india_46_ecoregions.geojson'
+        // data:'data/india_51_ecoregions.geojson'
         data:turf.featureCollection([])
     });
 
     map.addLayer({
         id:'ecoregions',
         type:'fill',
-        source:'india_46_ecoregions',
+        source:'india_51_ecoregions',
         paint:{
             'fill-color':['get', 'COLOR'],
             'fill-opacity':0.01,
@@ -333,8 +333,8 @@ map.on("load", function(e) {
             console.log("Running timer function");
 
             if(dataLayerInstance.layers[0]) {
-                let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
-                map.getSource('india_46_ecoregions').setData(data);
+                let data = dataLayerInstance.layers.find(layer => layer.name == 'india_51_ecoregions');
+                map.getSource('india_51_ecoregions').setData(data);
 
                 console.log("Layer loaded");
                 // let coords =   [75.75879000084299, 18.83615708106636];
@@ -380,8 +380,8 @@ map.on("load", function(e) {
     // }
 
     // update the 
-    // let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
-    // map.getSource('india_46_ecoregions').setData(data);
+    // let data = dataLayerInstance.layers.find(layer => layer.name == 'india_51_ecoregions');
+    // map.getSource('india_51_ecoregions').setData(data);
 });
 
 function handleDefaults() {
@@ -740,7 +740,7 @@ function getFeatureMaskLayer(feature) {
 let layers = [
     {
         id:'ecoregions',
-        source:'/data/india_46_ecoregions.pbf'
+        source:'/data/india_51_ecoregions.pbf'
     },
     {
         id:'watershed',
@@ -813,7 +813,7 @@ const DataLayers = function(layers, map) {
     }
 
     this.getEcoregionOn = function(coords) {
-        let ecoregions = this.layers.find(layer => layer.name == 'india_46_ecoregions');
+        let ecoregions = this.layers.find(layer => layer.name == 'india_51_ecoregions');
 
         let point = turf.point([...coords]);
         let ecoregionFeature = ecoregions.features.find(feature => {
@@ -830,7 +830,7 @@ const DataLayers = function(layers, map) {
 
     this.getDefaultEcoregion = function() {
 
-        return this.layers.find(layer => layer.name == 'india_46_ecoregions').features.find(feature => {
+        return this.layers.find(layer => layer.name == 'india_51_ecoregions').features.find(feature => {
             if(feature.properties.ECO_NAME == 'Central Deccan Plateau dry deciduous forests') {
                 return feature;
             }
@@ -975,7 +975,7 @@ Promise.all(requests)
     dataLayerInstance.updateLegendSection();
 
 
-    let ecoregions = layers.find(layer  => layer.name == 'india_46_ecoregions');
+    let ecoregions = layers.find(layer  => layer.name == 'india_51_ecoregions');
     return d3.csv('/point_data/ecoregions.csv').then(info => {
         return {data:ecoregions, info };
     });
@@ -997,13 +997,13 @@ Promise.all(requests)
     console.log(data);
 
     setTimeout(() => {
-        // if(map.getSource('india_46_ecoregions')) {
-        //     map.getSource('india_46_ecoregions').setData(data);
+        // if(map.getSource('india_51_ecoregions')) {
+        //     map.getSource('india_51_ecoregions').setData(data);
         // }
 
         if(map.loaded()) {
-            let data = dataLayerInstance.layers.find(layer => layer.name == 'india_46_ecoregions');
-            map.getSource('india_46_ecoregions').setData(data);
+            let data = dataLayerInstance.layers.find(layer => layer.name == 'india_51_ecoregions');
+            map.getSource('india_51_ecoregions').setData(data);
         }
 
         // handleDefaults();

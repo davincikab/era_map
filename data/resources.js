@@ -119,7 +119,7 @@ class VideoItem extends ItemModule {
             content += `<div class="video-section" data-id="${video.id}">
                 <div class="video">
                         
-                    <img src="https://img.youtube.com/vi/${videoId}/0.jpg" alt=""/>
+                    <img src="https://img.youtube.com/vi/${videoId}/sddefault.jpg" alt=""/>
                     </div>
                 <div class="video-caption">
                     ${video.title}
@@ -167,7 +167,7 @@ d3.csv('/point_data/resources.csv')
     data = data.map((dt, index) => {
         let coord = dt.era_resource_coordinates.split(",");
         dt.coordinates = coord.map(l => parseFloat(l)).reverse();
-        dt.ecoregion = dt.era_resource_ecoregion;
+        dt.ecoregion = dt.era_resource_ecoregion_new;
         
         dt.id = `${index}-publication`;
 
