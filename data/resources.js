@@ -114,11 +114,13 @@ class VideoItem extends ItemModule {
             // <video controls="true">
             //     <source src="http://www.youtube.com/watch?v=${videoId}" type="video/mp4" />
             // </video>
+            // <iframe width="300" height="150" src="http://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
 
             content += `<div class="video-section" data-id="${video.id}">
                 <div class="video">
-                    <iframe width="300" height="150" src="http://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-                </div>
+                        
+                    <img src="https://img.youtube.com/vi/${videoId}/0.jpg" alt=""/>
+                    </div>
                 <div class="video-caption">
                     ${video.title}
                 </div>
@@ -136,7 +138,7 @@ class VideoItem extends ItemModule {
         this.cards = document.querySelectorAll(".video-section");
     
         this.cards.forEach(card => {
-            card.onmouseover = (e) => this.handleCardEvents(e);
+            // card.onmouseover = (e) => this.handleCardEvents(e);
             card.onclick = (e) => this.handleCardEvents(e);
         });
     }
@@ -176,7 +178,11 @@ d3.csv('/point_data/resources.csv')
     let publications = data.filter(entry => ['Video', 'Webinars'].indexOf(entry.post_category) == -1).filter(pub => pub.coordinates[0]);
     
     // videos Webinars
-    let videos = data.filter(entry => ['Video', 'Webinars'].indexOf(entry.post_category) !== -1);
+    let videos = data.filter(entry => ['Video', 'Webinars'].indexOf(entry.post_category) !== -1).map((dt, index) => {
+        dt.id = `${index}-video`;
+
+        return dt;
+    });
     // let nurseries = data.filter(entry => entry.)
 
     // update the 

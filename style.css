@@ -416,10 +416,16 @@ body {
     margin:1rem 0.5rem;
 }
 
-.video-section .video {
+.video-section > * {
+    pointer-events: none;
+}
+
+.video-section .video, .video-section img {
     width: 300px;
     height: 150px;
     background-color: var(--white);
+    object-fit: cover;
+    cursor: pointer;
 }
 
 .video-section > * {
