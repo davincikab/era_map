@@ -95,7 +95,7 @@ body {
 
 .data-toggler {
     position: absolute;
-    right:2%;
+    right:10%;
     top:42%;
     /* color:var(--white); */
     color:#5B8783;
@@ -328,8 +328,9 @@ body {
 /* species section */
 .item-list {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-gap: 10px;
+    margin-bottom: 7vh;
 }
 
 .item-list .text-section {
@@ -338,31 +339,46 @@ body {
 }
 
 .item-list .species-item {
-    background-color: var(--white);
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
     cursor: pointer;
-
     display: flex;
     align-items: center;
-    justify-content: center;
-    border:3px solid var(--secondary);
+    /* justify-content: spa; */
+   
+}
+
+.species-item .text-div {
+    color:var(--white);
+    margin-left: 1rem;
 }
 
 .species-item img {
+    border:3px solid var(--secondary);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
     width: 60px;
     height: 60px;
     border-radius: 50%;
+    background-color: var(--white);
 }
 
 .item-list .species-item.active {
-    border:3px solid var(--primary);
+    /* border:3px solid var(--primary); */
 }
 
 .item-list .species-item > * {
     pointer-events: none;
 }
+
+#active-species {
+    position: absolute;
+    bottom: 0vh;
+    background: var(--secondary);
+    width: 100%;
+    padding: 0.25rem;
+    display: none;
+}
+
 /* reources section */
 .media-item {
     border:1px solid var(--white);
@@ -495,6 +511,11 @@ body {
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
+.btn-more.btn-primary {
+    background-color: var(--primary);
+    color:var(--white);
+}
+
 div#protected-areas {
     color:var(--white);
     margin:2rem 0;
@@ -537,12 +558,12 @@ div#protected-areas {
 }
 
 .div-marker {
-    width: 22px;
-    height: 22px;
+    width: 35px;
+    height: 35px;
     background-color: var(--white);
     border-radius: 50%;
     box-shadow: 0px 0px 0.2rem #222;
-    padding: 0.5rem;
+    padding: 0.25rem;
 }
 
 .div-marker img {
@@ -627,13 +648,18 @@ div#protected-areas {
 @media  screen and (max-width:480px) {
     body {
         width: 100%;
-        height: 100%
+        height: 100%;
+        font-size: 16px;
     }
 
     .map-container {
         width: 100%;
         height: 100vh; /* Use vh as a fallback for browsers that do not support Custom Properties */
         height: calc(var(--vh, 1vh) * 100);
+    }
+
+    .media-item {
+        margin:10px 0px !important;
     }
 
     #map {
@@ -676,9 +702,9 @@ div#protected-areas {
     }
 
     .map-container > .layer-groups .layer-group {
-        padding:0.5rem;
+        padding:0rem !important;
         line-height: 18px;
-        font-size: 1rem;
+        font-size: 1.25rem;
         display: flex;
         align-items: center;
         cursor: pointer;
@@ -699,7 +725,7 @@ div#protected-areas {
     }
 
     .side-tab .header-item {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 
     .side-tab .resource-section > div {
@@ -723,7 +749,7 @@ div#protected-areas {
         /* border: 3px solid var(--primary); */
         padding:3px;
         cursor: pointer;
-        background-color: var(--primary);
+        /* background-color: var(--primary); */
         border-radius: 2px;
         color:var(--white);
         text-align: center;

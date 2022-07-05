@@ -111,6 +111,12 @@ class KeySpeciesItem {
 
             content += `<div class="${className}" id="${species.id}">
                 <img src="${species.featured_image}" alt="${species.post_title}" />
+                <div class="text-div">
+                    <div class="bold">${species.era_species_common_name}</div>
+                    <div>
+                        <i>${species.title}</i>
+                    </div>
+                </div>
             </div>`;
     
         });
@@ -121,7 +127,7 @@ class KeySpeciesItem {
 
 let speciesInstance = new KeySpeciesItem([]);
 
-d3.csv("/point_data/species.csv")
+d3.csv("./point_data/species.csv")
 .then(data => {
     data = data.map((item, i) => {
         item.id = i;

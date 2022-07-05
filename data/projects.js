@@ -1,7 +1,7 @@
 // Projects Item Modular code
 class ProjectItem extends ItemModule {
     constructor(projects) {
-        super(projects, 'task');
+        super(projects, 'projects');
         
         this.projects = projects;
         this.items = [];
@@ -53,13 +53,14 @@ class ProjectItem extends ItemModule {
                 </div>
             </div>`;
     
-        });
+        }); 
+        // https://era-india.org/project/east-karbi-anglong-community-project/ 
     
         projectsContainer.innerHTML = content;
     }
     
     renderItemsToMap() {
-        this.markers = this.projects.map(item => createMarker(item, this.getPopupContent, 'task'));
+        this.markers = this.projects.map(item => createMarker(item, this.getPopupContent, 'projects'));
     }
 
     fireEventListeners() {
@@ -83,7 +84,7 @@ class ProjectItem extends ItemModule {
                     ${project.post_content.substr(0, 100)} ...
                 </div>
     
-                <a href="${project.post_name}" class="btn-more bg-primary" target="_blank">KNOW MORE</a>
+                <a href="https://era-india.org/${project.post_name}/" class="btn-more btn-primary" target="_blank">KNOW MORE</a>
             </div>
         </div>`
     }
@@ -93,7 +94,7 @@ let projectInstance = new ProjectItem([]);
 
 // factory functions
 // creating marker
-d3.csv('/point_data/projects.csv')
+d3.csv('./point_data/projects.csv')
 .then(data => {
     data = data.filter(l => l.post_title).reduce((a,b) =>{
         let coords = b.era_project_coordinates.split(';');

@@ -391,6 +391,10 @@ function handleDefaults() {
 
     function getData() {
         if(dataLayerInstance.layers[0]) {
+            let data = dataLayerInstance.layers.find(layer => layer.name == 'india_51_ecoregions');
+            map.getSource('india_51_ecoregions').setData(data);
+
+
             let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
             layerStore.activeFeature = dataLayerInstance.getDefaultEcoregion();
             handleEcoregionClick(activeEcoregion);
@@ -431,13 +435,17 @@ function handleEcoregionClick(activeEcoregion) {
     ];
 
     console.log("Clipping the layers");
-    sourceIds.forEach(layerId => {
-        dataLayerInstance.clipLayer(
-            layerId, 
-            layerStore.activeFeature, 
-            layerStore.activeEcoregion
-        );
-    });
+    if(dataLayerInstance.layers.length < 6) {
+        alert("Thematic layers are loading.");
+    } else {
+        sourceIds.forEach(layerId => {
+            dataLayerInstance.clipLayer(
+                layerId, 
+                layerStore.activeFeature, 
+                layerStore.activeEcoregion
+            );
+        });
+    }
 
     // timerFunction();
 }
@@ -512,12 +520,12 @@ function updateEcoregionInfo(ecoregion) {
     let ecoregionElement = document.getElementById("ecoregion-info");
     let ecoInfo = ecoregion.properties;
 
+    let ecoTitle = document.getElementById("eco-title");
+    ecoTitle.innerHTML = ecoInfo['Name of the ecoregion'];
+
     console.log("Eco", ecoregion);
 
-    ecoregionElement.innerHTML = `<h3 class="section-title">
-        ${ecoInfo['Name of the ecoregion']}
-        </h3>
-
+    ecoregionElement.innerHTML = `
         <p class="text-white">${ecoInfo['To come under the title']}</p>
         <div class="text-white">
             ${ecoInfo['Write up']}
@@ -737,34 +745,34 @@ function getFeatureMaskLayer(feature) {
 }
 
 // load all the data layers
-let layers = [
-    {
-        id:'ecoregions',
-        source:'/data/india_51_ecoregions.pbf'
-    },
+let dataLayers = [
+    // {
+    //     id:'ecoregions',
+    //     source:'data/india_51_ecoregions.pbf'
+    // },
     {
         id:'watershed',
-        source:'/data/watershed.pbf'
+        source:'data/watershed.pbf'
     },
     {
         id:'protected_areas',
-        source:'/data/protected_areas.pbf'
+        source:'data/protected_areas.pbf'
     },
     {
         id:'soil',
-        source:'/data/india_soils_ibp.pbf'
+        source:'data/india_soils_ibp.pbf'
     },
     {
         id:'rainfallzones',
-        source:'/data/india_rainfallzones_ibp.pbf'
+        source:'data/india_rainfallzones_ibp.pbf'
     },
     {
         id:'geology',
-        source:'/data/india_geology_ibp.pbf'
+        source:'data/india_geology_ibp.pbf'
     },
     {
         id:'geomorphology',
-        source:'/data/india_geomorphology_ibp.pbf'
+        source:'data/india_geomorphology_ibp.pbf'
     }
 ];
 
@@ -777,7 +785,7 @@ const DataLayers = function(layers, map) {
     };
 
     this.setLayers = function(layers) {
-        this.layers = layers;
+        this.layers = [...this.layers, ...layers];
     }
 
     this.getLayers = function() {
@@ -801,6 +809,10 @@ const DataLayers = function(layers, map) {
 
     // this function is slow.
     this.clipLayer = function(layerId, clipFeature, ecoName) {
+        if(this.layers.length < 6) {
+            return;
+        }
+
         let targetLayer = this.layers.find(layer => layer.name == layerId);
         let features = targetLayer.features.filter(feature => feature.properties.ECO_NAME == ecoName);
 
@@ -946,41 +958,17 @@ const DataLayers = function(layers, map) {
 
 let dataLayerInstance = new DataLayers([], map);
 
+// load the ecoregions first
+fetch('data/india_51_ecoregions.pbf')
+.then(res => res.arrayBuffer())
+.then( data => {
+    let ecoregions = geobuf.decode(new Pbf(data));
 
-let requests = layers.map(layer => fetch(layer.source));
-
-Promise.all(requests)
-.then(responses => {
-      // all responses are resolved successfully
-    for(let response of responses) {
-        // alert(`${response.url}: ${response.status}`); // shows 200 for every url
-    }
-
-    return responses;
-})
-.then(responses => {
-    console.log("Responses to JSON");
-
-    return Promise.all(responses.map(r => r.arrayBuffer()))
-})
-.then(layers => {
-    console.log(layers);
-    layers = layers.map(layer => {
-        return geobuf.decode(new Pbf(layer));
-    })
-
-    // add the data to Layers objects
-    dataLayerInstance.setLayers(layers);
-    dataLayerInstance.updateMapDataLayer();
-    dataLayerInstance.updateLegendSection();
-
-
-    let ecoregions = layers.find(layer  => layer.name == 'india_51_ecoregions');
-    return d3.csv('/point_data/ecoregions.csv').then(info => {
-        return {data:ecoregions, info };
+    return d3.csv('point_data/ecoregions.csv').then(info => {
+        return {data:ecoregions, info};
     });
-
-}).then(({data, info}) => {
+})
+.then(({data, info}) => {
     // combine both datasets
     data.features = data.features.map(feature => {
         let infoObj = info.find(eco => {
@@ -995,12 +983,9 @@ Promise.all(requests)
     });
 
     console.log(data);
+    dataLayerInstance.setLayers([data]);
 
     setTimeout(() => {
-        // if(map.getSource('india_51_ecoregions')) {
-        //     map.getSource('india_51_ecoregions').setData(data);
-        // }
-
         if(map.loaded()) {
             let data = dataLayerInstance.layers.find(layer => layer.name == 'india_51_ecoregions');
             map.getSource('india_51_ecoregions').setData(data);
@@ -1009,6 +994,32 @@ Promise.all(requests)
         // handleDefaults();
         spinnerContainer.classList.add('d-none');
     }, 2000);
+
+})
+.catch(console.error);
+
+
+let requests = dataLayers.map(layer => fetch(layer.source));
+Promise.all(requests)
+.then(responses =>  responses)
+.then(responses => {
+    console.log("Responses to JSON");
+
+    return Promise.all(responses.map(r => r.arrayBuffer()))
+})
+.then(responseData => {
+    console.log(responseData);
+    let layers = responseData.map((datum,i) => {
+
+        let pbf = new Pbf(datum);
+        return geobuf.decode(pbf);
+    });
+
+    // add the data to Layers objects
+    dataLayerInstance.setLayers(layers);
+    dataLayerInstance.updateMapDataLayer();
+    dataLayerInstance.updateLegendSection();
+
 })
 .catch(console.error); 
 
@@ -1141,7 +1152,7 @@ function updateProtectedAreaList(activeFeature, coord=[77.8119, 18.7472]) {
         return {name:`${pnt.properties.NAME} ${pnt.properties.DESIG_ENG}`, distance}
     });
 
-    points.sort((a, b) => b.distance - a.distance);
+    points.sort((a, b) => a.distance - b.distance);
     console.log(points);
 
     // find the pareas close to the clicked point

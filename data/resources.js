@@ -16,8 +16,7 @@ class PublicationItem extends ItemModule {
         if(!this.publications[0]) {
             publicationContainer.innerHTML = `<div class="text-section">
                 We're currently working on curating a publications for this ecoregion. 
-                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more bg-primary" target="_blank">ADD RESOURCE</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more" target="_blank">ADD RESOURCE</a>
             </div>`
             return;
         }
@@ -66,13 +65,13 @@ class PublicationItem extends ItemModule {
             <img src="${publication.featured_image}" alt="">
             <div class="popup-body">
                 <div class="bold title">${publication.post_title}</div>
-                <div class="">${publication.era_resource_state}</div>
+                <div class="">${publication.era_resource_state_new}</div>
     
                 <div class="description">
                     
                 </div>
     
-                <a href="${link}" class="btn-more bg-primary" target="_blank">KNOW MORE</a>
+                <a href="${link}" class="btn-more btn-primary" target="_blank">KNOW MORE</a>
             </div>
         </div>`;
     }
@@ -100,15 +99,16 @@ class VideoItem extends ItemModule {
         if(!this.videos[0]) {
             videosContainer.innerHTML = `<div class="text-section">
                 We're currently working on curating a videos list for this ecoregion. 
-                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more bg-primary" target="_blank">ADD RESOURCE</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more" target="_blank">ADD RESOURCE</a>
             </div>`
             return;
         }
         
         this.videos.forEach(video => {
+            console.log(video.era_video_link);
+
             let videoId = video.era_video_link.split("/").slice(-1,)[0].split("?v=").slice(-1,)[0];
-            videoId = videoId.replace(/&t=.+/g, "");
+            videoId = videoId.replace(/([&#|].+)\w+/g, "");
             console.log(videoId);
             //  <iframe width="300" height="150" src="http://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
             // <video controls="true">
@@ -148,13 +148,13 @@ class VideoItem extends ItemModule {
             <img src="${video.featured_image}" alt="">
             <div class="popup-body">
                 <div class="bold title">${video.title}</div>
-                <div class="">${video.era_resource_state}</div>
+                <div class="">${video.era_resource_state_new}</div>
     
                 <div class="description">
                     ${video.post_content.substr(0, 100)} ...
                 </div>
     
-                <a href="${video.era_video_link}" class="btn-more bg-primary" target="_blank">KNOW MORE</a>
+                <a href="${video.era_video_link}" class="btn-more btn-primary" target="_blank">KNOW MORE</a>
             </div>
         </div>`
     }
@@ -162,7 +162,7 @@ class VideoItem extends ItemModule {
 
 let videoInstance = new VideoItem([]);
 
-d3.csv('/point_data/resources.csv')
+d3.csv('./point_data/resources.csv')
 .then(data => {
     data = data.map((dt, index) => {
         let coord = dt.era_resource_coordinates.split(",");
@@ -175,10 +175,10 @@ d3.csv('/point_data/resources.csv')
     });
 
     // console.log([... new Set(data.map(l => l.post_category))]);            
-    let publications = data.filter(entry => ['Video', 'Webinars'].indexOf(entry.post_category) == -1).filter(pub => pub.coordinates[0]);
+    let publications = data.filter(entry => ['Video', 'Webinar'].indexOf(entry.post_category) == -1).filter(pub => pub.coordinates[0]);
     
     // videos Webinars
-    let videos = data.filter(entry => ['Video', 'Webinars'].indexOf(entry.post_category) !== -1).map((dt, index) => {
+    let videos = data.filter(entry => ['Video', 'Webinar'].indexOf(entry.post_category) !== -1).map((dt, index) => {
         dt.id = `${index}-video`;
 
         return dt;
@@ -230,8 +230,7 @@ class NurseryItem extends ItemModule {
         if(!this.nurseries[0]) {
             nurseyContainer.innerHTML = `<div class="text-section">
                 We're currently working on curating a nursery list for this ecoregion. 
-                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more bg-primary" target="_blank">ADD RESOURCE</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more" target="_blank">ADD RESOURCE</a>
             </div>`
             return;
         }
@@ -267,7 +266,7 @@ class NurseryItem extends ItemModule {
 
 let nurseryInstance = new NurseryItem([], 'nurseries');
 
-d3.csv("/point_data/nurseries.csv")
+d3.csv("./point_data/nurseries.csv")
 .then(data => {
     data = data.filter(dt => dt.Coordinates).map((item, i) => {
         item.id = i;
