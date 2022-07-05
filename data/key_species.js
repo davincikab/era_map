@@ -91,7 +91,7 @@ class KeySpeciesItem {
         if(!this.keySpecies[0]) {
             speciesContainer.innerHTML = `<div class="text-section">
                 We're currently working on curating a species list for this ecoregion. 
-                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+                Mail us at <a class="mail-link" href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
             </div>`;
 
             document.getElementById('active-species').innerHTML = "";

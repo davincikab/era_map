@@ -39,7 +39,7 @@ class ProjectItem extends ItemModule {
         if(!this.projects[0]) {
             projectsContainer.innerHTML = `<div class="text-section">
                 We're currently working on curating a projects list for this ecoregion. 
-                Mail us at <a href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
+                Mail us at <a class="mail-link" href="mailto:hello@era-india.org">hello@era-india.org</a> to contribute to this list.
             </div>`
             return;
         }
