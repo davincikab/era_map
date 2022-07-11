@@ -162,7 +162,11 @@ class VideoItem extends ItemModule {
 
 let videoInstance = new VideoItem([]);
 
-d3.csv('./point_data/resources.csv')
+
+let resoureceUrl = 'https://era-india.org/wp-content/uploads/smack_uci_uploads/exports/resources_v2.csv';
+//  resources_v2.csv, species_v2.csv';
+let localResourceUrl = './point_data/resources.csv';
+d3.csv(resoureceUrl)
 .then(data => {
     data = data.map((dt, index) => {
         let coord = dt.era_resource_coordinates.split(",");

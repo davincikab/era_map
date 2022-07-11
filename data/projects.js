@@ -94,7 +94,10 @@ let projectInstance = new ProjectItem([]);
 
 // factory functions
 // creating marker
-d3.csv('./point_data/projects.csv')
+let projectUrl = 'https://era-india.org/wp-content/uploads/smack_uci_uploads/exports/projects_v2.csv'
+//  resources_v2.csv, species_v2.csv';
+let localProjectsUrl = './point_data/projects.csv';
+d3.csv(projectUrl)
 .then(data => {
     data = data.filter(l => l.post_title).reduce((a,b) =>{
         let coords = b.era_project_coordinates.split(';');

@@ -127,7 +127,11 @@ class KeySpeciesItem {
 
 let speciesInstance = new KeySpeciesItem([]);
 
-d3.csv("./point_data/species.csv")
+
+let speciesUrl = 'https://era-india.org/wp-content/uploads/smack_uci_uploads/exports/species_v2.csv';
+//  resources_v2.csv, species_v2.csv';
+let localSpeciesUrl = './point_data/species_v2.csv';
+d3.csv(speciesUrl)
 .then(data => {
     data = data.map((item, i) => {
         item.id = i;

@@ -436,7 +436,7 @@ function handleEcoregionClick(activeEcoregion) {
 
     console.log("Clipping the layers");
     if(dataLayerInstance.layers.length < 6) {
-        alert("Thematic layers are loading.");
+        // alert("Thematic layers are loading.");
     } else {
         sourceIds.forEach(layerId => {
             dataLayerInstance.clipLayer(
@@ -1019,6 +1019,10 @@ Promise.all(requests)
     dataLayerInstance.setLayers(layers);
     dataLayerInstance.updateMapDataLayer();
     dataLayerInstance.updateLegendSection();
+
+    // hide
+    let loaderSpinner = document.getElementById("thematic-loader");
+    loaderSpinner.classList.add('d-none');
 
 })
 .catch(console.error); 
