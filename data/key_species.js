@@ -112,7 +112,9 @@ class KeySpeciesItem {
             content += `<div class="${className}" id="${species.id}">
                 <img src="${species.featured_image}" alt="${species.post_title}" />
                 <div class="text-div">
-                    <a href="https://era-india.org/species/${species.post_name}/"><div class="bold">${species.era_species_common_name}</div></a>
+                    <a href="https://era-india.org/species/${species.post_name}/" class="mail-link">
+                        <div class="bold">${species.era_species_common_name}</div>
+                    </a>
                     <div>
                         <i>${species.title}</i>
                     </div>

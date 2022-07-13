@@ -29,7 +29,9 @@ class PublicationItem extends ItemModule {
                 </div>
                 <div class="media-body">
                     <div class="media-title">
-                        <span class="">${publication.post_category}</span>
+                        <a class="mail-link" href="https://era-india.org/resources/${publication.post_name}">
+                            ${publication.post_category}
+                        </a>
                     </div>
 
                     <div class="media-text">
@@ -242,7 +244,9 @@ class NurseryItem extends ItemModule {
 
         this.nurseries.forEach(nursery => {
             nurseryContent += `<div class="nursery-section" id="${nursery.id}" data-id="${nursery.id}">
-                <div class="title bold">${nursery['Name of the nursery']}</div>
+                <div class="title bold">
+                    ${nursery['Name of the nursery']}
+                </div>
                 <div class="nursery-body">
                     <span class="bold">Address</span>: ${nursery.Address} </br>
                     <span class="bold">Website:</span> <a href="${nursery['Website Address']}" class="mail-link">${nursery['Website Address']}</a> </br>
