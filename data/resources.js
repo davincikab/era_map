@@ -165,8 +165,8 @@ let videoInstance = new VideoItem([]);
 
 let resoureceUrl = 'https://era-india.org/wp-content/uploads/smack_uci_uploads/exports/resources_v2.csv';
 //  resources_v2.csv, species_v2.csv';
-let localResourceUrl = './point_data/resources.csv';
-d3.csv(resoureceUrl)
+let localResourceUrl = window.location.hostname != 'era-india.org' ? './point_data/resources.csv' : resoureceUrl;
+d3.csv(localResourceUrl)
 .then(data => {
     data = data.map((dt, index) => {
         let coord = dt.era_resource_coordinates.split(",");
@@ -245,7 +245,7 @@ class NurseryItem extends ItemModule {
                 <div class="title bold">${nursery['Name of the nursery']}</div>
                 <div class="nursery-body">
                     <span class="bold">Address</span>: ${nursery.Address} </br>
-                    <span class="bold">Website:</span> <a href="${nursery['Website Address']}">${nursery['Website Address']}</a> </br>
+                    <span class="bold">Website:</span> <a href="${nursery['Website Address']}" class="mail-link">${nursery['Website Address']}</a> </br>
                     <span class="bold">Contact no: </span> ${nursery['Contact number']} </br>
                 </div>
             </div>`;
@@ -271,7 +271,11 @@ class NurseryItem extends ItemModule {
 
 let nurseryInstance = new NurseryItem([], 'nurseries');
 
-d3.csv("./point_data/nurseries.csv")
+
+let nurseriesUrl = 'https://era-india.org/wp-content/uploads/smack_uci_uploads/exports/nurseries_v2.csv';
+//  resources_v2.csv, species_v2.csv';
+let localNurseryUrl = window.location.hostname != 'era-india.org' ? './point_data/nurseries.csv' : nurseriesUrl;
+d3.csv(localNurseryUrl)
 .then(data => {
     data = data.filter(dt => dt.Coordinates).map((item, i) => {
         item.id = i;

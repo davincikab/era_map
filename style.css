@@ -190,10 +190,48 @@ body {
     object-fit: cover;
 }
 
+.slider {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.coord-input {
+    position: absolute;
+    z-index: 2;
+    margin:10px 50px 40px;
+}
+
+#coord-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#coord-form span {
+    background-color: white;
+    color:red;
+}
+
+#coord-form input {
+    box-shadow: 0px 0px 0.2rem #222;
+    line-height: 1.8;
+    border:0px;
+    padding: 2.5px 10px;
+    border-radius: 2px;
+    width: 200px;
+    height: 24px;
+}
+
+#coord-form input:focus {
+    outline:2px solid #aaa;
+}
+
 .data-toggler {
     position: absolute;
     right:10%;
     top:42%;
+    width: 350px;
+    z-index: 4;
     /* color:var(--white); */
     color:#5B8783;
 }
@@ -253,7 +291,7 @@ body {
     background-color: var(--white);
     padding: 0.5rem 0;
     height: 200px;
-    width: 350px;
+    width: 100%;
     overflow-y: auto;
 }
 
@@ -363,10 +401,14 @@ body {
     padding: 0.5rem 2.75rem;
 }
 
+.section-title #eco-title {
+    font-size: 1.25rem;
+}
+
 .section-title {
     color:var(--white);
-    letter-spacing: 1px;
-    font-size: 1.25rem;
+    /* letter-spacing: 1px; */
+    font-size: 1.1rem;
 }
 
 /* eco section */
@@ -497,7 +539,7 @@ body {
 .media-item .img-section {
     background-color: var(--white);
     width:90px;
-    height: auto;
+    height: 136px;
     flex: 0.4;
     margin-right:1rem;
 }
@@ -602,7 +644,8 @@ body {
     cursor: pointer;
     margin:2rem 0;
 
-    width: 104px;
+    min-width: 104px;
+    max-width: 150px;
     height: 41px;
 
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
@@ -715,8 +758,8 @@ div#protected-areas {
     background-color: white;
     width: 100px;
     height: 100px;
-    box-shadow: 0px 0px 0.25rem #222;
-    border-radius: 50%;
+    /* box-shadow: 0px 0px 0.25rem #222;
+    border-radius: 50%; */
 }
 
 /* utils classes */
@@ -806,7 +849,7 @@ div#protected-areas {
     .map-container > .layer-groups .layer-group {
         padding:0rem !important;
         line-height: 18px;
-        font-size: 1.25rem;
+        font-size: 1.1rem;
         display: flex;
         align-items: center;
         cursor: pointer;

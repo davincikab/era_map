@@ -54,6 +54,7 @@ const map = new mapboxgl.Map({
 });
 
 var dropPin = new mapboxgl.Marker();
+let dropPinScreenCoord;
 
 // add navigation control
 const navigationControl = new mapboxgl.NavigationControl();
@@ -173,7 +174,7 @@ map.on("load", function(e) {
         source:'india_rainfallzones_ibp',
         paint:{
             'fill-color':['get', 'color'],
-            'fill-opacity':0.6,
+            'fill-opacity':0.9,
             'fill-outline-color':'#ddd'
         },
         layout:{
@@ -257,14 +258,18 @@ map.on("load", function(e) {
         dropPin.remove();
         document.getElementById("park-list").innerHTML = "";
         document.getElementById("watershed-list").innerHTML = "";
+
+        dropPinScreenCoord = undefined;
     });
 
     map.on("dblclick", function(e) {
+        console.log(e);
         spinnerContainerSmall.classList.remove('d-none');
         console.log("Double Click");
 
         // update the drop marker
         dropPin.setLngLat(e.lngLat).addTo(map);
+        dropPinScreenCoord = e.point;
 
         // update this
         updateWatershedList(
@@ -273,7 +278,7 @@ map.on("load", function(e) {
         );
 
         updateProtectedAreaList(layerStore.activeFeature, Object.values(e.lngLat));
-
+        updateRainfallZonesInfo();
     });
 
     map.on('close-popups', function() {
@@ -382,6 +387,38 @@ map.on("load", function(e) {
     // update the 
     // let data = dataLayerInstance.layers.find(layer => layer.name == 'india_51_ecoregions');
     // map.getSource('india_51_ecoregions').setData(data);
+
+    // slider
+    document.getElementById("opacity").oninput = (e) => {
+        let values = e.target.value;
+
+        document.getElementById('opacity-value').innerHTML = values;
+        ['watershed', 'protected-areas', 'soil', 'rainfall-zones', 'geology', 'geomorphology'].map(ft => {
+            map.setPaintProperty(ft, 'fill-opacity', parseFloat(values));
+        });
+    }
+
+    // coordinates input
+    let coordinatesInput = document.getElementById("coordinates-input");
+    let coordForm = document.getElementById("coord-form");
+
+    coordForm.onsubmit = (e) => {
+        e.preventDefault();
+        console.log("Submit Event");
+
+        let coords = coordinatesInput.value;
+        console.log(coords);
+        let [lat, lng] = coords.split(",");
+
+        // flyto the given location
+        map.flyTo({
+            center:[+lng, +lat],
+            zoom:12
+        });
+
+        // update the drop marker
+        dropPin.setLngLat([+lng, +lat]).addTo(map);
+    }
 });
 
 function handleDefaults() {
@@ -563,6 +600,10 @@ function toggleMapLayers() {
                 map.setLayoutProperty(id, 'visibility', visibilityStatus);
                 toggleCollapseSection(id, checked);
 
+                setTimeout(() => {
+                    updateRainfallZonesInfo();
+                }, 2000);
+                
                 return;
             }
 
@@ -959,12 +1000,15 @@ const DataLayers = function(layers, map) {
 let dataLayerInstance = new DataLayers([], map);
 
 // load the ecoregions first
+let ecoregionsUrl = 'https://era-india.org/wp-content/uploads/smack_uci_uploads/exports/ecoregions_v2.csv';
+let localEcoregionUrl = window.location.hostname != 'era-india.org' ? 'point_data/ecoregions.csv' : ecoregionsUrl;
+
 fetch('data/india_51_ecoregions.pbf')
 .then(res => res.arrayBuffer())
 .then( data => {
     let ecoregions = geobuf.decode(new Pbf(data));
 
-    return d3.csv('point_data/ecoregions.csv').then(info => {
+    return d3.csv(localEcoregionUrl).then(info => {
         return {data:ecoregions, info};
     });
 })
@@ -1170,6 +1214,24 @@ function updateProtectedAreaList(activeFeature, coord=[77.8119, 18.7472]) {
     pAreaContainer.innerHTML = content;
 }
 
+function updateRainfallZonesInfo() {
+    if(dropPinScreenCoord) {
+        let features = map.queryRenderedFeatures(dropPinScreenCoord, { layers:['rainfall-zones']});
+        console.log(features);
+
+        if(features[0]) {
+            let content = features.map(ft =>{
+                return `<div>${ft.properties.rain_range}</div>`;
+            }).join("");
+
+            document.getElementById('rainfallzones-list').innerHTML = content;
+        } else {
+            document.getElementById('rainfallzones-list').innerHTML = "";
+        }
+    } else {
+        document.getElementById('rainfallzones-list').innerHTML = "";
+    }
+}
 
 
 // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
@@ -1183,3 +1245,9 @@ window.addEventListener('resize', () => {
   let vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 });
+
+
+
+// rainfall zones: double tap
+// Slider
+// Sort the layer order

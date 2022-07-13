@@ -112,7 +112,7 @@ class KeySpeciesItem {
             content += `<div class="${className}" id="${species.id}">
                 <img src="${species.featured_image}" alt="${species.post_title}" />
                 <div class="text-div">
-                    <div class="bold">${species.era_species_common_name}</div>
+                    <a href="https://era-india.org/species/${species.post_name}/"><div class="bold">${species.era_species_common_name}</div></a>
                     <div>
                         <i>${species.title}</i>
                     </div>
@@ -130,8 +130,8 @@ let speciesInstance = new KeySpeciesItem([]);
 
 let speciesUrl = 'https://era-india.org/wp-content/uploads/smack_uci_uploads/exports/species_v2.csv';
 //  resources_v2.csv, species_v2.csv';
-let localSpeciesUrl = './point_data/species_v2.csv';
-d3.csv(speciesUrl)
+let localSpeciesUrl = window.location.hostname != 'era-india.org' ? './point_data/species.csv' : speciesUrl;
+d3.csv(localSpeciesUrl)
 .then(data => {
     data = data.map((item, i) => {
         item.id = i;
