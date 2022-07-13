@@ -558,18 +558,19 @@ function updateEcoregionInfo(ecoregion) {
     let ecoInfo = ecoregion.properties;
 
     let ecoTitle = document.getElementById("eco-title");
-    ecoTitle.innerHTML = ecoInfo['Name of the ecoregion'];
+    ecoTitle.innerHTML = ecoInfo['post_title'];
 
     console.log("Eco", ecoregion);
 
     ecoregionElement.innerHTML = `
-        <p class="text-white">${ecoInfo['To come under the title']}</p>
+        <p class="text-white">${ecoInfo['era_ecoregion_to_come_under_the_title']}</p>
         <div class="text-white">
-            ${ecoInfo['Write up']}
+            ${ecoInfo.post_content}
         </div>
 
-        <a href="${ecoInfo['Know more link']}" class="btn-more" target="_blank">KNOW MORE</a>
-        `
+        <a href="https://era-india.org/projects/${ecoInfo.post_name}/" class="btn-more" target="_blank">KNOW MORE</a>
+        `;
+        // <${ecoInfo['era_ecoregion_know_more_link']}
 }
 
 // map layer toggler
@@ -1016,7 +1017,7 @@ fetch('data/india_51_ecoregions.pbf')
     // combine both datasets
     data.features = data.features.map(feature => {
         let infoObj = info.find(eco => {
-            if(eco['Name of the ecoregion'].toLowerCase() == feature.properties.ECO_NAME.toLowerCase()) {
+            if(eco['post_title'].toLowerCase() == feature.properties.ECO_NAME.toLowerCase()) {
                 return true;
             }
             return false;
