@@ -48,7 +48,9 @@ class ProjectItem extends ItemModule {
             content += `<div class="card project-card" id="${project.id}" data-id="${project.id}">
                 <img src="${project.featured_image}" alt="">
                 <div class="fig-caption">
-                    <div class="bold">${project.post_title}</div>
+                    <div class="bold">
+                        <a href="https://era-india.org/${project.post_name}/" class='mail-link' > ${project.post_title}</a>
+                    </div>
                     <div>${project.location}</div>
                 </div>
             </div>`;

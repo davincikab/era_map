@@ -73,7 +73,7 @@ class PublicationItem extends ItemModule {
                     
                 </div>
     
-                <a href="${link}" class="btn-more btn-primary" target="_blank">KNOW MORE</a>
+                <a href="https://era-india.org/resources/${publication.post_name}" class="btn-more btn-primary" target="_blank">KNOW MORE</a>
             </div>
         </div>`;
     }
@@ -117,14 +117,14 @@ class VideoItem extends ItemModule {
             //     <source src="http://www.youtube.com/watch?v=${videoId}" type="video/mp4" />
             // </video>
             // <iframe width="300" height="150" src="http://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+            // <img src="https://img.youtube.com/vi/${videoId}/sddefault.jpg" alt=""/>
 
             content += `<div class="video-section" data-id="${video.id}">
                 <div class="video">
-                        
-                    <img src="https://img.youtube.com/vi/${videoId}/sddefault.jpg" alt=""/>
-                    </div>
+                    ${video.era_video_link}
+                </div>
                 <div class="video-caption">
-                    ${video.title}
+                    <a href="https://era-india.org/resources/${video.post_name}" class="mail-link">${video.title} </a>
                 </div>
             </div>`;
         });
@@ -156,7 +156,7 @@ class VideoItem extends ItemModule {
                     ${video.post_content.substr(0, 100)} ...
                 </div>
     
-                <a href="${video.era_video_link}" class="btn-more btn-primary" target="_blank">KNOW MORE</a>
+                <a href="https://era-india.org/resources/${video.post_name}" class="btn-more btn-primary" target="_blank">KNOW MORE</a>
             </div>
         </div>`
     }
@@ -245,11 +245,11 @@ class NurseryItem extends ItemModule {
         this.nurseries.forEach(nursery => {
             nurseryContent += `<div class="nursery-section" id="${nursery.id}" data-id="${nursery.id}">
                 <div class="title bold">
-                    ${nursery.post_title}
+                    <a href="${nursery.post_title}" class="mail-link">${nursery.post_title}</a>
                 </div>
                 <div class="nursery-body">
                     <span class="bold">Address</span>: ${nursery.era_nurs_address}
-                    <span class="bold">Website:</span> <a href="${nursery['era_nurs_website_address']}" class="mail-link">${nursery['era_nurs_website_address']}</a> </br>
+                    <div class="address"><span class="bold">Website:</span> ${nursery['era_nurs_website_address']}</div>
                     <span class="bold">Contact no: </span> ${nursery['era_nurs_contact_number']} </br>
                 </div>
             </div>`;
@@ -265,8 +265,8 @@ class NurseryItem extends ItemModule {
                 <img src="/icons/nurseries.png" alt="">
             </div>
             <div class="popup-body">
-                <span class="bold">Address</span>: ${nursery.era_nurs_address} </br>
-                <span class="bold">Website: </span><a href="${nursery['era_nurs_website_address']}">${nursery['era_nurs_website_address']}</a></br>
+                <span class="bold">Address</span>: ${nursery.era_nurs_address}
+                <div class="address"><span class="bold">Website:</span> ${nursery['era_nurs_website_address']}</div>
                 <span class="bold">Contact no:</span>  ${nursery['era_nurs_contact_number']} </br>
             </div>
         </div>`;

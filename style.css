@@ -455,6 +455,10 @@ body {
     pointer-events: none;
 }
 
+.card.project-card > .fig-caption {
+    pointer-events: all !important;
+}
+
 .card img  {
     width: 100%;
     height: 150px;
@@ -498,7 +502,7 @@ body {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: var(--white);
+    /* background-color: var(--white); */
 }
 
 .item-list .species-item.active {
@@ -529,6 +533,10 @@ body {
 
 .media-item > * {
     pointer-events: none;
+}
+
+.media-item .media-body .media-title {
+    pointer-events: all !important;
 }
 
 .media-body {
@@ -582,12 +590,21 @@ body {
     pointer-events: none;
 }
 
+.video-section .video-caption {
+    pointer-events: all !important;
+}
+
 .video-section .video, .video-section img {
-    width: 300px;
     height: 150px;
     background-color: var(--white);
     object-fit: cover;
     cursor: pointer;
+    overflow: hidden;
+}
+
+.video iframe {
+    width: 100%;
+    height: 155px;
 }
 
 .video-section > * {
@@ -616,6 +633,15 @@ body {
 
 .nursery-section .nursery-body {
     width: 100%;
+}
+.nursery-body .address a {
+    color:white;
+    text-decoration: underline;
+}
+
+.popup-body .address a {
+    color:#222;
+    text-decoration: underline;
 }
 
 .nursery-section .title {
@@ -725,6 +751,7 @@ div#protected-areas {
 .div-marker img {
     width: 100%;
     height: 100%;
+    border-radius: 50%;
 }
 
 /* Popup Content */
@@ -747,7 +774,7 @@ div#protected-areas {
 }
 
 .popup-content .description {
-    margin:1rem 0;
+    margin:0.5rem 0;
 }
 
 .popup-content .btn-more {
@@ -819,10 +846,9 @@ div#protected-areas {
     }
 
     #map {
-        margin-top: 10vh;
         height: 85vh;
         width: 100%;
-        margin: 9vh 0 0;
+        margin: 61px 0 0;
         position: relative;
     }
 
