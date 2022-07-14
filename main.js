@@ -243,9 +243,11 @@ map.on("load", function(e) {
     // ecoregions click event
     map.on("click", 'ecoregions', function(e) {
         let activeEcoregion = e.features[0];
-        if(activeEcoregion.properties.ECO_NAME == layerStore.ECO_NAME) {
+        if(activeEcoregion.properties.ECO_NAME == layerStore.activeEcoregion) {
             return;
         } 
+
+        console.log("Click Events On Ecoregion");
 
         handleEcoregionClick({
             type:"Feature",
@@ -264,21 +266,7 @@ map.on("load", function(e) {
 
     map.on("dblclick", function(e) {
         console.log(e);
-        spinnerContainerSmall.classList.remove('d-none');
-        console.log("Double Click");
-
-        // update the drop marker
-        dropPin.setLngLat(e.lngLat).addTo(map);
-        dropPinScreenCoord = e.point;
-
-        // update this
-        updateWatershedList(
-            Object.values(e.lngLat),
-            layerStore.activeFeature
-        );
-
-        updateProtectedAreaList(layerStore.activeFeature, Object.values(e.lngLat));
-        updateRainfallZonesInfo();
+        handleDblClick(e);
     });
 
     map.on('close-popups', function() {
@@ -420,6 +408,24 @@ map.on("load", function(e) {
         dropPin.setLngLat([+lng, +lat]).addTo(map);
     }
 });
+
+function handleDblClick(e) {
+    spinnerContainerSmall.classList.remove('d-none');
+    console.log("Double Click");
+
+    dropPin.setLngLat(e.lngLat).addTo(map);
+    // update the drop marker
+    dropPinScreenCoord = e.point;
+
+    // update this
+    updateWatershedList(
+        Object.values(e.lngLat),
+        layerStore.activeFeature
+    );
+
+    updateProtectedAreaList(layerStore.activeFeature, Object.values(e.lngLat));
+    updateRainfallZonesInfo();
+}
 
 function handleDefaults() {
     let timer = setInterval(() => {
@@ -1252,3 +1258,38 @@ window.addEventListener('resize', () => {
 // rainfall zones: double tap
 // Slider
 // Sort the layer order
+function iphoneDoubleTap() {
+    var tapedTwice = false;
+
+    map.on('click', function(e) {
+        tapHandler(e);
+    });
+
+    function tapHandler(event) {
+        if(!tapedTwice) {
+            tapedTwice = true;
+            setTimeout( function() { tapedTwice = false; }, 300 );
+            return false;
+        }
+        // event.preventDefault();
+        //action on double tap goes below
+        // alert('You tapped me Twice !!!');
+        handleDblClick(event); 
+        console.log(event);
+    }
+   
+    
+}
+
+const ios = () => {
+    if (typeof window === `undefined` || typeof navigator === `undefined`) return false;
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent || navigator.vendor || (window.opera && opera.toString() === `[object Opera]`));
+};
+
+
+console.log("Device");
+console.log(ios());
+
+if(ios()) {
+    iphoneDoubleTap();
+}
