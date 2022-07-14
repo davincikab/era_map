@@ -825,10 +825,10 @@ div#protected-areas {
     }
 
     .data-toggler {
-        top:8%;
+        top: 45%;
         left: auto;
         width: 50vw;
-        right:40%;
+        right: 48%;
     }
 
     .data-toggler button {

@@ -132,7 +132,7 @@ map.on("load", function(e) {
         source:'protected_areas',
         paint:{
             'fill-color':'green',
-            'fill-opacity':0.6,
+            'fill-opacity':0.4,
             'fill-outline-color':'#ddd'
         },
         layout:{
