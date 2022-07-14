@@ -406,6 +406,12 @@ map.on("load", function(e) {
 
         // update the drop marker
         dropPin.setLngLat([+lng, +lat]).addTo(map);
+
+        handleDblClick({
+            lngLat:{lng, lat},
+            point:undefined
+        });
+
     }
 });
 
@@ -1287,9 +1293,14 @@ const ios = () => {
 };
 
 
+var isTouch = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+
 console.log("Device");
 console.log(ios());
 
-if(ios()) {
+if(ios() || isTouch) {
     iphoneDoubleTap();
 }
+
+// console.log("Device Touch");
+// console.log(isTouch);

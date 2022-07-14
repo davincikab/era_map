@@ -245,12 +245,12 @@ class NurseryItem extends ItemModule {
         this.nurseries.forEach(nursery => {
             nurseryContent += `<div class="nursery-section" id="${nursery.id}" data-id="${nursery.id}">
                 <div class="title bold">
-                    ${nursery['Name of the nursery']}
+                    ${nursery.post_title}
                 </div>
                 <div class="nursery-body">
-                    <span class="bold">Address</span>: ${nursery.Address} </br>
-                    <span class="bold">Website:</span> <a href="${nursery['Website Address']}" class="mail-link">${nursery['Website Address']}</a> </br>
-                    <span class="bold">Contact no: </span> ${nursery['Contact number']} </br>
+                    <span class="bold">Address</span>: ${nursery.era_nurs_address}
+                    <span class="bold">Website:</span> <a href="${nursery['era_nurs_website_address']}" class="mail-link">${nursery['era_nurs_website_address']}</a> </br>
+                    <span class="bold">Contact no: </span> ${nursery['era_nurs_contact_number']} </br>
                 </div>
             </div>`;
         });
@@ -265,11 +265,11 @@ class NurseryItem extends ItemModule {
                 <img src="/icons/nurseries.png" alt="">
             </div>
             <div class="popup-body">
-                <span class="bold">Address</span>: ${nursery.Address} </br>
-                <span class="bold">Website: </span><a href="${nursery['Website Address']}">${nursery['Website Address']}</a></br>
-                <span class="bold">Contact no:</span>  ${nursery['Contact number']} </br>
+                <span class="bold">Address</span>: ${nursery.era_nurs_address} </br>
+                <span class="bold">Website: </span><a href="${nursery['era_nurs_website_address']}">${nursery['era_nurs_website_address']}</a></br>
+                <span class="bold">Contact no:</span>  ${nursery['era_nurs_contact_number']} </br>
             </div>
-        </div>`
+        </div>`;
     }
 }
 
@@ -281,10 +281,10 @@ let nurseriesUrl = 'https://era-india.org/wp-content/uploads/smack_uci_uploads/e
 let localNurseryUrl = window.location.hostname != 'era-india.org' ? './point_data/nurseries.csv' : nurseriesUrl;
 d3.csv(localNurseryUrl)
 .then(data => {
-    data = data.filter(dt => dt.Coordinates).map((item, i) => {
+    data = data.filter(dt => dt.era_nurs_coordinates).map((item, i) => {
         item.id = i;
-        item.ecoregion = item.Ecoregion;
-        item.coordinates = item.Coordinates.trim().split(",").map(coord => parseFloat(coord)).reverse();
+        item.ecoregion = item.era_nurs_ecoregion;
+        item.coordinates = item.era_nurs_coordinates.trim().split(",").map(coord => parseFloat(coord)).reverse();
         return item;
     });
 

@@ -506,7 +506,7 @@ body {
 }
 
 .item-list .species-item > * {
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 
 #active-species {
@@ -610,7 +610,7 @@ body {
     cursor: pointer;
 }
 
-.nursery-section > * {
+.nursery-section > .nursery-body {
     pointer-events: none;
 }
 
@@ -703,6 +703,10 @@ div#protected-areas {
     font-size: 1.5rem;
     color:var(--black) !important;
     padding: 0px 0.5rem;
+}
+
+.popup-body p {
+    margin:0;
 }
 
 .mapboxgl-marker {
@@ -815,13 +819,20 @@ div#protected-areas {
     }
 
     #map {
-        height: 95vh;
+        margin-top: 10vh;
+        height: 85vh;
         width: 100%;
-        margin:0;
+        margin: 9vh 0 0;
+        position: relative;
     }
 
     .layer-toggler-btn {
         top: 12%;
+    }
+
+    .thematic-loader {
+        bottom: 16%;
+        right: 10px;
     }
 
     .data-toggler {
@@ -833,6 +844,10 @@ div#protected-areas {
 
     .data-toggler button {
         width: 100%;
+    }
+
+    .side-tab {
+        z-index: 3;
     }
 
     .side-tab .layer-groups {
