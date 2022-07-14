@@ -407,12 +407,27 @@ map.on("load", function(e) {
         // update the drop marker
         dropPin.setLngLat([+lng, +lat]).addTo(map);
 
-        handleDblClick({
-            lngLat:{lng, lat},
-            point:undefined
-        });
+        // handleDblClick({
+        //     lngLat:{lng, lat},
+        //     point:undefined
+        // });
+        let coordinates = [+lng, +lat];
+        let feature = dataLayerInstance.getEcoregionOn(coordinates);
+        console.log(feature);
 
+        if(feature) {
+            layerStore.activeFeature = feature;
+            handleEcoregionClick(layerStore.activeFeature);
+            updateWatershedList(
+                coordinates,
+                layerStore.activeFeature
+            );
+            
+            updateProtectedAreaList(layerStore.activeFeature, coordinates);
+
+        }
     }
+
 });
 
 function handleDblClick(e) {
