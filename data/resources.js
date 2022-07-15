@@ -238,6 +238,9 @@ class NurseryItem extends ItemModule {
             nurseyContainer.innerHTML = `<div class="text-section">
                 We're currently working on curating a nursery list for this ecoregion. 
                 <a class="mail-link" href="mailto:hello@era-india.org">hello@era-india.org</a>
+                <div>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScS993yItCLnVD-wexZIhrT9RSLIYorGWQ3Z2-nYBKMBcxtyg/viewform" class="btn-more" target="_blank">ADD RESOURCE</a>
+                </div>
             </div>`
             return;
         }

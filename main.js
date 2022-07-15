@@ -346,6 +346,7 @@ map.on("load", function(e) {
                     );
             
                     updateProtectedAreaList(layerStore.activeFeature, coords);
+                    updateRainfallZonesInfo(layerStore.activeFeature, coords);
                 } else {
                     let activeEcoregion = dataLayerInstance.getDefaultEcoregion();
                     layerStore.activeFeature = {...activeEcoregion};
@@ -432,7 +433,7 @@ map.on("load", function(e) {
             );
             
             updateProtectedAreaList(layerStore.activeFeature, coordinates);
-
+            updateRainfallZonesInfo(layerStore.activeFeature, coordinates)
         }
     }
 
@@ -453,7 +454,7 @@ function handleDblClick(e) {
     );
 
     updateProtectedAreaList(layerStore.activeFeature, Object.values(e.lngLat));
-    updateRainfallZonesInfo();
+    updateRainfallZonesInfo(layerStore.activeFeature, Object.values(e.lngLat));
 }
 
 function handleDefaults() {
@@ -635,10 +636,6 @@ function toggleMapLayers() {
 
                 map.setLayoutProperty(id, 'visibility', visibilityStatus);
                 toggleCollapseSection(id, checked);
-
-                setTimeout(() => {
-                    updateRainfallZonesInfo();
-                }, 2000);
                 
                 return;
             }
@@ -1250,23 +1247,30 @@ function updateProtectedAreaList(activeFeature, coord=[77.8119, 18.7472]) {
     pAreaContainer.innerHTML = content;
 }
 
-function updateRainfallZonesInfo() {
-    if(dropPinScreenCoord) {
-        let features = map.queryRenderedFeatures(dropPinScreenCoord, { layers:['rainfall-zones']});
-        console.log(features);
+function updateRainfallZonesInfo(activeFeature, coordinates=[77.8119, 18.7472]) {
+    let items = JSON.parse(
+        JSON.stringify(dataLayerInstance.layers.find(l => l.name == 'india_rainfallzones_ibp'))
+    );
 
-        if(features[0]) {
-            let content = features.map(ft =>{
-                return `<div>${ft.properties.rain_range}</div>`;
-            }).join("");
+    console.log(items);
 
-            document.getElementById('rainfallzones-list').innerHTML = content;
-        } else {
-            document.getElementById('rainfallzones-list').innerHTML = "";
-        }
-    } else {
-        document.getElementById('rainfallzones-list').innerHTML = "";
-    }
+    items.features = items.features.filter(ft => ft.properties.ECO_NAME == activeFeature.properties.ECO_NAME);
+    let point = turf.point([...coordinates]);
+
+    let rainfallzonesOnPoint = items.features.find(ft => turf.booleanPointInPolygon(point, ft));
+    let zones = rainfallzonesOnPoint ? [rainfallzonesOnPoint] : [];
+
+    console.log(zones);
+
+    // update container
+    let rainfallzonesContainer = document.getElementById("rainfallzones-list");
+    let content = zones.map(item => {
+        return `<div>${item.properties.rain_range}</div>`;
+    }).join("");
+
+    rainfallzonesContainer.innerHTML = content;
+
+    spinnerContainerSmall.classList.add('d-none');
 }
 
 
