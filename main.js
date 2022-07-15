@@ -377,7 +377,8 @@ map.on("load", function(e) {
     // map.getSource('india_51_ecoregions').setData(data);
 
     // slider
-    document.getElementById("opacity").oninput = (e) => {
+    let opacitySlider = document.getElementById("opacity")
+    opacitySlider.oninput = (e) => {
         let values = e.target.value;
 
         document.getElementById('opacity-value').innerHTML = values;
@@ -385,6 +386,12 @@ map.on("load", function(e) {
             map.setPaintProperty(ft, 'fill-opacity', parseFloat(values));
         });
     }
+
+    // slider toggler
+    document.getElementById("slider-toggler").addEventListener("change", function(e) {
+        let { checked } = e.target;
+        opacitySlider.disabled = !checked;
+    });
 
     // coordinates input
     let coordinatesInput = document.getElementById("coordinates-input");
