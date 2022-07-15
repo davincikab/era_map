@@ -381,7 +381,8 @@ map.on("load", function(e) {
     opacitySlider.oninput = (e) => {
         let values = e.target.value;
 
-        document.getElementById('opacity-value').innerHTML = values;
+        let percentageValue = parseFloat(values) * 100;
+        document.getElementById('opacity-value').innerHTML = percentageValue + "%";
         ['watershed', 'protected-areas', 'soil', 'rainfall-zones', 'geology', 'geomorphology'].map(ft => {
             map.setPaintProperty(ft, 'fill-opacity', parseFloat(values));
         });
