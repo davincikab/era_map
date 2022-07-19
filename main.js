@@ -260,6 +260,7 @@ map.on("load", function(e) {
         dropPin.remove();
         document.getElementById("park-list").innerHTML = "";
         document.getElementById("watershed-list").innerHTML = "";
+        document.getElementById("rainfallzones-list").innerHTML = "";
 
         dropPinScreenCoord = undefined;
     });

@@ -41,7 +41,7 @@ function customMarkerIcon(icon) {
 
     // add attributes
     divMarker.classList.add("div-marker");
-    divMarker.innerHTML = `<img src='icons/${icon}.png'  alt="${icon}" />`;
+    divMarker.innerHTML = `<img src='icons/${icon}.svg'  alt="${icon}" />`;
 
     return divMarker;
 }
