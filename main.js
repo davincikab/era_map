@@ -1330,5 +1330,14 @@ if(ios() || isTouch) {
     iphoneDoubleTap();
 }
 
+
+// close info button
+let infoTab = document.getElementById("info-tab");
+let infoCloseBtn = document.getElementById("close-btn");
+infoCloseBtn.onclick = (e) =>{
+    e.stopPropagation();
+    
+    infoTab.classList.add('d-none');
+}
 // console.log("Device Touch");
 // console.log(isTouch);

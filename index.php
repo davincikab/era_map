@@ -14,6 +14,10 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<?php
+  require('/home2/eraindia/public_html/wp-blog-header.php');
+  get_header();
+  ?>
     <div class="map-container">
         <div class="spinner-container" id="spinner-container">
             <div class="spinner"></div>
