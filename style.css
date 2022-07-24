@@ -73,11 +73,10 @@ body {
     position: absolute;
     z-index: 4;
     top:30%;
-    left:calc(50vw - 125px);
+    left:20vw;
     width: 250px;
     background-color: white;
     height: auto;
-    display: none;
 }
 
 .info-tab .info-header {
@@ -114,6 +113,10 @@ body {
     font-size: 0.85rem;
 }
 
+.info-item + .info-item {
+    margin-top: 0.75rem;
+}
+
 .info-item img {
     height: 40px;
 }
@@ -130,8 +133,8 @@ body {
 }
 
 .map-container {
-    height: 88vh; /* Use vh as a fallback for browsers that do not support Custom Properties */
-    height: calc(var(--vh, 1vh) * 88);
+    height: calc(100vh - 80px); /* Use vh as a fallback for browsers that do not support Custom Properties */
+    height: calc(var(--vh, 1vh) * (100vh - 80px));
     margin-top: -2px;
     width: 100vw;
     overflow: hidden;
@@ -139,7 +142,7 @@ body {
 }
 
 #map {
-    height: 88vh;
+    height: calc(100vh - 80px);
     width: calc(100vw - 470px);
     margin-left: 470px;
 }
@@ -820,6 +823,10 @@ input:checked + .switch-slider:before {
     text-decoration: underline;
 }
 
+.popup-body {
+    overflow: hidden;
+}
+
 .popup-body .address a {
     color:#222;
     text-decoration: underline;
@@ -1033,13 +1040,23 @@ div#protected-areas {
     #map {
         height: 85vh;
         width: 100%;
-        margin: 58px 0 0;
+        margin: 60px 0 0;
         position: relative;
+    }
+
+    .info-tab {
+        position: absolute;
+        z-index: 4;
+        top: 30%;
+        left: calc(50vw - 125px);
+        width: 250px;
+        background-color: white;
+        height: auto;
     }
 
     .layer-toggler-btn {
         top: 6%;
-        margin: 25px 5px 40px;
+        margin: 26px 5px 40px;
     }
 
     .slider {

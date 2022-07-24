@@ -264,7 +264,7 @@ class NurseryItem extends ItemModule {
     getPopupContent(nursery) {    
         return `<div class="popup-content nursery">
             <div class="img">
-                <img src="/icons/nurseries.png" alt="">
+                <img src="icons/nurseries.png" alt="">
             </div>
             <div class="popup-body">
                 <span class="bold">Address</span>: ${nursery.era_nurs_address}

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Display a map on a webpage</title>
+<title>ERA ecoregion map.</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -14,10 +14,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <?php
   require('/home2/eraindia/public_html/wp-blog-header.php');
   get_header();
   ?>
+
     <div class="map-container">
         <div class="spinner-container" id="spinner-container">
             <div class="spinner"></div>
@@ -299,6 +301,7 @@
         </div>
 
     </div>
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/pbf@3.0.5/dist/pbf.js"></script>
     <script src="https://unpkg.com/geobuf@3.0.2/dist/geobuf.js"></script>
