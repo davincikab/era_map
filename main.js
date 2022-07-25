@@ -598,16 +598,18 @@ function updateEcoregionInfo(ecoregion) {
     ecoTitle.innerHTML = ecoInfo['post_title'];
 
     console.log("Eco", ecoregion);
+    let link = ecoInfo.era_ecoregion_know_more_link.match(/\>https:.+/g);
+    console.log(link);
+
+    link = link[0] ? link[0].slice(1, -4) : `https://era-india.org/ecoregion/${ecoInfo.post_name}/`;
 
     ecoregionElement.innerHTML = `
         <p class="text-white">${ecoInfo['era_ecoregion_to_come_under_the_title']}</p>
         <div class="text-white">
             ${ecoInfo.post_content}
         </div>
-
-        <a href="https://era-india.org/projects/${ecoInfo.post_name}/" class="btn-more" target="_blank">KNOW MORE</a>
+        <a href="${link}" class="btn-more" target="_blank">KNOW MORE</a>
         `;
-        // <${ecoInfo['era_ecoregion_know_more_link']}
 }
 
 // map layer toggler
